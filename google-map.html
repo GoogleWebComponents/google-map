@@ -1,0 +1,59 @@
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker">
+  <script>
+    Polymer('google-map', {
+      latitude: '-34.397',
+      longitude: '150.644',
+      zoom: 10,
+      showCenterMarker: false,
+      ready: function() {
+        var options = {
+          zoom: this.zoom,
+          center: new google.maps.LatLng(this.latitude, this.longitude)
+        };
+        this.map = new google.maps.Map(this, options);
+      },
+      inserted: function() {
+        this.resize();
+      },
+      resize: function() {
+        google.maps.event.trigger(this.map, 'resize');
+        this.updateCenter();
+      },
+      latitudeChanged: function() {
+        this.asyncUpdateCenter();
+      },
+      longitudeChanged: function() {
+        this.asyncUpdateCenter();
+      },
+      zoomChanged: function() {
+        this.map.setZoom(this.zoom);
+      },
+      asyncUpdateCenter: function() {
+        this.updateCenterJob = this.job(
+            this.updateCenterJob, this.updateCenter, 0);
+      },
+      updateCenter: function() {
+        this.map.setCenter(
+            new google.maps.LatLng(this.latitude, this.longitude));
+        this.updateCenterMarker();
+      },
+      updateCenterMarker: function() {
+        if (!this.showCenterMarker) {
+          this.centerMarker && this.centerMarker.setMap(null);
+          return;
+        }
+        if (!this.centerMarker) {
+          this.centerMarker = new google.maps.Marker({
+            map: this.map
+          });
+        }
+        this.centerMarker.setPosition(this.map.getCenter());
+      }
+    });
+  </script>
+</polymer-element>
