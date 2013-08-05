@@ -33,6 +33,11 @@ license that can be found in the LICENSE file.
       zoomChanged: function() {
         this.map.setZoom(this.zoom);
       },
+      showCenterMarkerChanged: function() {
+        if (this.centerMarker) {
+          this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
+        }
+      },
       asyncUpdateCenter: function() {
         this.updateCenterJob = this.job(
             this.updateCenterJob, this.updateCenter, 0);
@@ -43,16 +48,13 @@ license that can be found in the LICENSE file.
         this.updateCenterMarker();
       },
       updateCenterMarker: function() {
-        if (!this.showCenterMarker) {
-          this.centerMarker && this.centerMarker.setMap(null);
-          return;
-        }
         if (!this.centerMarker) {
           this.centerMarker = new google.maps.Marker({
             map: this.map
           });
         }
         this.centerMarker.setPosition(this.map.getCenter());
+        this.showCenterMarkerChanged();
       }
     });
   </script>
