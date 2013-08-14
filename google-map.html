@@ -10,14 +10,14 @@ license that can be found in the LICENSE file.
       longitude: '150.644',
       zoom: 10,
       showCenterMarker: false,
-      ready: function() {
+      created: function() {
         var options = {
           zoom: this.zoom,
           center: new google.maps.LatLng(this.latitude, this.longitude)
         };
         this.map = new google.maps.Map(this, options);
       },
-      inserted: function() {
+      enteredDocument: function() {
         this.resize();
       },
       resize: function() {
