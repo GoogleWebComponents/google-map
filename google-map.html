@@ -4,58 +4,110 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 -->
 <polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker">
-  <script>
-    Polymer('google-map', {
-      latitude: '-34.397',
-      longitude: '150.644',
-      zoom: 10,
-      showCenterMarker: false,
-      created: function() {
-        var options = {
-          zoom: this.zoom,
-          center: new google.maps.LatLng(this.latitude, this.longitude)
-        };
-        this.map = new google.maps.Map(this, options);
-      },
-      enteredDocument: function() {
-        this.resize();
-      },
-      resize: function() {
-        google.maps.event.trigger(this.map, 'resize');
-        this.updateCenter();
-      },
-      latitudeChanged: function() {
-        this.asyncUpdateCenter();
-      },
-      longitudeChanged: function() {
-        this.asyncUpdateCenter();
-      },
-      zoomChanged: function() {
-        this.map.setZoom(this.zoom);
-      },
-      showCenterMarkerChanged: function() {
-        if (this.centerMarker) {
-          this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
+  <template>
+    <style>
+      @host {
+        * {
+          position: relative;
         }
-      },
-      asyncUpdateCenter: function() {
-        this.updateCenterJob = this.job(
-            this.updateCenterJob, this.updateCenter, 0);
-      },
-      updateCenter: function() {
-        this.map.setCenter(
-            new google.maps.LatLng(this.latitude, this.longitude));
-        this.updateCenterMarker();
-      },
-      updateCenterMarker: function() {
-        if (!this.centerMarker) {
-          this.centerMarker = new google.maps.Marker({
-            map: this.map
-          });
-        }
-        this.centerMarker.setPosition(this.map.getCenter());
-        this.showCenterMarkerChanged();
       }
-    });
+      
+      #map {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
+
+    <div id="map"></div>
+  </template>
+  <script>
+    (function() {
+      var CALLBACK_NAME = 'polymer_google_map_callback';
+      var MAP_URL = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=' + CALLBACK_NAME;
+      var pendingCallbacks = [];
+      var loading;
+      
+      function loadMapApi(cb) {
+        if (window.google && window.google.maps) {
+          cb();
+          return;
+        }
+        if (!loading) {
+          loading = true;
+          window[CALLBACK_NAME] = mapApiLoaded.bind(this);
+          var s = document.createElement('script');
+          s.src = MAP_URL;
+          document.head.appendChild(s);
+        }
+        pendingCallbacks.push(cb);
+      }
+      
+      function mapApiLoaded() {
+        pendingCallbacks.forEach(function(cb) {
+          cb();
+        });
+      }
+      
+      Polymer('google-map', {
+        latitude: '-34.397',
+        longitude: '150.644',
+        zoom: 10,
+        showCenterMarker: false,
+        observe: {
+          latitude: 'updateCenter',
+          longitude: 'updateCenter'
+        },
+        ready: function() {
+          loadMapApi(this.mapReady.bind(this));
+        },
+        enteredView: function() {
+          this.resize();
+        },
+        mapReady: function() {
+          this.map = new google.maps.Map(this.$.map, {
+            zoom: this.zoom,
+            center: new google.maps.LatLng(this.latitude, this.longitude)
+          });
+          this.showCenterMarkerChanged();
+          this.fire('google-map-ready');
+        },
+        resize: function() {
+          if (this.map) {
+            google.maps.event.trigger(this.map, 'resize');
+            this.updateCenter();
+          }
+        },
+        updateCenter: function() {
+          if (!this.map) {
+            return;
+          }
+          this.map.setCenter(
+              new google.maps.LatLng(this.latitude, this.longitude));
+          this.showCenterMarkerChanged();
+        },
+        zoomChanged: function() {
+          if (this.map) {
+            this.map.setZoom(Number(this.zoom));
+          }
+        },
+        showCenterMarkerChanged: function() {
+          if (!this.map) {
+            return;
+          }
+          if (!this.centerMarker && this.showCenterMarker) {
+            this.centerMarker = new google.maps.Marker({
+              map: this.map
+            });
+          }
+          if (this.centerMarker) {
+            this.centerMarker.setPosition(this.map.getCenter());
+            this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
+          }
+        }
+      });
+    })();
   </script>
 </polymer-element>
