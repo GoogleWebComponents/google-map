@@ -3,7 +3,7 @@ Copyright 2013 The Polymer Authors. All rights reserved.
 Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 -->
-<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker">
+<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker map">
   <template>
     <style>
       @host {
@@ -30,9 +30,9 @@ license that can be found in the LICENSE file.
       var pendingCallbacks = [];
       var loading;
       
-      function loadMapApi(cb) {
+      function loadMapApi(callback) {
         if (window.google && window.google.maps) {
-          cb();
+          callback();
           return;
         }
         if (!loading) {
@@ -42,18 +42,19 @@ license that can be found in the LICENSE file.
           s.src = MAP_URL;
           document.head.appendChild(s);
         }
-        pendingCallbacks.push(cb);
+        pendingCallbacks.push(callback);
       }
       
       function mapApiLoaded() {
-        pendingCallbacks.forEach(function(cb) {
-          cb();
+        delete window[CALLBACK_NAME];
+        pendingCallbacks.forEach(function(callback) {
+          callback();
         });
       }
       
       Polymer('google-map', {
-        latitude: '-34.397',
-        longitude: '150.644',
+        latitude: '37.77493',
+        longitude: '-122.41942',
         zoom: 10,
         showCenterMarker: false,
         observe: {

@@ -6,3 +6,14 @@
     <link rel="import" href="google-map.html">
   </template>
 </x-meta>
+
+<x-meta id="google-map-directions" label="Google Map Directions">
+  <template>
+    <google-map-directions></google-map-directions>
+  </template>
+  <property name="map" kind="string"></property>
+  <property name="travelMode" kind="select" options="DRIVING,TRSNSIT,WALKING,BICYCLING"></property>
+  <template id="imports">
+    <link rel="import" href="google-map-directions.html">
+  </template>
+</x-meta>
