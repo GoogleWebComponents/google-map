@@ -9,14 +9,24 @@ license that can be found in the LICENSE file.
     <title>Google Map</title>
     <script src="../../polymer/polymer.js"></script>
     <link rel="import" href="google-map.html">
-    <style>
-      google-map {
-        display: block;
-        height: 400px;
-      }
-    </style>
+    <link rel="import" href="google-map-directions.html">
   </head>
   <body>
-    <google-map></google-map>
+    <polymer-element name="x-map-example" noscript>
+      <template>
+        <style>
+          google-map {
+            display: block;
+            height: 600px;
+          }
+        </style>
+        
+        <google-map map="{{map}}"></google-map>
+        <google-map-directions map="{{map}}" startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
+        
+      </template>
+    </polymer-element>
+    
+    <x-map-example></x-map-example>
   </body>
 </html>
