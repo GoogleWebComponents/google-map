@@ -36,12 +36,6 @@ license that can be found in the LICENSE file.
       mapReady: function() {
         this.directionsService = new google.maps.DirectionsService();
         this.directionsRenderer = new google.maps.DirectionsRenderer();
-        this.startMarker = new google.maps.Marker({
-          map: this.map
-        });
-        this.endMarker = new google.maps.Marker({
-          map: this.map
-        });
         this.directionsRenderer.setMap(this.map);
         this.startAddressChanged();
         this.endAddressChanged();
@@ -86,9 +80,6 @@ license that can be found in the LICENSE file.
           if (status == google.maps.DirectionsStatus.OK) {
             this.directionsRenderer.setDirections(response);
             this.response = response;
-            var leg = response.routes[0].legs[0];
-            this.startMarker.setPosition(leg.start_location);
-            this.endMarker.setPosition(leg.end_location);
           }
         }.bind(this));
       }
