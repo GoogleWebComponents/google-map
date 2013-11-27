@@ -1,32 +1,128 @@
 <!DOCTYPE html>
-<!--
-Copyright 2013 The Polymer Authors. All rights reserved.
-Use of this source code is governed by a BSD-style
-license that can be found in the LICENSE file.
--->
 <html>
-  <head>
-    <title>Google Map</title>
-    <script src="../platform/platform.js"></script>
-    <link rel="import" href="google-map.html">
-    <link rel="import" href="google-map-directions.html">
-  </head>
-  <body>
-    <polymer-element name="x-map-example" noscript>
-      <template>
-        <style>
-          google-map {
-            display: block;
-            height: 600px;
-          }
-        </style>
-        
-        <google-map map="{{map}}"></google-map>
-        <google-map-directions map="{{map}}" startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
-        
-      </template>
-    </polymer-element>
-    
-    <x-map-example></x-map-example>
-  </body>
+<head>
+  <title>polymer api</title>
+  <style>
+    html, body {
+      font-family: Arial, sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    [nobowager] [ifnobowager], [noviewer] [ifnoviewer] {
+      display: block;
+    }
+    [detector], [ifnobowager], [ifnoviewer], [nobowager] [ifbowager], [noviewer] [ifviewer] {
+      display: none;
+    }
+    img {
+      vertical-align: middle;
+      height: 22px;
+      padding: 0 4px 2px 0;
+    }
+    div {
+      display: inline-block;
+    }
+    h2 {
+      display: inline-block;
+      margin: 0px 6px;
+      vertical-align: middle;
+    }
+    .choiceB, .choiceC {
+      font-size: 0.8em;
+      display: inline-block;
+      white-space: nowrap;
+      padding: 0px 16px;
+      text-align: center;
+      text-transform: uppercase;
+      color: #eee;
+      border-radius: 23px;
+    }
+    .choiceB {
+      background-color: #BF8A30;
+    }
+    .choiceC {
+      background-color: #284B7E;
+    }
+    .choiceB:hover {
+      background-color: #C7F83E;
+      color: #222;
+    }
+    .choiceC:hover {
+      background-color: #C7F83E;
+      color: #222;
+    }
+    a {
+      text-decoration: none;
+    }
+    polymer-doc-viewer {
+      display: block;
+      position: absolute;
+      top: 56px;
+      right: 0;
+      bottom: 0px;
+      left: 0;
+      border: 1px solid silver;
+    }
+  </style>
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="../polymer-doc-viewer/polymer-doc-viewer.html">
+</head>
+<body>
+  <!-- detection-->
+  <img detector src="../Bowager/static/bowager-logo.png" onerror="nobowager()">
+  <img detector src="../polymer-doc-viewer/bowager-logo.png" onerror="noviewer()">
+  <script>
+    function nobowager() {
+      document.body.setAttribute('nobowager', '');
+    }
+    function noviewer() {
+      document.body.setAttribute('noviewer', '');
+    }
+    // for testing only
+    window.addEventListener('load', function() {
+      var opts = window.location.search;
+      if (opts.indexOf('viewer') >= 0) {
+        document.body.removeAttribute('noviewer');
+      }
+      if (opts.indexOf('bowager') >= 0) {
+        document.body.removeAttribute('nobowager');
+      }
+      if (opts.indexOf('noviewer') >= 0) {
+        document.body.setAttribute('noviewer', '');
+      }
+      if (opts.indexOf('nobowager') >= 0) {
+        document.body.setAttribute('nobowager', '');
+      }
+    });
+  </script>
+  <!-- -->
+  <h2>polymer api</h2>
+  <div ifnoviewer>
+    <p>See the <a target="_blank" href="http://itch.selfip.net/bowertopia/components/polymer-ajax/doc.html">remote docs.</a></p>
+    <p>Play with this element in the <a href="http://itch.selfip.net/bowertopia/designer/?element=polymer-ajax">remote sandbox.</a></p>
+    <p>See the <a target="_blank" href="smoke.html">smoke test.</a></p>
+    <hr>
+    <p>To access these tools locally, install the <code>polymer-catalog-tools</code> package.</p>
+    <code>bower install Polymer/polymer-catalog-tools</code>
+    <br>
+    <p ifbowager>
+      Or use <a ifbowager target="_blank" href="foo">one-click install <img src="../Bowager/static/bowager-logo.png" title="install via bowager"></a>
+    </p>
+    <p ifnobowager>
+      Pro tip: consider using Bowager for web-enabled installs.
+    </p>
+  </div>
+  <h2 ifviewer>
+    <a class="choiceB" target="_blank" id="sandbox">sandbox</a>
+    <a class="choiceC" target="_blank" href="smoke.html">smoke test</a>
+    <polymer-doc-viewer url="docs.json"></polymer-doc-viewer>
+  </h2>
+  <script>
+    var pathName = location.pathname.split('/');
+    moduleName = pathName.pop() || pathName.pop();
+    document.querySelector('title').textContent = moduleName;
+    document.querySelector('h2').textContent = moduleName;
+    document.querySelector('#sandbox').href = '../../designer/?element=' + moduleName;
+  </script>
+</body>
 </html>
