@@ -2,6 +2,7 @@
   "name": "google-map",
   "private": true,
   "dependencies": {
-    "polymer": "Polymer/polymer#master"
-  }
+    "polymer": "Polymer/polymer#0.1.2"
+  },
+  "version": "0.1.2"
 }
