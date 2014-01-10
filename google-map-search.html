@@ -1,0 +1,24 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="google-map-search" attributes="query result map">
+  <script>
+    Polymer('google-map-search', {
+      result: {
+        latitude: '37.77493',
+        longitude: '-122.41942',
+        show: false
+      },
+      search: function() {
+        var places = new google.maps.places.PlacesService(this.map);
+        places.textSearch({query: this.query}, this.gotResults.bind(this));
+      },
+      gotResults: function(results, status) {
+        this.result = {
+          latitude: results[0].geometry.location.lat(),
+          longitude: results[0].geometry.location.lng(),
+          show: true
+        }
+      }
+    });
+  </script>
+</polymer-element>
