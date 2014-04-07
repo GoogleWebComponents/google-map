@@ -19,7 +19,7 @@ license that can be found in the LICENSE file.
 
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map">
+<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map mapType">
   <template>
     <style>
       :host {
@@ -71,6 +71,7 @@ license that can be found in the LICENSE file.
         longitude: '-122.41942',
         zoom: 10,
         showCenterMarker: false,
+        mapType: '', // roadmap, satellite, hybrid, terrain
         version: '3.exp',
         sensor: false,
         observe: {
@@ -108,6 +109,11 @@ license that can be found in the LICENSE file.
         zoomChanged: function() {
           if (this.map) {
             this.map.setZoom(Number(this.zoom));
+          }
+        },
+        mapTypeChanged: function() {
+          if (this.map) {
+            this.map.setMapTypeId(this.mapType);
           }
         },
         showCenterMarkerChanged: function() {
