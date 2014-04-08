@@ -4,7 +4,8 @@
   <script>
     Polymer('google-map-search', {
       observe: {
-        query: 'search'
+        query: 'search',
+        map: 'search'
       },
       search: function() {
         if (this.query && this.map) {

@@ -71,7 +71,7 @@ license that can be found in the LICENSE file.
         longitude: '-122.41942',
         zoom: 10,
         showCenterMarker: false,
-        mapType: '', // roadmap, satellite, hybrid, terrain
+        mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
         version: '3.exp',
         sensor: false,
         observe: {
@@ -81,14 +81,17 @@ license that can be found in the LICENSE file.
         ready: function() {
           loadMapApi(this.mapReady.bind(this), this.version, this.sensor);
         },
-        enteredView: function() {
+        attached: function() {
           this.resize();
         },
         mapReady: function() {
           this.map = new google.maps.Map(this.$.map, {
             zoom: this.zoom,
-            center: new google.maps.LatLng(this.latitude, this.longitude)
+            mapTypeId: this.mapType
           });
+          if (this.latitude && this.longitude) {
+            this.updateCenter();
+          }
           this.showCenterMarkerChanged();
           this.fire('google-map-ready');
         },
