@@ -89,10 +89,7 @@ license that can be found in the LICENSE file.
             zoom: this.zoom,
             mapTypeId: this.mapType
           });
-          if (this.latitude && this.longitude) {
-            this.updateCenter();
-          }
-          this.showCenterMarkerChanged();
+          this.updateCenter();
           this.fire('google-map-ready');
         },
         resize: function() {
@@ -102,7 +99,7 @@ license that can be found in the LICENSE file.
           }
         },
         updateCenter: function() {
-          if (!this.map) {
+          if (!this.map || !this.latitude || !this.longitude) {
             return;
           }
           this.map.setCenter(
