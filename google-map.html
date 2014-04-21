@@ -131,6 +131,12 @@ license that can be found in the LICENSE file.
             this.centerMarker.setPosition(this.map.getCenter());
             this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
           }
+        },
+        disableDefaultUIChanged: function() {
+          if (!this.map) {
+            return;
+          }
+          this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
         }
       });
     })();
