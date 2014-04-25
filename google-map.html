@@ -25,7 +25,7 @@ license that can be found in the LICENSE file.
       :host {
         position: relative;
       }
-      
+
       #map {
         position: absolute;
         top: 0;
@@ -104,7 +104,7 @@ license that can be found in the LICENSE file.
           if (!this.map || !this.latitude || !this.longitude) {
             return;
           }
-          this.map.setCenter(
+          this.map.panTo(
               new google.maps.LatLng(this.latitude, this.longitude));
           this.showCenterMarkerChanged();
         },
