@@ -1,7 +1,10 @@
 <!--
-Copyright 2013 The Polymer Authors. All rights reserved.
-Use of this source code is governed by a BSD-style
-license that can be found in the LICENSE file.
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
 -->
 <!--
 /**
@@ -17,130 +20,116 @@ license that can be found in the LICENSE file.
  */
 -->
 
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
 
 <polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI">
-  <template>
-    <style>
-      :host {
-        position: relative;
-      }
+<template>
 
-      #map {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      }
-    </style>
+  <style>
+  
+    :host {
+      position: relative;
+    }
 
-    <div id="map"></div>
-  </template>
-  <script>
-    (function() {
-      var CALLBACK_NAME = 'polymer_google_map_callback';
-      var MAP_URL = 'https://maps.googleapis.com/maps/api/js?libraries=places&callback=' + CALLBACK_NAME;
-      var pendingCallbacks = [];
-      var loading;
-      
-      function loadMapApi(callback, version, sensor) {
-        if (window.google && window.google.maps) {
-          callback();
-          return;
-        }
-        if (!loading) {
-          loading = true;
-          window[CALLBACK_NAME] = mapApiLoaded.bind(this);
-          var s = document.createElement('script');
-          s.src = MAP_URL + '&v=' + version + '&sensor=' + sensor;
-          document.head.appendChild(s);
-        }
-        pendingCallbacks.push(callback);
+    #map {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    
+  </style>
+
+  <google-maps-api version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+  <div id="map"></div>
+  
+</template>
+<script>
+
+  Polymer('google-map', {
+    
+    latitude: '37.77493',
+    longitude: '-122.41942',
+    zoom: 10,
+    showCenterMarker: false,
+    mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
+    version: '3.exp',
+    sensor: false,
+    disableDefaultUI: false,
+    
+    observe: {
+      latitude: 'updateCenter',
+      longitude: 'updateCenter'
+    },
+    
+    attached: function() {
+      this.resize();
+    },
+    
+    mapApiLoaded: function() {
+      this.map = new google.maps.Map(this.$.map, {
+        zoom: this.zoom,
+        mapTypeId: this.mapType,
+        disableDefaultUI: this.disableDefaultUI
+      });
+      this.updateCenter();
+      this.fire('google-map-ready');
+    },
+    
+    resize: function() {
+      if (this.map) {
+        google.maps.event.trigger(this.map, 'resize');
+        this.updateCenter();
       }
-      
-      function mapApiLoaded() {
-        delete window[CALLBACK_NAME];
-        pendingCallbacks.forEach(function(callback) {
-          callback();
+    },
+    
+    updateCenter: function() {
+      if (!this.map || !this.latitude || !this.longitude || 
+          typeof this.latitude === 'object' || 
+          typeof this.longitude === 'object') {
+        return;
+      }
+      this.map.panTo(
+          new google.maps.LatLng(this.latitude, this.longitude));
+      this.showCenterMarkerChanged();
+    },
+    
+    zoomChanged: function() {
+      if (this.map) {
+        this.map.setZoom(Number(this.zoom));
+      }
+    },
+    
+    mapTypeChanged: function() {
+      if (this.map) {
+        this.map.setMapTypeId(this.mapType);
+      }
+    },
+    
+    showCenterMarkerChanged: function() {
+      if (!this.map) {
+        return;
+      }
+      if (!this.centerMarker && this.showCenterMarker) {
+        this.centerMarker = new google.maps.Marker({
+          map: this.map
         });
       }
-      
-      Polymer('google-map', {
-        latitude: '37.77493',
-        longitude: '-122.41942',
-        zoom: 10,
-        showCenterMarker: false,
-        mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
-        version: '3.exp',
-        sensor: false,
-        disableDefaultUI: false,
-        observe: {
-          latitude: 'updateCenter',
-          longitude: 'updateCenter'
-        },
-        ready: function() {
-          loadMapApi(this.mapReady.bind(this), this.version, this.sensor);
-        },
-        attached: function() {
-          this.resize();
-        },
-        mapReady: function() {
-          this.map = new google.maps.Map(this.$.map, {
-            zoom: this.zoom,
-            mapTypeId: this.mapType,
-            disableDefaultUI: this.disableDefaultUI
-          });
-          this.updateCenter();
-          this.fire('google-map-ready');
-        },
-        resize: function() {
-          if (this.map) {
-            google.maps.event.trigger(this.map, 'resize');
-            this.updateCenter();
-          }
-        },
-        updateCenter: function() {
-          if (!this.map || !this.latitude || !this.longitude || 
-              typeof this.latitude === 'object' || 
-              typeof this.longitude === 'object') {
-            return;
-          }
-          this.map.panTo(
-              new google.maps.LatLng(this.latitude, this.longitude));
-          this.showCenterMarkerChanged();
-        },
-        zoomChanged: function() {
-          if (this.map) {
-            this.map.setZoom(Number(this.zoom));
-          }
-        },
-        mapTypeChanged: function() {
-          if (this.map) {
-            this.map.setMapTypeId(this.mapType);
-          }
-        },
-        showCenterMarkerChanged: function() {
-          if (!this.map) {
-            return;
-          }
-          if (!this.centerMarker && this.showCenterMarker) {
-            this.centerMarker = new google.maps.Marker({
-              map: this.map
-            });
-          }
-          if (this.centerMarker) {
-            this.centerMarker.setPosition(this.map.getCenter());
-            this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
-          }
-        },
-        disableDefaultUIChanged: function() {
-          if (!this.map) {
-            return;
-          }
-          this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
-        }
-      });
-    })();
-  </script>
+      if (this.centerMarker) {
+        this.centerMarker.setPosition(this.map.getCenter());
+        this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
+      }
+    },
+    
+    disableDefaultUIChanged: function() {
+      if (!this.map) {
+        return;
+      }
+      this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
+    }
+    
+  });
+  
+</script>
 </polymer-element>
