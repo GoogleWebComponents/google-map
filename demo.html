@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
-The complete set of authors may be found at http://polymer.github.io/AUTHORS
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <html>
   <head>
@@ -13,23 +13,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../platform/platform.js"></script>
     <link rel="import" href="google-map.html">
     <link rel="import" href="google-map-directions.html">
+    <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+      }
+      google-map {
+        display: block;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
-    <polymer-element name="x-map-example" noscript>
-      <template>
-        <style>
-          google-map {
-            display: block;
-            height: 600px;
-          }
-        </style>
-        
-        <google-map map="{{map}}"></google-map>
-        <google-map-directions map="{{map}}" startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
-        
-      </template>
-    </polymer-element>
     
-    <x-map-example></x-map-example>
+    <google-map disableDefaultUI></google-map>
+    <google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
+
+    <script>
+      document.addEventListener('polymer-ready', function(e) {
+        var dir = document.querySelector('google-map-directions');
+        var gmap = document.querySelector('google-map');
+        dir.map = gmap.map;
+      });
+    </script>
   </body>
 </html>
