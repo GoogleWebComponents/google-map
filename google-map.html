@@ -8,16 +8,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <!--
-Google Maps element
+The `google-map` elements renders a Google Map.
 
-@blurb Element wrapper around Google Maps API.
-@snap http://polymer.github.io/google-map/snap.png
-@author The Polymer Authors
-@categories Charts and Graphs
+<b>Example</b>:
+
+    <google-map latitude="37.77493" longitude="-122.41942"></google-map>
+
+<b>Example</b>:
+
+    <google-map disableDefaultUI showCenterMarker zoom="15"></google-map>
+    <script>
+      var map = document.querySelector('google-map');
+      map.latitude = 37.77493;
+      map.longitude = -122.41942;
+      map.addEventListener('google-map-ready', function(e) {
+        alert('Map loaded!');
+      });
+    </script>
+
+<b>Example</b> - with Google directions, using data-binding inside another Polymer element
+
+    <google-map map="{{map}}"></google-map>
+    <google-map-directions map="{{map}}"
+        startAddress="San Francisco" endAddress="Mountain View">
+    </google-map-directions>
 
 @group Polymer Lab Elements
 @element google-map
 @homepage github.io
+@blurb Element wrapper around Google Maps API.
+@snap snap.png
+-->
+<!--
+Fired when the Maps API has fully loaded.
+
+@event google-map-ready
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -50,13 +75,76 @@ Google Maps element
 
   Polymer('google-map', {
     
-    latitude: '37.77493',
-    longitude: '-122.41942',
+    /**
+     * A latitude to center the map on.
+     *
+     * @attribute latitude
+     * @type number
+     * @default 37.77493
+     */
+    latitude: 37.77493,
+
+    /**
+     * A longitude to center the map on.
+     *
+     * @attribute longitude
+     * @type number
+     * @default -122.41942
+     */
+    longitude: -122.41942,
+
+    /**
+     * A zoom level to set the map to.
+     *
+     * @attribute zoom
+     * @type number
+     * @default 10
+     */
     zoom: 10,
+
+    /**
+     * When set, displays a map marker at the center point.
+     *
+     * @attribute showCenterMarker
+     * @type boolean
+     * @default false
+     */
     showCenterMarker: false,
+
+    /**
+     * Map type to display. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
+     *
+     * @attribute mapType
+     * @type string
+     * @default roadmap
+     */
     mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
+    
+    /**
+     * Version of the Google Maps API to use.
+     *
+     * @attribute version
+     * @type string
+     * @default 3.exp
+     */
     version: '3.exp',
+
+    /**
+     * If set, indicates a sensor (such as a GPS locator) was used to determine the user's location.
+     *
+     * @attribute sensor
+     * @type boolean
+     * @default false
+     */
     sensor: false,
+
+    /**
+     * If set, removes the map's default UI controls.
+     *
+     * @attribute disableDefaultUI
+     * @type boolean
+     * @default false
+     */
     disableDefaultUI: false,
     
     observe: {
