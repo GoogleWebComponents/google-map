@@ -2,6 +2,6 @@
   "name": "google-map",
   "private": true,
   "dependencies": {
-    "google-apis": "Polymer/google-apis#master"
+    "google-apis": "PolymerLabs/google-apis#master"
   }
 }
