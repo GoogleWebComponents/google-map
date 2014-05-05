@@ -7,6 +7,139 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
+<!--
+The `google-map-marker` element represents a map marker. It is used as a
+child of `google-map`.
+
+<b>Example</b>:
+
+    <google-map latitude="37.77493" longitude="-122.41942">
+      <google-map-marker latitude="37.779" longitude="-122.3892"
+          title="Go Giants!"></google-map-marker>
+    </google-map>
+
+<b>Example</b> - a draggable marker:
+
+    <google-map-marker latitude="37.77493" longitude="-122.41942"
+         draggable="true"></google-map-marker>
+
+<b>Example</b> - hide a marker:
+
+    <google-map-marker latitude="37.77493" longitude="-122.41942"
+        hidden></google-map-marker>
+
+@element google-map-marker
+@status alpha
+@homepage github.io
+-->
+<polymer-element name="google-map-marker" attributes="icon">
+<script>
+  (function() {
+
+    Polymer('google-map-marker', {
+
+      /**
+       * A Google Maps marker object.
+       *
+       * @property marker
+       * @type google.maps.Marker
+       * @default null
+       */
+      marker: null,
+
+      /**
+       * The Google map object.
+       *
+       * @property map
+       * @type google.maps.Map
+       * @default null
+       */
+      map: null,
+
+      /**
+       * Image URL for the marker icon.
+       *
+       * @attribute icon
+       * @type string
+       * @default null
+       */
+      icon: null,
+
+      publish: {
+        longitude: {value: null, reflect: true},
+        latitude: {value: null, reflect: true}
+      },
+
+      iconChanged: function() {
+        if (this.marker) {
+          this.marker.setIcon(this.icon);
+        }
+      },
+
+      mapChanged: function() {
+        if (this.map && this.map instanceof google.maps.Map) {
+          this.mapReady();
+        }
+      },
+
+      mapReady: function() {
+        this.marker = new google.maps.Marker({
+          map: this.map,
+          position: new google.maps.LatLng(this.latitude, this.longitude),
+          title: this.title,
+          draggable: this.draggable,
+          visible: !this.hidden,
+          icon: this.icon
+        });
+
+        setupDragHandler_.bind(this)();
+      },
+
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if (!this.marker) {
+          return;
+        }
+
+        // Cannot use *Changed watchers for native properties.
+        switch (attrName) {
+          case 'hidden':
+            this.marker.setVisible(!this.hidden);
+            break;
+          case 'draggable':
+            this.marker.setDraggable(this.draggable);
+            setupDragHandler_.bind(this)();
+            break;
+          case 'title':
+            this.marker.setTitle(this.title);
+            break;
+        }
+      }
+
+    });
+
+    function onDragEnd_(e, details, sender) {
+      this.latitude = e.latLng.lat();
+      this.longitude = e.latLng.lng();
+    }
+    
+    function setupDragHandler_() {
+      if (this.draggable) {
+        this.dragHandler_ = google.maps.event.addListener(
+            this.marker, 'dragend', onDragEnd_.bind(this));
+      } else {
+        google.maps.event.removeListener(this.dragHandler_);
+        this.dragHandler_ = null;
+      }
+    }
+
+  })();
+
+</script>
+</polymer-element>
+
 <!--
 The `google-map` element renders a Google Map.
 
@@ -19,6 +152,14 @@ The `google-map` element renders a Google Map.
       }
     </style>
     <google-map latitude="37.77493" longitude="-122.41942"></google-map>
+
+<b>Example</b> - add markers to the map and ensure they're in view:
+
+    <google-map latitude="37.77493" longitude="-122.41942" fitToMarkers>
+      <google-map-marker latitude="37.779" longitude="-122.3892"
+          draggable="true" title="Go Giants!"></google-map-marker>
+      <google-map-marker latitude="37.777" longitude="-122.38911"></google-map-marker>
+    </google-map>
 
 <b>Example</b>:
 
@@ -39,7 +180,6 @@ The `google-map` element renders a Google Map.
         startAddress="San Francisco" endAddress="Mountain View">
     </google-map-directions>
 
-@group Polymer Lab Elements
 @element google-map
 @homepage github.io
 @blurb Element wrapper around Google Maps API.
@@ -51,10 +191,10 @@ Fired when the Maps API has fully loaded.
 @event google-map-ready
 -->
 
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../google-apis/google-apis.html">
-
-<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI">
+<!-- TODO(ericbidelman):
+- Handle removals and support .innerHTML = ''.
+-->
+<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI fitToMarkers">
 <template>
 
   <style>
@@ -75,6 +215,8 @@ Fired when the Maps API has fully loaded.
 
   <google-maps-api version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
   <div id="map"></div>
+
+  <content id="markers" select="google-map-marker"></content>
   
 </template>
 <script>
@@ -152,10 +294,23 @@ Fired when the Maps API has fully loaded.
      * @default false
      */
     disableDefaultUI: false,
+
+    /**
+     * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+     *
+     * @attribute fitToMarkers
+     * @type boolean
+     * @default false
+     */
+    fitToMarkers: false,
     
     observe: {
       latitude: 'updateCenter',
       longitude: 'updateCenter'
+    },
+
+    created: function() {
+      this.markers = [];
     },
     
     attached: function() {
@@ -168,8 +323,40 @@ Fired when the Maps API has fully loaded.
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUI
       });
+
       this.updateCenter();
-      this.fire('google-map-ready');
+      this.updateMarkers();
+
+      this.fire('google-map-ready');      
+    },
+
+    updateMarkers: function() {
+      this.markers = Array.prototype.slice.call(
+          this.$.markers.getDistributedNodes());
+      
+      this.onMutation(this, this.updateMarkers); // Watch for future updates.
+
+      // Set the map on each marker and zoom viewport to ensure they're in view. 
+      if (this.markers.length && this.map) {
+        for (var i = 0, m; m = this.markers[i]; ++i) {
+          m.map = this.map;
+        }
+
+        if (this.fitToMarkers) {
+          this.fitToMarkersChanged();
+        }
+      }
+    },
+
+    /**
+     * Clears all markers from the map.
+     *
+     * @method clear
+     */
+    clear: function() {
+      for (var i = 0, m; m = this.markers[i]; ++i) {
+        m.marker.setMap(null);
+      }
     },
     
     resize: function() {
@@ -222,6 +409,25 @@ Fired when the Maps API has fully loaded.
         return;
       }
       this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
+    },
+
+    fitToMarkersChanged: function() {
+      // TODO(ericbidelman): respect user's zoom level.
+
+      if (this.map && this.fitToMarkers) { 
+        var latLngBounds = new google.maps.LatLngBounds();
+        for (var i = 0, m; m = this.markers[i]; ++i) {
+          latLngBounds.extend(
+              new google.maps.LatLng(m.latitude, m.longitude));
+        }
+
+        // For one marker, don't alter zoom, just center it.
+        if (this.markers.length > 1) {
+          this.map.fitBounds(latLngBounds);
+        }
+        
+        this.map.setCenter(latLngBounds.getCenter());
+      }
     }
     
   });
