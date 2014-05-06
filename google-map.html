@@ -198,7 +198,6 @@ The `google-map` element renders a Google Map.
 @element google-map
 @homepage github.io
 @blurb Element wrapper around Google Maps API.
-@snap snap.png
 -->
 <!--
 Fired when the Maps API has fully loaded.
@@ -208,8 +207,9 @@ Fired when the Maps API has fully loaded.
 
 <!-- TODO(ericbidelman):
 - Handle removals and support .innerHTML = ''.
+- Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI fitToMarkers">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI fitToMarkers">
 <template>
 
   <style>
@@ -228,7 +228,8 @@ Fired when the Maps API has fully loaded.
     
   </style>
 
-  <google-maps-api version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+
   <div id="map"></div>
 
   <content id="markers" select="google-map-marker"></content>
@@ -237,7 +238,15 @@ Fired when the Maps API has fully loaded.
 <script>
 
   Polymer('google-map', {
-    
+
+    /**
+     * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
+     *
+     * @property apiKey
+     * @type string
+     */
+    apiKey: null,
+
     /**
      * A latitude to center the map on.
      *
