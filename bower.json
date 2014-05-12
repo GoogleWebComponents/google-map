@@ -3,5 +3,6 @@
   "private": true,
   "dependencies": {
     "google-apis": "PolymerLabs/google-apis#master"
-  }
+  },
+  "version": "0.2.4"
 }
