@@ -63,7 +63,7 @@ child of `google-map`.
        * A Google Map Infowindow object.
        *
        * @property infowindow
-       * @type google.map.Infowindow
+       * @type google.map.InfoWindow
        * @default null
        */
       infowindow: null,
@@ -109,6 +109,28 @@ child of `google-map`.
         }
       },
 
+      contentChanged: function() {
+        this.onMutation(this, this.contentChanged); // Watch for future updates.
+
+        var content = this.innerHTML;
+        if(content) {
+          if (!this.infowindow) {
+            // Create a new infowindow
+            this.infowindow = new google.maps.InfoWindow();
+            this.infowindowListener = google.maps.event.addListener(this.marker, 'click', function() {
+              this.infowindow.open(this.map, this.marker);
+            }.bind(this));
+          }
+          this.infowindow.setContent(content);
+        } else {
+          if (this.infowindow) {
+            // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
+            google.maps.event.removeListener(this.infowindowListener);
+            this.infowindow = null;
+          }
+        }
+      },
+
       mapReady: function() {
         this.marker = new google.maps.Marker({
           map: this.map,
@@ -118,16 +140,7 @@ child of `google-map`.
           visible: !this.hidden,
           icon: this.icon
         });
-
-        if(this.innerHTML) {
-          this.infowindow = new google.maps.InfoWindow({
-            content: this.innerHTML
-          });
-          google.maps.event.addListener(this.marker, 'click', function() {
-            this.infowindow.open(this.map, this.marker);
-          }.bind(this));
-        }
-
+        this.contentChanged();
         setupDragHandler_.bind(this)();
       },
 
