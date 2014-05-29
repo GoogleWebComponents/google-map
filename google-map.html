@@ -60,6 +60,15 @@ child of `google-map`.
       map: null,
 
       /**
+       * A Google Map Infowindow object.
+       *
+       * @property infowindow
+       * @type google.map.Infowindow
+       * @default null
+       */
+      infowindow: null,
+
+      /**
        * Image URL for the marker icon.
        *
        * @attribute icon
@@ -109,6 +118,15 @@ child of `google-map`.
           visible: !this.hidden,
           icon: this.icon
         });
+
+        if(this.innerHTML) {
+          this.infowindow = new google.maps.InfoWindow({
+            content: this.innerHTML
+          });
+          google.maps.event.addListener(this.marker, 'click', function() {
+            this.infowindow.open(this.map, this.marker);
+          }.bind(this));
+        }
 
         setupDragHandler_.bind(this)();
       },
