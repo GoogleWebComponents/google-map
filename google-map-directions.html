@@ -9,7 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="google-map-directions" attributes="map startLocation endLocation travelMode response">
+<polymer-element name="google-map-directions" attributes="map startAddress endAddress travelMode response">
   <template>
     <style>
       :host {
@@ -21,13 +21,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer('google-map-directions', {
       // google.maps.Map instance
       map: null,
-      startLocation: null,
-      endLocation: null,
+      startAddress: null,
+      endAddress: null,
       // DRIVING, WALKING, BICYCLING, TRANSIT
       travelMode: 'DRIVING',
       observe: {
-        startLocation: 'route',
-        endLocation: 'route',
+        startAddress: 'route',
+        endAddress: 'route',
         travelMode: 'route'
       },
       mapChanged: function() {
@@ -42,12 +42,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.route();
       },
       route: function() {
-        if (!this.map || !this.startLocation || !this.endLocation) {
+        if (!this.map || !this.startAddress || !this.endAddress) {
           return;
         }
         var request = {
-          origin: this.startLocation,
-          destination: this.endLocation,
+          origin: this.startAddress,
+          destination: this.endAddress,
           optimizeWaypoints: true,
           travelMode: this.travelMode
         };
