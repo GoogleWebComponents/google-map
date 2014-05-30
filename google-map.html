@@ -36,6 +36,13 @@ child of `google-map`.
 @homepage github.io
 -->
 <polymer-element name="google-map-marker" attributes="icon">
+<template>
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+</template>
 <script>
   (function() {
 
@@ -58,6 +65,15 @@ child of `google-map`.
        * @default null
        */
       map: null,
+
+      /**
+       * A Google Map Infowindow object.
+       *
+       * @property info
+       * @type google.map.InfoWindow
+       * @default null
+       */
+      info: null,
 
       /**
        * Image URL for the marker icon.
@@ -100,6 +116,28 @@ child of `google-map`.
         }
       },
 
+      contentChanged: function() {
+        this.onMutation(this, this.contentChanged); // Watch for future updates.
+
+        var content = this.innerHTML;
+        if (content) {
+          if (!this.info) {
+            // Create a new infowindow
+            this.info = new google.maps.InfoWindow();
+            this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+              this.info.open(this.map, this.marker);
+            }.bind(this));
+          }
+          this.info.setContent(content);
+        } else {
+          if (this.info) {
+            // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
+            google.maps.event.removeListener(this.infoHandler_);
+            this.info = null;
+          }
+        }
+      },
+
       mapReady: function() {
         this.marker = new google.maps.Marker({
           map: this.map,
@@ -109,7 +147,7 @@ child of `google-map`.
           visible: !this.hidden,
           icon: this.icon
         });
-
+        this.contentChanged();
         setupDragHandler_.bind(this)();
       },
 
