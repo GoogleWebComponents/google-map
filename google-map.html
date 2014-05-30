@@ -69,11 +69,11 @@ child of `google-map`.
       /**
        * A Google Map Infowindow object.
        *
-       * @property infowindow
+       * @property info
        * @type google.map.InfoWindow
        * @default null
        */
-      infowindow: null,
+      info: null,
 
       /**
        * Image URL for the marker icon.
@@ -120,20 +120,20 @@ child of `google-map`.
         this.onMutation(this, this.contentChanged); // Watch for future updates.
 
         var content = this.innerHTML;
-        if(content) {
-          if (!this.infowindow) {
+        if (content) {
+          if (!this.info) {
             // Create a new infowindow
-            this.infowindow = new google.maps.InfoWindow();
-            this.infowindowListener = google.maps.event.addListener(this.marker, 'click', function() {
-              this.infowindow.open(this.map, this.marker);
+            this.info = new google.maps.InfoWindow();
+            this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+              this.info.open(this.map, this.marker);
             }.bind(this));
           }
-          this.infowindow.setContent(content);
+          this.info.setContent(content);
         } else {
-          if (this.infowindow) {
+          if (this.info) {
             // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-            google.maps.event.removeListener(this.infowindowListener);
-            this.infowindow = null;
+            google.maps.event.removeListener(this.infoHandler_);
+            this.info = null;
           }
         }
       },
