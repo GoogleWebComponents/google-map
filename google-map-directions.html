@@ -21,15 +21,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer('google-map-directions', {
       // google.maps.Map instance
       map: null,
-      startAddress: '',
-      endAddress: '',
-      startLocation: null,
-      endLocation: null,
+      startAddress: null,
+      endAddress: null,
       // DRIVING, WALKING, BICYCLING, TRANSIT
       travelMode: 'DRIVING',
       observe: {
-        startLocation: 'route',
-        endLocation: 'route',
+        startAddress: 'route',
+        endAddress: 'route',
         travelMode: 'route'
       },
       mapChanged: function() {
@@ -41,42 +39,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.directionsService = new google.maps.DirectionsService();
         this.directionsRenderer = new google.maps.DirectionsRenderer();
         this.directionsRenderer.setMap(this.map);
-        this.startAddressChanged();
-        this.endAddressChanged();
-      },
-      startAddressChanged: function() {
-        if (!this.directionsService || !this.startAddress) {
-          return;
-        }
-        this.addressToLocation(this.startAddress, function(loc) {
-          this.startLocation = loc;
-        }.bind(this));
-      },
-      endAddressChanged: function() {
-        if (!this.directionsService || !this.endAddress) {
-          return;
-        }
-        this.addressToLocation(this.endAddress, function(loc) {
-          this.endLocation = loc;
-        }.bind(this));
-      },
-      addressToLocation: function(address, callback) {
-        var geo = new google.maps.Geocoder();
-        geo.geocode({'address': address}, function(results, status) {
-          var loc;
-          if (status === google.maps.GeocoderStatus.OK) {
-            loc = results[0].geometry.location;
-          }
-          callback(loc);
-        }.bind(this));
+        this.route();
       },
       route: function() {
-        if (!this.map || !this.startLocation || !this.endLocation) {
+        if (!this.map || !this.startAddress || !this.endAddress) {
           return;
         }
         var request = {
-          origin: this.startLocation,
-          destination: this.endLocation,
+          origin: this.startAddress,
+          destination: this.endAddress,
           optimizeWaypoints: true,
           travelMode: this.travelMode
         };
