@@ -48,7 +48,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var request = {
           origin: this.startAddress,
           destination: this.endAddress,
-          optimizeWaypoints: true,
           travelMode: this.travelMode
         };
         this.directionsService.route(request, function(response, status) {
