@@ -110,6 +110,17 @@ child of `google-map`.
         latitude: {value: null, reflect: true}
       },
 
+      observe: {
+        latitude: 'updatePosition',
+        longitude: 'updatePosition',
+      },
+
+      updatePosition: function() {
+        if (this.marker && this.latitude && this.longitude) {
+          this.marker.setPosition({lat: this.latitude, lng: this.longitude});
+        }
+      },
+
       iconChanged: function() {
         if (this.marker) {
           this.marker.setIcon(this.icon);
