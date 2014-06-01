@@ -35,16 +35,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       mapApiLoaded: function() {
         this.route();
       },
+      responseChanged: function() {
+        if (this.directionsRenderer) {
+          this.directionsRenderer.setDirections(response);
+        }
+      },
       mapChanged: function() {
         if (this.map && this.map instanceof google.maps.Map) {
           if (!this.directionsRenderer) {
             this.directionsRenderer = new google.maps.DirectionsRenderer();
           }
           this.directionsRenderer.setMap(this.map);
-          // If the map changes and there are existing directions, display them.
-          if (this.response) {
-            this.directionsRenderer.setDirections(this.response);
-          }
+          responseChanged();
         } else {
           // If there is no more map, remove the directionsRenderer from the map and delete it.
           this.directionsRenderer.setMap();
@@ -70,9 +72,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
         this.directionsService.route(request, function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
-            if (this.directionsRenderer) {
-              this.directionsRenderer.setDirections(response);
-            }
             this.response = response;
           }
         }.bind(this));
