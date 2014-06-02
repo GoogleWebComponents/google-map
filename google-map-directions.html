@@ -8,6 +8,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
 
 <polymer-element name="google-map-directions" attributes="map startAddress endAddress travelMode response">
   <template>
@@ -16,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: none;
       }
     </style>
+    <google-maps-api on-api-load="{{mapApiLoaded}}"></google-maps-api>
   </template>
   <script>
     Polymer('google-map-directions', {
@@ -30,31 +32,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         endAddress: 'route',
         travelMode: 'route'
       },
-      mapChanged: function() {
-        if (this.map && this.map instanceof google.maps.Map) {
-          this.mapReady();
-        }
-      },
-      mapReady: function() {
-        this.directionsService = new google.maps.DirectionsService();
-        this.directionsRenderer = new google.maps.DirectionsRenderer();
-        this.directionsRenderer.setMap(this.map);
+      mapApiLoaded: function() {
         this.route();
       },
+      responseChanged: function() {
+        if (this.directionsRenderer && this.response) {
+          this.directionsRenderer.setDirections(this.response);
+        }
+      },
+      mapChanged: function() {
+        if (this.map && this.map instanceof google.maps.Map) {
+          if (!this.directionsRenderer) {
+            this.directionsRenderer = new google.maps.DirectionsRenderer();
+          }
+          this.directionsRenderer.setMap(this.map);
+          this.responseChanged();
+        } else {
+          // If there is no more map, remove the directionsRenderer from the map and delete it.
+          this.directionsRenderer.setMap(null);
+          this.directionsRenderer = null;
+        }
+      },
       route: function() {
-        if (!this.map || !this.startAddress || !this.endAddress) {
+        // Abort attempts to route if the API is not available yet or the required attributes are blank.
+        if (typeof google == 'undefined' || typeof google.maps == 'undefined' || !this.startAddress || !this.endAddress) {
           return;
         }
+
+        // Construct a directionsService if necessary.
+        // Wait until here where the maps api has loaded and directions are actually needed.
+        if (!this.directionsService) {
+          this.directionsService = new google.maps.DirectionsService();
+        }
+
         var request = {
           origin: this.startAddress,
           destination: this.endAddress,
-          optimizeWaypoints: true,
           travelMode: this.travelMode
         };
         this.directionsService.route(request, function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
-            this.directionsRenderer.setDirections(response);
             this.response = response;
+            this.fire('google-map-response', {response: response});
           }
         }.bind(this));
       }
