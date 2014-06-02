@@ -36,8 +36,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.route();
       },
       responseChanged: function() {
-        if (this.directionsRenderer) {
-          this.directionsRenderer.setDirections(response);
+        if (this.directionsRenderer && this.response) {
+          this.directionsRenderer.setDirections(this.response);
         }
       },
       mapChanged: function() {
@@ -46,10 +46,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.directionsRenderer = new google.maps.DirectionsRenderer();
           }
           this.directionsRenderer.setMap(this.map);
-          responseChanged();
+          this.responseChanged();
         } else {
           // If there is no more map, remove the directionsRenderer from the map and delete it.
-          this.directionsRenderer.setMap();
+          this.directionsRenderer.setMap(null);
           this.directionsRenderer = null;
         }
       },
@@ -73,6 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.directionsService.route(request, function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
             this.response = response;
+            this.fire('google-map-response', {response: response});
           }
         }.bind(this));
       }
