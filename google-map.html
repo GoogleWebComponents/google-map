@@ -253,7 +253,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version sensor map mapType disableDefaultUI fitToMarkers">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers">
 <template>
 
   <style>
@@ -272,7 +272,7 @@ Fired when the Maps API has fully loaded.
     
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" sensor="{{sensor}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -344,15 +344,6 @@ Fired when the Maps API has fully loaded.
      * @default 3.exp
      */
     version: '3.exp',
-
-    /**
-     * If set, indicates a sensor (such as a GPS locator) was used to determine the user's location.
-     *
-     * @attribute sensor
-     * @type boolean
-     * @default false
-     */
-    sensor: false,
 
     /**
      * If set, removes the map's default UI controls.
