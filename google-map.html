@@ -426,7 +426,7 @@ Fired when the Maps API has fully loaded.
     },
     
     updateCenter: function() {
-      if (!this.map || !this.latitude || !this.longitude || 
+      if (!this.map || this.latitude == null || this.longitude == null ||
           typeof this.latitude === 'object' || 
           typeof this.longitude === 'object') {
         return;
