@@ -377,11 +377,19 @@ Fired when the Maps API has fully loaded.
     },
     
     mapApiLoaded: function() {
-      this.map = new google.maps.Map(this.$.map, {
+      var mapOptions = {
         zoom: this.zoom,
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUI
-      });
+      };
+
+      // Only override the default if set.
+      // We use getAttribute here because the default value of this.draggable = false even when not set.
+      if (this.getAttribute("draggable") != null) {
+        mapOptions.draggable = this.draggable
+      }
+
+      this.map = new google.maps.Map(this.$.map, mapOptions);
 
       this.updateCenter();
       this.updateMarkers();
@@ -468,6 +476,18 @@ Fired when the Maps API has fully loaded.
         return;
       }
       this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
+    },
+
+    attributeChanged: function(attrName, oldVal, newVal) {
+      if (!this.map) {
+        return;
+      }
+      // Cannot use *Changed watchers for native properties.
+      switch (attrName) {
+        case 'draggable':
+          this.map.setOptions({draggable: this.draggable});
+          break;
+      }
     },
 
     fitToMarkersChanged: function() {
