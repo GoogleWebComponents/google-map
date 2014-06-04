@@ -253,7 +253,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable">
 <template>
 
   <style>
@@ -362,7 +362,16 @@ Fired when the Maps API has fully loaded.
      * @default false
      */
     fitToMarkers: false,
-    
+
+    /**
+     * If false, prevent the user from zooming the map interactively.
+     *
+     * @attribute zoomable
+     * @type boolean
+     * @default true
+     */
+    zoomable: true,
+
     observe: {
       latitude: 'updateCenter',
       longitude: 'updateCenter'
@@ -380,7 +389,9 @@ Fired when the Maps API has fully loaded.
       var mapOptions = {
         zoom: this.zoom,
         mapTypeId: this.mapType,
-        disableDefaultUI: this.disableDefaultUI
+        disableDefaultUI: this.disableDefaultUI,
+        disableDoubleClickZoom: !this.zoomable,
+        scrollwheel: this.zoomable
       };
 
       // Only override the default if set.
@@ -476,6 +487,16 @@ Fired when the Maps API has fully loaded.
         return;
       }
       this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
+    },
+
+    zoomableChanged: function() {
+      if (!this.map) {
+        return;
+      }
+      this.map.setOptions({
+        disableDoubleClickZoom: !this.zoomable,
+        scrollwheel: this.zoomable
+      });
     },
 
     attributeChanged: function(attrName, oldVal, newVal) {
