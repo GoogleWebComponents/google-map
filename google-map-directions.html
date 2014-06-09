@@ -21,12 +21,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     Polymer('google-map-directions', {
-      // google.maps.Map instance
+
+      /**
+       * The Google map object.
+       *
+       * @property map
+       * @type google.maps.Map
+       * @default null
+       */
       map: null,
+
+      /**
+       * Start address or latlng to get directions from.
+       *
+       * @property startAddress
+       * @type string|google.maps.LatLng
+       * @default null
+       */
       startAddress: null,
+
+      /**
+       * End address or latlng for directions to end.
+       *
+       * @property endAddress
+       * @type string|google.maps.LatLng
+       * @default null
+       */
       endAddress: null,
-      // DRIVING, WALKING, BICYCLING, TRANSIT
+
+      /**
+       * Travel mode to use.  One of 'DRIVING', 'WALKING', 'BICYCLING', 'TRANSIT'.
+       *
+       * @attribute travelMode
+       * @type string
+       * @detault DRIVING
+       */
       travelMode: 'DRIVING',
+
       observe: {
         startAddress: 'route',
         endAddress: 'route',
