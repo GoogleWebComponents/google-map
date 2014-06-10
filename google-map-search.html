@@ -12,6 +12,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <polymer-element name="google-map-search" attributes="query result map">
   <script>
     Polymer('google-map-search', {
+
+      /**
+       * The Google map object.
+       *
+       * @property map
+       * @type google.maps.Map
+       * @default null
+       */
+      map: null,
+
+      /**
+       * The search query.
+       *
+       * @property query
+       * @type string
+       * @default null
+      query: null,
+
       observe: {
         query: 'search',
         map: 'search'
