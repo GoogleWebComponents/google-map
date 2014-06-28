@@ -264,7 +264,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles">
 <template>
 
   <style>
@@ -383,6 +383,15 @@ Fired when the Maps API has fully loaded.
      */
     zoomable: true,
 
+    /**
+     * If set, custom styles can be applied to the map.
+     *
+     * @attribute styles
+     * @type JSON encoded array
+     * @default null
+     */
+    styles: null,
+
     observe: {
       latitude: 'updateCenter',
       longitude: 'updateCenter'
@@ -404,6 +413,15 @@ Fired when the Maps API has fully loaded.
         disableDoubleClickZoom: !this.zoomable,
         scrollwheel: this.zoomable
       };
+
+      if (this.styles !== null) {
+        try {
+          mapOptions.styles = JSON.parse(this.styles);
+        }
+        catch(e) {
+          mapOptions.styles = this.styles;
+        }
+      }
 
       // Only override the default if set.
       // We use getAttribute here because the default value of this.draggable = false even when not set.
