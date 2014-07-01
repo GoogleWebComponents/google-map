@@ -385,12 +385,13 @@ Fired when the Maps API has fully loaded.
 
     /**
      * If set, custom styles can be applied to the map.
+     * For style doucmentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
      *
      * @attribute styles
      * @type JSON encoded array
      * @default null
      */
-    styles: null,
+    styles: {},
 
     observe: {
       latitude: 'updateCenter',
@@ -411,17 +412,9 @@ Fired when the Maps API has fully loaded.
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUI,
         disableDoubleClickZoom: !this.zoomable,
-        scrollwheel: this.zoomable
+        scrollwheel: this.zoomable,
+        styles: this.styles
       };
-
-      if (this.styles !== null) {
-        try {
-          mapOptions.styles = JSON.parse(this.styles);
-        }
-        catch(e) {
-          mapOptions.styles = this.styles;
-        }
-      }
 
       // Only override the default if set.
       // We use getAttribute here because the default value of this.draggable = false even when not set.
