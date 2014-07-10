@@ -1,22 +1,46 @@
 <!--
 Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
-The complete set of authors may be found at http://polymer.github.io/AUTHORS
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+
+<!--
+Provides Google Maps Places API functionality.
+
+See https://developers.google.com/maps/documentation/javascript/places for more
+information on the API.
+
+#### Example:
+
+    <template is="auto-binding">
+      <google-map-search map="{{map}}" query="Pizza"
+                         result="{{result}}"></google-map-search>
+      <google-map map="{{map}}" latitude="37.779"
+                  longitude="-122.3892"></google-map>
+      <div>Result: {{result.latitude}}, {{result.longitude}}</div>
+    </template>
+    <script>
+      document.querySelector('google-map-search').search();
+    </script>
+
+@element google-map-search
+@status alpha
+@homepage http://polymerlabs.github.io/google-map/
+-->
 
 <polymer-element name="google-map-search" attributes="query result map">
   <script>
     Polymer('google-map-search', {
 
       /**
-       * The Google map object.
+       * TAhe Google map object.
        *
-       * @property map
+       * @attribute map
        * @type google.maps.Map
        * @default null
        */
@@ -25,16 +49,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /**
        * The search query.
        *
-       * @property query
+       * @attribute query
        * @type string
        * @default null
        */
       query: null,
 
+      /**
+       * The search result.
+       *
+       * @attribute result
+       * @type object
+       */
+
       observe: {
         query: 'search',
         map: 'search'
       },
+
+      /**
+       * Performance a search using for `query` for the search term.
+       *
+       * @method search
+       */
       search: function() {
         if (this.query && this.map) {
           var places = new google.maps.places.PlacesService(this.map);
