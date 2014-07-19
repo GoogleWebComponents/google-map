@@ -99,7 +99,7 @@ child of `google-map`.
          * @default null
          */
         longitude: {value: null, reflect: true},
-        
+
         /**
          * The marker's latitude coordinate.
          *
@@ -194,7 +194,7 @@ child of `google-map`.
       this.latitude = e.latLng.lat();
       this.longitude = e.latLng.lng();
     }
-    
+
     function setupDragHandler_() {
       if (this.draggable) {
         this.dragHandler_ = google.maps.event.addListener(
@@ -268,7 +268,7 @@ Fired when the Maps API has fully loaded.
 <template>
 
   <style>
-  
+
     :host {
       position: relative;
     }
@@ -280,7 +280,7 @@ Fired when the Maps API has fully loaded.
       bottom: 0;
       left: 0;
     }
-    
+
   </style>
 
   <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}"></google-maps-api>
@@ -288,7 +288,7 @@ Fired when the Maps API has fully loaded.
   <div id="map"></div>
 
   <content id="markers" select="google-map-marker"></content>
-  
+
 </template>
 <script>
 
@@ -346,7 +346,7 @@ Fired when the Maps API has fully loaded.
      * @default roadmap
      */
     mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
-    
+
     /**
      * Version of the Google Maps API to use.
      *
@@ -401,12 +401,21 @@ Fired when the Maps API has fully loaded.
     created: function() {
       this.markers = [];
     },
-    
+
     attached: function() {
       this.resize();
     },
-    
+
     mapApiLoaded: function() {
+      this.map = new google.maps.Map(this.$.map, this.getMapOptions());
+
+      this.updateCenter();
+      this.updateMarkers();
+
+      this.fire('google-map-ready');
+    },
+
+    getMapOptions: function() {
       var mapOptions = {
         zoom: this.zoom,
         mapTypeId: this.mapType,
@@ -421,22 +430,16 @@ Fired when the Maps API has fully loaded.
       if (this.getAttribute("draggable") != null) {
         mapOptions.draggable = this.draggable
       }
-
-      this.map = new google.maps.Map(this.$.map, mapOptions);
-
-      this.updateCenter();
-      this.updateMarkers();
-
-      this.fire('google-map-ready');      
+      return mapOptions;
     },
 
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
-      
+
       this.onMutation(this, this.updateMarkers); // Watch for future updates.
 
-      // Set the map on each marker and zoom viewport to ensure they're in view. 
+      // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
         for (var i = 0, m; m = this.markers[i]; ++i) {
           m.map = this.map;
@@ -458,17 +461,17 @@ Fired when the Maps API has fully loaded.
         m.marker.setMap(null);
       }
     },
-    
+
     resize: function() {
       if (this.map) {
         google.maps.event.trigger(this.map, 'resize');
         this.updateCenter();
       }
     },
-    
+
     updateCenter: function() {
       if (!this.map || this.latitude == null || this.longitude == null ||
-          typeof this.latitude === 'object' || 
+          typeof this.latitude === 'object' ||
           typeof this.longitude === 'object') {
         return;
       }
@@ -476,19 +479,19 @@ Fired when the Maps API has fully loaded.
           new google.maps.LatLng(this.latitude, this.longitude));
       this.showCenterMarkerChanged();
     },
-    
+
     zoomChanged: function() {
       if (this.map) {
         this.map.setZoom(Number(this.zoom));
       }
     },
-    
+
     mapTypeChanged: function() {
       if (this.map) {
         this.map.setMapTypeId(this.mapType);
       }
     },
-    
+
     showCenterMarkerChanged: function() {
       if (!this.map) {
         return;
@@ -503,7 +506,7 @@ Fired when the Maps API has fully loaded.
         this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
       }
     },
-    
+
     disableDefaultUIChanged: function() {
       if (!this.map) {
         return;
@@ -536,7 +539,7 @@ Fired when the Maps API has fully loaded.
     fitToMarkersChanged: function() {
       // TODO(ericbidelman): respect user's zoom level.
 
-      if (this.map && this.fitToMarkers) { 
+      if (this.map && this.fitToMarkers) {
         var latLngBounds = new google.maps.LatLngBounds();
         for (var i = 0, m; m = this.markers[i]; ++i) {
           latLngBounds.extend(
@@ -547,12 +550,12 @@ Fired when the Maps API has fully loaded.
         if (this.markers.length > 1) {
           this.map.fitBounds(latLngBounds);
         }
-        
+
         this.map.setCenter(latLngBounds.getCenter());
       }
     }
-    
+
   });
-  
+
 </script>
 </polymer-element>
