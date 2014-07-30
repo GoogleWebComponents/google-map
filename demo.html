@@ -13,20 +13,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../platform/platform.js"></script>
     <link rel="import" href="google-map.html">
     <link rel="import" href="google-map-directions.html">
-    <style>
-      body, html {
-        height: 100%;
-        margin: 0;
-      }
-      google-map {
-        display: block;
-        height: 100%;
-      }
-    </style>
   </head>
-  <body>
-    
-    <google-map latitude="37.779" longitude="-122.3892" disableDefaultUI>
+  <body fullbleed>
+
+    <google-map latitude="37.779" longitude="-122.3892" disableDefaultUI fit>
       <google-map-marker latitude="37.779" longitude="-122.3892"
                          title="Go Giants!" draggable="true">
         <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
