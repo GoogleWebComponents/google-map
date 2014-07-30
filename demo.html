@@ -1,34 +1,28 @@
-<!DOCTYPE html>
-<!--
-Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
 <html>
-  <head>
-    <title>Google Map</title>
-    <script src="../platform/platform.js"></script>
-    <link rel="import" href="google-map.html">
-    <link rel="import" href="google-map-directions.html">
-  </head>
-  <body fullbleed>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Google Map demo</title>
+  <script src="../platform/platform.js"></script>
+  <link rel="import" href="google-map.html">
+  <link rel="import" href="google-map-directions.html">
+</head>
+<body fullbleed>
 
-    <google-map latitude="37.779" longitude="-122.3892" disableDefaultUI fit>
-      <google-map-marker latitude="37.779" longitude="-122.3892"
-                         title="Go Giants!" draggable="true">
-        <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
-      </google-map-marker>
-    </google-map>
-    <google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
+<google-map latitude="37.779" longitude="-122.3892" disableDefaultUI fit>
+  <google-map-marker latitude="37.779" longitude="-122.3892"
+                     title="Go Giants!" draggable="true">
+    <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
+  </google-map-marker>
+</google-map>
+<google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
 
-    <script>
-      var gmap = document.querySelector('google-map');
-      gmap.addEventListener('api-load', function(e) {
-        document.querySelector('google-map-directions').map = this.map;
-      });
-    </script>
-  </body>
+<script>
+  var gmap = document.querySelector('google-map');
+  gmap.addEventListener('api-load', function(e) {
+    document.querySelector('google-map-directions').map = this.map;
+  });
+</script>
+</body>
 </html>
