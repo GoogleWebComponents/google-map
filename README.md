@@ -1,5 +1,5 @@
 google-map
 ==========
 
-See the [component page](http://polymerlabs.github.io/google-map) for more information.
+See the [component page](http://googlewebcomponents.github.io/google-map) for more information.
 
