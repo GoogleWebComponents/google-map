@@ -465,8 +465,14 @@ Fired when the Maps API has fully loaded.
           typeof this.longitude === 'object') {
         return;
       }
-      this.map.panTo(
-          new google.maps.LatLng(this.latitude, this.longitude));
+      var center = new google.maps.LatLng(this.latitude, this.longitude);
+      if (!this.map.getCenter()) {
+        // If the map does not have a center, set it right away.
+        this.map.setCenter(center);
+      } else {
+        // If the map currently has a center, slowly pan to the new one.
+        this.map.panTo(center);
+      }
       this.showCenterMarkerChanged();
     },
     
