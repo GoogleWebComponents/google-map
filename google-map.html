@@ -250,6 +250,23 @@ The `google-map` element renders a Google Map.
         startAddress="San Francisco" endAddress="Mountain View">
     </google-map-directions>
 
+<b>Example</b> - not all map options are included as attributes out of the box.
+To add custom map options, you can extend this element:
+
+    <polymer-element name="my-google-map" extends="google-map">
+      <script>
+        Polymer('my-google-map', {
+
+          getMapOptions: function() {
+            var mapOptions = this.super();
+            mapOptions["streetViewControl"] = false;
+            return mapOptions;
+          }
+
+        });
+      </script>
+    </polymer-element>
+
 @element google-map
 @homepage github.io
 @blurb Element wrapper around Google Maps API.
