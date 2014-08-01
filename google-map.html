@@ -426,6 +426,9 @@ Fired when the Maps API has fully loaded.
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
+      if (this.centerMarker) {
+        this.markers.push(this.centerMarker);
+      }
       
       this.onMutation(this, this.updateMarkers); // Watch for future updates.
 
@@ -465,8 +468,14 @@ Fired when the Maps API has fully loaded.
           typeof this.longitude === 'object') {
         return;
       }
-      this.map.panTo(
-          new google.maps.LatLng(this.latitude, this.longitude));
+      var center = new google.maps.LatLng(this.latitude, this.longitude);
+      if (!this.map.getCenter()) {
+        // If the map does not have a center, set it right away.
+        this.map.setCenter(center);
+      } else {
+        // If the map currently has a center, slowly pan to the new one.
+        this.map.panTo(center);
+      }
       this.showCenterMarkerChanged();
     },
     
@@ -486,15 +495,21 @@ Fired when the Maps API has fully loaded.
       if (!this.map) {
         return;
       }
-      if (!this.centerMarker && this.showCenterMarker) {
-        this.centerMarker = new google.maps.Marker({
-          map: this.map
-        });
+      if (this.showCenterMarker) {
+        if (!this.centerMarker) {
+          this.centerMarker = document.createElement('google-map-marker');
+        }
+        var center = this.map.getCenter();
+        this.centerMarker.latitude = center.lat();
+        this.centerMarker.longitude = center.lng();
+      } else {
+        if (this.centerMarker) {
+          //TODO(bamnet): Clean up markers so they can be removed easier from a map.
+          this.centerMarker.marker.setMap(null);
+          this.centerMarker = null;
+        }
       }
-      if (this.centerMarker) {
-        this.centerMarker.setPosition(this.map.getCenter());
-        this.centerMarker.setMap(this.showCenterMarker ? this.map : null);
-      }
+      this.updateMarkers();
     },
     
     disableDefaultUIChanged: function() {
