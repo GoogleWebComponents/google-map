@@ -1,7 +1,6 @@
 {
   "name": "google-map",
   "version": "0.3.1",
-  "private": false,
   "homepage": "http://googlewebcomponents.github.io/google-map",
   "description": "Google Maps web components",
   "main": "google-map.html",
@@ -27,6 +26,6 @@
     "apis"
   ],
   "dependencies": {
-    "google-apis": "GoogleWebComponents/google-apis#master"
+    "google-apis": "GoogleWebComponents/google-apis#~0.3.1"
   }
 }
