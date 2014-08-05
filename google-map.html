@@ -274,7 +274,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom">
 <template>
 
   <style>
@@ -403,6 +403,24 @@ Fired when the Maps API has fully loaded.
      */
     styles: {},
 
+    /**
+     * A maximum zoom level which will be displayed on the map.
+     *
+     * @attribute maxZoom
+     * @type number
+     * @default null
+     */
+    maxZoom: null,
+
+    /**
+     * A minimum zoom level which will be displayed on the map.
+     *
+     * @attribute minZoom
+     * @type number
+     * @default null
+     */
+    minZoom: null,
+
     observe: {
       latitude: 'updateCenter',
       longitude: 'updateCenter'
@@ -432,7 +450,9 @@ Fired when the Maps API has fully loaded.
         disableDefaultUI: this.disableDefaultUI,
         disableDoubleClickZoom: !this.zoomable,
         scrollwheel: this.zoomable,
-        styles: this.styles
+        styles: this.styles,
+        maxZoom: Number(this.maxZoom),
+        minZoom: Number(this.minZoom)
       };
 
       // Only override the default if set.
@@ -503,6 +523,18 @@ Fired when the Maps API has fully loaded.
     zoomChanged: function() {
       if (this.map) {
         this.map.setZoom(Number(this.zoom));
+      }
+    },
+
+    maxZoomChanged: function() {
+      if (this.map) {
+        this.map.setOptions({maxZoom: Number(this.maxZoom)});
+      }
+    },
+
+    minZoomChanged: function() {
+      if (this.map) {
+        this.map.setOptions({minZoom: Number(this.minZoom)});
       }
     },
 
