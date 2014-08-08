@@ -108,6 +108,8 @@ child of `google-map`.
         longitude: 'updatePosition',
       },
 
+      closeAllInfoWindowsOnClick: false,
+
       updatePosition: function() {
         if (this.marker && this.latitude != null && this.longitude != null) {
           this.marker.setPosition({lat: this.latitude, lng: this.longitude});
@@ -135,6 +137,14 @@ child of `google-map`.
             // Create a new infowindow
             this.info = new google.maps.InfoWindow();
             this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+              
+              if (this.closeAllInfoWindowsOnClick) {
+                this.parentElement.markers.forEach(function (marker) {
+                  //TODO(davidwittenbrink): What if the parentElement is not the 'google-map'
+                  if (marker.info) marker.info.close();
+                });
+              }
+
               this.info.open(this.map, this.marker);
             }.bind(this));
           }
@@ -274,7 +284,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleInfoWindow">
 <template>
 
   <style>
@@ -404,6 +414,15 @@ Fired when the Maps API has fully loaded.
     zoomable: true,
 
     /**
+     * If set, all other infoWindows are closed when opening a new one.
+     *
+     * @attribute singleInfoWindow
+     * @type boolean
+     * @default false
+     */
+    singleInfoWindow: false,
+
+    /**
      * If set, custom styles can be applied to the map.
      * For style doucmentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
      *
@@ -476,6 +495,12 @@ Fired when the Maps API has fully loaded.
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
+
+      if (this.singleInfoWindow) {
+        this.markers.forEach(function ( marker ) {
+          marker.closeAllInfoWindowsOnClick = true;
+        });
+      }
 
       if (this.centerMarker) {
         this.markers.push(this.centerMarker);
