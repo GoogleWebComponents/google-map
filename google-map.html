@@ -140,7 +140,6 @@ child of `google-map`.
               
               if (this.closeAllInfoWindowsOnClick) {
                 this.parentElement.markers.forEach(function (marker) {
-                  //TODO(davidwittenbrink): What if the parentElement is not the 'google-map'
                   if (marker.info) marker.info.close();
                 });
               }
