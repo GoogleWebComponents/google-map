@@ -2,6 +2,7 @@
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-apis.html">
+<link rel="import" href="../core-selector/core-selector.html">
 
 <!--
 The `google-map-marker` element represents a map marker. It is used as a
@@ -34,7 +35,7 @@ child of `google-map`.
 @status alpha
 @homepage http://googlewebcomponents.github.io/google-map
 -->
-<polymer-element name="google-map-marker" attributes="icon">
+<polymer-element name="google-map-marker" attributes="icon openedInfoWindow">
 <template>
   <style>
     :host {
@@ -102,13 +103,20 @@ child of `google-map`.
          */
         latitude: {value: null, reflect: true}
       },
+      /**
+       * Specifies whether the InfoWindow is open or not
+       *
+       * @attribute openedInfoWindow
+       * @type boolean
+       * @default false
+       */
+       openedInfoWindow: false,
+
 
       observe: {
         latitude: 'updatePosition',
         longitude: 'updatePosition',
       },
-
-      closeAllInfoWindowsOnClick: false,
 
       updatePosition: function() {
         if (this.marker && this.latitude != null && this.longitude != null) {
@@ -128,6 +136,7 @@ child of `google-map`.
         }
       },
 
+      
       contentChanged: function() {
         this.onMutation(this, this.contentChanged); // Watch for future updates.
 
@@ -138,13 +147,10 @@ child of `google-map`.
             this.info = new google.maps.InfoWindow();
             this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
               
-              if (this.closeAllInfoWindowsOnClick) {
-                this.parentElement.markers.forEach(function (marker) {
-                  if (marker.info) marker.info.close();
-                });
-              }
+              // Fire click event on google-map-marker element to let core-selector know
+              // that it's selected
+              this.click();
 
-              this.info.open(this.map, this.marker);
             }.bind(this));
           }
           this.info.setContent(content);
@@ -170,6 +176,16 @@ child of `google-map`.
         setupDragHandler_.bind(this)();
       },
 
+      toggleInfoWindow: function() {
+        if (this.info) {
+          if (this.openedInfoWindow) {
+            this.info.open(this.map, this.marker);
+          } else {
+            this.info.close();
+          }
+        }
+      },
+
       attributeChanged: function(attrName, oldVal, newVal) {
         if (!this.marker) {
           return;
@@ -186,6 +202,9 @@ child of `google-map`.
             break;
           case 'title':
             this.marker.setTitle(this.title);
+            break;
+          case 'openedinfowindow':
+            this.toggleInfoWindow();
             break;
         }
       }
@@ -283,7 +302,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleInfoWindow">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleMarkerInfoWindow">
 <template>
 
   <style>
@@ -306,7 +325,10 @@ Fired when the Maps API has fully loaded.
 
   <div id="map"></div>
 
-  <content id="markers" select="google-map-marker"></content>
+  
+  <core-selector selectedAttribute="openedInfoWindow" activateEvent="click" multi={{!singleMarkerInfoWindow}}>
+    <content id="markers" select="google-map-marker"></content>
+  </core-selector>
 
 </template>
 <script>
@@ -413,13 +435,13 @@ Fired when the Maps API has fully loaded.
     zoomable: true,
 
     /**
-     * If set, all other infoWindows are closed when opening a new one.
+     * If set, all other infoWindows on Markers are closed when opening a new one.
      *
-     * @attribute singleInfoWindow
+     * @attribute singleMarkerInfoWindow
      * @type boolean
      * @default false
      */
-    singleInfoWindow: false,
+    singleMarkerInfoWindow: false,
 
     /**
      * If set, custom styles can be applied to the map.
@@ -469,6 +491,7 @@ Fired when the Maps API has fully loaded.
       this.updateMarkers();
 
       this.fire('google-map-ready');
+
     },
 
     getMapOptions: function() {
@@ -494,12 +517,6 @@ Fired when the Maps API has fully loaded.
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
-
-      if (this.singleInfoWindow) {
-        this.markers.forEach(function ( marker ) {
-          marker.closeAllInfoWindowsOnClick = true;
-        });
-      }
 
       if (this.centerMarker) {
         this.markers.push(this.centerMarker);
