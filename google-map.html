@@ -495,17 +495,18 @@ Fired when the Maps API has fully loaded.
     updateFeatures: function() {
       this.onMutation(this, this.updateFeatures);
 
-      this.features = Array.prototype.slice.call(this.children);
+      var contents = Array.prototype.slice.call(this.children);
+      this.features = contents.filter(function(f){
+        // Only work with features that have a map attribute (null is OK).
+        return f.map !== undefined;
+      });
 
       if (this.centerMarker) {
         this.features.push(this.centerMarker);
       }
       if (this.features.length && this.map) {
         for (var i = 0, f; f = this.features[i]; ++i) {
-          if (f.map !== undefined) {
-            // Only set the map attribute if it exists (null is OK).
-            f.map = this.map;
-          }
+          f.map = this.map;
         }
       }
     },
