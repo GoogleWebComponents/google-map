@@ -502,6 +502,7 @@ Fired when the Maps API has fully loaded.
       });
 
       if (this.centerMarker) {
+        // Since we recreated the feature array we add back the centerMarker.
         this.features.push(this.centerMarker);
       }
       if (this.features.length && this.map) {
@@ -597,6 +598,8 @@ Fired when the Maps API has fully loaded.
       if (this.showCenterMarker) {
         if (!this.centerMarker) {
           this.centerMarker = document.createElement('google-map-marker');
+          this.centerMarker.map = this.map;
+          this.features.push(this.centerMarker);
         }
         var center = this.map.getCenter();
         this.centerMarker.latitude = center.lat();
@@ -607,7 +610,9 @@ Fired when the Maps API has fully loaded.
           this.centerMarker = null;
         }
       }
-      this.updateFeatures();
+      // There is no need to updateFeatures since we've already set the map
+      // and stored the center marker in the feature array.
+      // We still call updateMarkers to trigger the fitToMarker logic.
       this.updateMarkers();
     },
 
