@@ -530,16 +530,15 @@ Fired when the Maps API has fully loaded.
 
     /**
      * Clears all features from the map.
+     * This does not remove a showCenterMarker marker.
      *
      * @method clear
      */
     clear: function() {
       for (var i = 0, f; f = this.features[i]; ++i) {
-        f.map = null;
-      }
-      if (this.showCenterMarker) {
-        // Update the attribute to reflect the center marker has been cleared as well.
-        this.showCenterMarker = false;
+        if (!this.showCenterMarker || f != this.centerMarker) {
+          f.map = null;
+        }
       }
     },
 
@@ -604,8 +603,7 @@ Fired when the Maps API has fully loaded.
         this.centerMarker.longitude = center.lng();
       } else {
         if (this.centerMarker) {
-          //TODO(bamnet): Clean up markers so they can be removed easier from a map.
-          this.centerMarker.marker.setMap(null);
+          this.centerMarker.map = null;
           this.centerMarker = null;
         }
       }
