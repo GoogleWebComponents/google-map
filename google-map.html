@@ -530,7 +530,7 @@ Fired when the Maps API has fully loaded.
       } else {
         // If the map currently has a center, slowly pan to the new one.
         if (!oldCenter.equals(newCenter)) {
-          this.map.panTo(center);
+          this.map.panTo(newCenter);
         }
       }
       this.showCenterMarkerChanged();
