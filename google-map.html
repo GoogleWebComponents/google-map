@@ -449,6 +449,7 @@ Fired when the Maps API has fully loaded.
 
       this.updateCenter();
       this.updateMarkers();
+      this.addMapListeners();
 
       this.fire('google-map-ready');
     },
@@ -519,13 +520,18 @@ Fired when the Maps API has fully loaded.
           typeof this.longitude === 'object') {
         return;
       }
-      var center = new google.maps.LatLng(this.latitude, this.longitude);
-      if (!this.map.getCenter()) {
+
+      var newCenter = new google.maps.LatLng(this.latitude, this.longitude);
+      var oldCenter = this.map.getCenter();
+
+      if (!oldCenter) {
         // If the map does not have a center, set it right away.
-        this.map.setCenter(center);
+        this.map.setCenter(newCenter);
       } else {
         // If the map currently has a center, slowly pan to the new one.
-        this.map.panTo(center);
+        if (!oldCenter.equals(newCenter)) {
+          this.map.panTo(center);
+        }
       }
       this.showCenterMarkerChanged();
     },
@@ -621,6 +627,14 @@ Fired when the Maps API has fully loaded.
 
         this.map.setCenter(latLngBounds.getCenter());
       }
+    },
+
+    addMapListeners: function() {
+      google.maps.event.addListener(this.map, 'center_changed', function() {
+        var center = this.map.getCenter();
+        this.latitude = center.lat();
+        this.longitude = center.lng();
+      }.bind(this));
     }
 
   });
