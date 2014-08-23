@@ -274,7 +274,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries streetView heading pitch">
 <template>
 
   <style>
@@ -368,6 +368,34 @@ Fired when the Maps API has fully loaded.
     mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
 
     /**
+     * When set, displays street view panorama instead of map
+     * with defined 'heading' and 'pitch'
+     *
+     * @attribute streetView
+     * @type boolean
+     * @default false
+     */
+    streetView: false,
+
+    /**
+     * When in street view, sets heading
+     *
+     * @attribute heading
+     * @type number
+     * @default 265
+     */
+    heading: 265,
+
+    /**
+     * When in street view, sets pitch
+     *
+     * @attribute pitch
+     * @type number
+     * @default 0
+     */
+    pitch: 0,
+
+    /**
      * Version of the Google Maps API to use.
      *
      * @attribute version
@@ -449,6 +477,7 @@ Fired when the Maps API has fully loaded.
 
       this.updateCenter();
       this.updateMarkers();
+      this.streetViewChanged();
 
       this.fire('google-map-ready');
     },
@@ -551,6 +580,19 @@ Fired when the Maps API has fully loaded.
     mapTypeChanged: function() {
       if (this.map) {
         this.map.setMapTypeId(this.mapType);
+      }
+    },
+
+    streetViewChanged: function(){
+      if(this.map && this.streetView){
+        var panorama = this.map.getStreetView();
+        var panoramaCenter = new google.maps.LatLng(this.latitude, this.longitude);
+        panorama.setPosition(panoramaCenter);
+        panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+          heading: this.heading,
+          pitch: this.pitch
+        }));
+        panorama.setVisible(true);
       }
     },
 
