@@ -7,51 +7,33 @@
   <script src="../platform/platform.js"></script>
   <link rel="import" href="google-map.html">
   <link rel="import" href="google-map-directions.html">
-  <polymer-element name="my-google-map">
-    <template>
-      <style>
-        #container {
-          height: 100%;
-        }
-        #map {
-          position: relative;
-          height: 100%;
-        }
-      </style>
-      <div id="container" layout vertical>
-        <section>
-          <button on-click="{{toggleControls}}">Toggle controls</button>
-          <div>Center: {{latitude}},{{longitude}}</div>
-        </section>
-
-        <section id="map">
-          <google-map latitude="{{latitude}}" longitude="{{longitude}}" minZoom="9" maxZoom="11" on-api-load="{{mapLoaded}}" fit>
-            <google-map-marker latitude="37.779" longitude="-122.3892" title="Go Giants!" draggable="true">
-              <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
-            </google-map-marker>
-          </google-map>
-          <google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
-        </section>
-      </div>
-    </template>
-    <script>
-    Polymer('my-google-map', {
-      latitude: 37.779,
-      longitude: -122.3892,
-
-      mapLoaded: function() {
-        var directions = this.shadowRoot.querySelector('google-map-directions');
-        directions.map = this.shadowRoot.querySelector('google-map').map;
-      },
-      toggleControls: function() {
-        var map = this.shadowRoot.querySelector('google-map');
-        map.disableDefaultUI = !map.disableDefaultUI;
-      }
-    });
-    </script>
-  </polymer-element>
+  <style>
+    #controlsToggle {
+      position: absolute;
+      left: 50%;
+    }
+  </style>
 </head>
 <body fullbleed>
-  <my-google-map></my-google-map>
+
+<google-map latitude="37.779" longitude="-122.3892" minZoom="9" maxZoom="11" fit>
+  <google-map-marker latitude="37.779" longitude="-122.3892"
+                     title="Go Giants!" draggable="true">
+    <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
+  </google-map-marker>
+</google-map>
+<google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
+<button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
+
+<script>
+  var gmap = document.querySelector('google-map');
+  gmap.addEventListener('api-load', function(e) {
+    document.querySelector('google-map-directions').map = this.map;
+  });
+
+  function toggleControls() {
+    gmap.disableDefaultUI = !gmap.disableDefaultUI;
+  }
+</script>
 </body>
 </html>
