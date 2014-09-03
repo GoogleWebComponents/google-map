@@ -45,7 +45,7 @@ child of `google-map`.
 <script>
   (function() {
 
-    Polymer('google-map-marker', {
+    Polymer({
 
       /**
        * A Google Maps marker object.
@@ -110,7 +110,10 @@ child of `google-map`.
 
       updatePosition: function() {
         if (this.marker && this.latitude != null && this.longitude != null) {
-          this.marker.setPosition({lat: this.latitude, lng: this.longitude});
+          this.marker.setPosition({
+            lat: parseFloat(this.latitude),
+            lng: parseFloat(this.longitude)
+          });
         }
       },
 
@@ -248,7 +251,7 @@ To add custom map options, you can extend this element:
 
     <polymer-element name="my-google-map" extends="google-map">
       <script>
-        Polymer('my-google-map', {
+        Polymer({
 
           getMapOptions: function() {
             var mapOptions = this.super();
@@ -302,7 +305,7 @@ Fired when the Maps API has fully loaded.
 </template>
 <script>
 
-  Polymer('google-map', {
+  Polymer({
 
     /**
      * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
