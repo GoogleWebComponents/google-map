@@ -10,11 +10,12 @@
   <style>
     #controlsToggle {
       position: absolute;
-      left: 50%;
+      left: 10%;
+      bottom: 10%;
     }
   </style>
 </head>
-<body fullbleed>
+<body fullbleed unresolved>
 
 <google-map latitude="37.779" longitude="-122.3892" minZoom="9" maxZoom="11" fit>
   <google-map-marker latitude="37.779" longitude="-122.3892"
@@ -22,7 +23,9 @@
     <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
   </google-map-marker>
 </google-map>
+
 <google-map-directions startAddress="San Francisco" endAddress="Mountain View"></google-map-directions>
+
 <button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
 
 <script>
