@@ -168,7 +168,7 @@ child of `google-map`.
           // Remove the marker from the map.
           this.marker.setMap(null);
         }
-        if (this.info){
+        if (this.info) {
           // Remove the infowindow binding, which is map-specific.
           google.maps.event.removeListener(this.infoHandler_);
           this.info = null;
@@ -496,9 +496,9 @@ Fired when the Maps API has fully loaded.
       this.onMutation(this, this.updateFeatures);
 
       var contents = Array.prototype.slice.call(this.children);
-      this.features = contents.filter(function(f){
+      this.features = contents.filter(function(f) {
         // Only work with features that have a map attribute (null is OK).
-        return f.map !== undefined;
+        return 'map' in f;
       });
 
       if (this.centerMarker) {
