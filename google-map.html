@@ -35,7 +35,7 @@ child of `google-map`.
 @status alpha
 @homepage http://googlewebcomponents.github.io/google-map
 -->
-<polymer-element name="google-map-marker" attributes="icon openedInfoWindow">
+<polymer-element name="google-map-marker" attributes="icon open">
 <template>
   <style>
     :host {
@@ -106,11 +106,11 @@ child of `google-map`.
       /**
        * Specifies whether the InfoWindow is open or not
        *
-       * @attribute openedInfoWindow
+       * @attribute open
        * @type boolean
        * @default false
        */
-       openedInfoWindow: false,
+       open: false,
 
 
       observe: {
@@ -136,6 +136,9 @@ child of `google-map`.
         }
       },
 
+      openChanged: function() {
+        this.toggleInfoWindow();
+      },
       
       contentChanged: function() {
         this.onMutation(this, this.contentChanged); // Watch for future updates.
@@ -145,19 +148,37 @@ child of `google-map`.
           if (!this.info) {
             // Create a new infowindow
             this.info = new google.maps.InfoWindow();
-            this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+            this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
               
               // Fire click event on google-map-marker element to let core-selector know
               // that it's selected
               this.click();
 
             }.bind(this));
+            
+            // Make sure the marker is not selected after a user closes the info window
+            this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+              
+              var mapElement = this.parentElement;
+              var markerSelector = mapElement.$.selector;
+
+              if (mapElement.singleInfoWindow) {
+                markerSelector.selected = null;
+              } else {
+                // Get the index of our marker and remove it from core-selectors selected array:
+                var markerIndex = [].indexOf.call(mapElement.children, this);
+                markerSelector.selected = markerSelector.selected.filter(function(i) {
+                  return (i != markerIndex);
+                });
+              }   
+            }.bind(this));
           }
           this.info.setContent(content);
         } else {
           if (this.info) {
             // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-            google.maps.event.removeListener(this.infoHandler_);
+            google.maps.event.removeListener(this.openInfoHandler_);
+            google.maps.event.removeListener(this.closeInfoHandler_);
             this.info = null;
           }
         }
@@ -178,7 +199,7 @@ child of `google-map`.
 
       toggleInfoWindow: function() {
         if (this.info) {
-          if (this.openedInfoWindow) {
+          if (this.open) {
             this.info.open(this.map, this.marker);
           } else {
             this.info.close();
@@ -202,9 +223,6 @@ child of `google-map`.
             break;
           case 'title':
             this.marker.setTitle(this.title);
-            break;
-          case 'openedinfowindow':
-            this.toggleInfoWindow();
             break;
         }
       }
@@ -302,7 +320,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleMarkerInfoWindow">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleInfoWindow">
 <template>
 
   <style>
@@ -326,7 +344,7 @@ Fired when the Maps API has fully loaded.
   <div id="map"></div>
 
   
-  <core-selector selectedAttribute="openedInfoWindow" activateEvent="click" multi={{!singleMarkerInfoWindow}}>
+  <core-selector id="selector" selectedAttribute="open" activateEvent="click" multi={{!singleInfoWindow}}>
     <content id="markers" select="google-map-marker"></content>
   </core-selector>
 
@@ -435,13 +453,13 @@ Fired when the Maps API has fully loaded.
     zoomable: true,
 
     /**
-     * If set, all other infoWindows on Markers are closed when opening a new one.
+     * If set, all other info windows on markers are closed when opening a new one.
      *
-     * @attribute singleMarkerInfoWindow
+     * @attribute singleInfoWindow
      * @type boolean
      * @default false
      */
-    singleMarkerInfoWindow: false,
+    singleInfoWindow: false,
 
     /**
      * If set, custom styles can be applied to the map.
