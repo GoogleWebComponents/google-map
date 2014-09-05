@@ -146,31 +146,40 @@ child of `google-map`.
         var content = this.innerHTML;
         if (content) {
           if (!this.info) {
+
+            var mapElement = this.parentElement;
+            var markerSelector = mapElement.$.selector;
+            var markerIndex = [].indexOf.call(mapElement.children, this);
+
             // Create a new infowindow
             this.info = new google.maps.InfoWindow();
             this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
               
-              // Fire click event on google-map-marker element to let core-selector know
-              // that it's selected
-              this.click();
-
+              if (mapElement.singleInfoWindow) {
+                markerSelector.selected = markerIndex;
+              } else {
+                
+                if(!markerSelector.selected)
+                  // Initialize selected array
+                  markerSelector.selected = [];  
+                
+                if (markerSelector.selected.indexOf(markerIndex) == -1) 
+                  // Add marker to selected array if it's not already in there
+                  markerSelector.selected.push(markerIndex);
+              }
+              
             }.bind(this));
             
             // Make sure the marker is not selected after a user closes the info window
             this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
-              
-              var mapElement = this.parentElement;
-              var markerSelector = mapElement.$.selector;
 
               if (mapElement.singleInfoWindow) {
                 markerSelector.selected = null;
               } else {
-                // Get the index of our marker and remove it from core-selectors selected array:
-                var markerIndex = [].indexOf.call(mapElement.children, this);
-                markerSelector.selected = markerSelector.selected.filter(function(i) {
-                  return (i != markerIndex);
-                });
-              }   
+                // Remove the marker from core-selectors selected array:
+                markerSelector.selected = markerSelector.selected.filter(function(i) {return i != markerIndex});
+              }
+
             }.bind(this));
           }
           this.info.setContent(content);
@@ -344,7 +353,7 @@ Fired when the Maps API has fully loaded.
   <div id="map"></div>
 
   
-  <core-selector id="selector" selectedAttribute="open" activateEvent="click" multi={{!singleInfoWindow}}>
+  <core-selector id="selector" selectedAttribute="open" multi={{!singleInfoWindow}}>
     <content id="markers" select="google-map-marker"></content>
   </core-selector>
 
