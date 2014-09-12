@@ -531,6 +531,9 @@ Fired when the Maps API has fully loaded.
         // If the map does not have a center, set it right away.
         this.map.setCenter(newCenter);
       } else {
+        // Using google.maps.LatLng returns corrected lat/lngs.
+        oldCenter = new google.maps.LatLng(oldCenter.lat(), oldCenter.lng());
+
         // If the map currently has a center, slowly pan to the new one.
         if (!oldCenter.equals(newCenter)) {
           this.map.panTo(newCenter);
