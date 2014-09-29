@@ -519,10 +519,12 @@ Fired when the Maps API has fully loaded.
     },
 
     updateCenter: function() {
-      if (!this.map || this.latitude == null || this.longitude == null ||
-          typeof this.latitude === 'object' ||
-          typeof this.longitude === 'object') {
+      if (!this.map) {
         return;
+      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+        throw new TypeError('latitude must be a number');
+      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+        throw new TypeError('longitude must be a number');
       }
 
       var newCenter = new google.maps.LatLng(this.latitude, this.longitude);
