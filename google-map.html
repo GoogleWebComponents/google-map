@@ -546,7 +546,7 @@ Fired when the Maps API has fully loaded.
     },
 
     zoomChanged: function() {
-      if (this.map && this.map.getZoom() !== this.zoom) {
+      if (this.map) {
         this.map.setZoom(Number(this.zoom));
       }
     },
