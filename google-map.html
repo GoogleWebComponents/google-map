@@ -546,7 +546,7 @@ Fired when the Maps API has fully loaded.
     },
 
     zoomChanged: function() {
-      if (this.map) {
+      if (this.map && this.map.getZoom() !== this.zoom) {
         this.map.setZoom(Number(this.zoom));
       }
     },
@@ -643,6 +643,10 @@ Fired when the Maps API has fully loaded.
         var center = this.map.getCenter();
         this.latitude = center.lat();
         this.longitude = center.lng();
+      }.bind(this));
+
+      google.maps.event.addListener(this.map, 'zoom_changed', function() {
+        this.zoom = this.map.getZoom();
       }.bind(this));
     }
 
