@@ -644,6 +644,10 @@ Fired when the Maps API has fully loaded.
         this.latitude = center.lat();
         this.longitude = center.lng();
       }.bind(this));
+
+      google.maps.event.addListener(this.map, 'zoom_changed', function() {
+        this.zoom = this.map.getZoom();
+      }.bind(this));
     }
 
   });
