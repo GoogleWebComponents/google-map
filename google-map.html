@@ -108,6 +108,18 @@ child of `google-map`.
         longitude: 'updatePosition',
       },
 
+      detached: function() {
+        this.marker.setMap(null);
+      },
+
+      attached: function() {
+        // If element is added back to DOM, put it back on the map.
+        if (this.marker) {
+console.log('here')
+          this.marker.setMap(this.map);
+        }
+      },
+
       updatePosition: function() {
         if (this.marker && this.latitude != null && this.longitude != null) {
           this.marker.setPosition({
