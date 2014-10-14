@@ -19,7 +19,13 @@ var map = document.querySelector('#map1');
 var map2 = document.querySelector('#map2');
 var map3 = document.querySelector('#map3');
 
-suite('markers', function() {
+suite('google-map', function() {
+
+  // TODO: test setting an invliad latitude/longitude value. See if throws.
+  // TODO: check toggling showCenterMarker to see if marker is added/removed from map.
+  // TODO: test draggable attribute.
+  // TODO: test fitToMarkers actually contains all markers
+  // TODO: test panning map and changing it's zoom updates .latitude/longitude/.zoom properties.
 
   test('defaults', function() {
     assert.equal(map.markers.length, 0);
