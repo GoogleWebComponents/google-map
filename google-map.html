@@ -138,6 +138,8 @@ console.log('here')
       mapChanged: function() {
         if (this.map && this.map instanceof google.maps.Map) {
           this.mapReady();
+        } else {
+          this.mapRemoved();
         }
       },
 
@@ -174,6 +176,18 @@ console.log('here')
         });
         this.contentChanged();
         setupDragHandler_.bind(this)();
+      },
+
+      mapRemoved: function() {
+        if (this.marker) {
+          // Remove the marker from the map.
+          this.marker.setMap(null);
+        }
+        if (this.info) {
+          // Remove the infowindow binding, which is map-specific.
+          google.maps.event.removeListener(this.infoHandler_);
+          this.info = null;
+        }
       },
 
       attributeChanged: function(attrName, oldVal, newVal) {
@@ -453,6 +467,10 @@ Fired when the Maps API has fully loaded.
     },
 
     created: function() {
+      // Features hold all the light DOM elements in a <google-map>.
+      this.features = [];
+
+      // Markers are a special case since the map can be centered to fit them.
       this.markers = [];
     },
 
@@ -464,6 +482,7 @@ Fired when the Maps API has fully loaded.
       this.map = new google.maps.Map(this.$.map, this.getMapOptions());
 
       this.updateCenter();
+      this.updateFeatures();
       this.updateMarkers();
       this.addMapListeners();
 
@@ -490,6 +509,26 @@ Fired when the Maps API has fully loaded.
       return mapOptions;
     },
 
+    updateFeatures: function() {
+      this.onMutation(this, this.updateFeatures);
+
+      var contents = Array.prototype.slice.call(this.children);
+      this.features = contents.filter(function(f) {
+        // Only work with features that have a map attribute (null is OK).
+        return 'map' in f;
+      });
+
+      if (this.centerMarker) {
+        // Since we recreated the feature array we add back the centerMarker.
+        this.features.push(this.centerMarker);
+      }
+      if (this.features.length && this.map) {
+        for (var i = 0, f; f = this.features[i]; ++i) {
+          f.map = this.map;
+        }
+      }
+    },
+
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
@@ -500,12 +539,7 @@ Fired when the Maps API has fully loaded.
 
       this.onMutation(this, this.updateMarkers); // Watch for future updates.
 
-      // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
-        for (var i = 0, m; m = this.markers[i]; ++i) {
-          m.map = this.map;
-        }
-
         if (this.fitToMarkers) {
           this.fitToMarkersChanged();
         }
@@ -513,13 +547,16 @@ Fired when the Maps API has fully loaded.
     },
 
     /**
-     * Clears all markers from the map.
+     * Clears all features from the map.
+     * This does not remove a showCenterMarker marker.
      *
      * @method clear
      */
     clear: function() {
-      for (var i = 0, m; m = this.markers[i]; ++i) {
-        m.marker.setMap(null);
+      for (var i = 0, f; f = this.features[i]; ++i) {
+        if (!this.showCenterMarker || f != this.centerMarker) {
+          f.map = null;
+        }
       }
     },
 
@@ -588,17 +625,21 @@ Fired when the Maps API has fully loaded.
       if (this.showCenterMarker) {
         if (!this.centerMarker) {
           this.centerMarker = document.createElement('google-map-marker');
+          this.centerMarker.map = this.map;
+          this.features.push(this.centerMarker);
         }
         var center = this.map.getCenter();
         this.centerMarker.latitude = center.lat();
         this.centerMarker.longitude = center.lng();
       } else {
         if (this.centerMarker) {
-          //TODO(bamnet): Clean up markers so they can be removed easier from a map.
-          this.centerMarker.marker.setMap(null);
+          this.centerMarker.map = null;
           this.centerMarker = null;
         }
       }
+      // There is no need to updateFeatures since we've already set the map
+      // and stored the center marker in the feature array.
+      // We still call updateMarkers to trigger the fitToMarker logic.
       this.updateMarkers();
     },
 
