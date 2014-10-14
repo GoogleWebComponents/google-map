@@ -37,10 +37,12 @@ suite('markers', function() {
               marker.marker.map, 'removed marker is still visible on map');
 
           map.appendChild(marker);
-          assert.isNotNull(
-              marker.marker.map, 're-added marker is not visible.');
+          async.nextTick(function() {
+            assert.isNotNull(
+                marker.marker.map, 're-added marker is not visible.');
 
-          done();
+            done();
+          });
 
        });
 
