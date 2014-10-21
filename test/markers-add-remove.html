@@ -1,0 +1,57 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../platform/platform.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+</head>
+<body>
+
+  <google-map id="map1" latitude="37.77493" longitude="-122.41942">
+    <google-map-marker latitude="37.779" longitude="-122.3892"></google-map-marker>
+    <google-map-marker latitude="37.777" longitude="-122.38911"></google-map-marker>
+  </google-map>
+
+<script>
+var map = document.querySelector('#map1');
+
+suite('markers', function() {
+
+  test('markers are defined, added, removed', function(done) {
+    map.addEventListener('google-map-ready', function(e) {
+
+      // Check if marker children were setup and can be added/removed.
+      assert.equal(map.markers.length, 2);
+
+      asyncPlatformFlush(function() {
+
+        var marker = map.markers[0];
+        marker.remove();
+
+        async.nextTick(function() {
+          assert.equal(map.markers.length, 1);
+          assert.isNull(
+              marker.marker.map, 'removed marker is still visible on map');
+
+          map.appendChild(marker);
+          async.nextTick(function() {
+            assert.isNotNull(
+                marker.marker.map, 're-added marker is not visible.');
+
+            done();
+          });
+
+       });
+
+      });  
+    });
+  });
+
+});
+
+</script>
+</body>
+</html>

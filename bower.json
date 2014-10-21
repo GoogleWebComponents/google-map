@@ -1,6 +1,6 @@
 {
   "name": "google-map",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "homepage": "http://googlewebcomponents.github.io/google-map",
   "description": "Google Maps web components",
   "main": "google-map.html",
@@ -9,7 +9,7 @@
     "Scott Miles <sjmiles@google.com>",
     "Eric Bidelman <ebidel@gmail.com>"
   ],
-  "license": "Apache2",
+  "license": "Apache-2",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -23,10 +23,14 @@
     "web-components",
     "polymer",
     "google",
-    "apis"
+    "apis",
+    "maps"
   ],
   "dependencies": {
-    "google-apis": "GoogleWebComponents/google-apis#~0.3.2",
-    "core-selector": "Polymer/core-selector#~0.4.0"
+    "google-apis": "GoogleWebComponents/google-apis#~0.3.3",
+    "core-selector": "Polymer/core-selector#master"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.1.2"
   }
 }

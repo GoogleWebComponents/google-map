@@ -46,7 +46,7 @@ child of `google-map`.
 <script>
   (function() {
 
-    Polymer('google-map-marker', {
+    Polymer({
 
       /**
        * A Google Maps marker object.
@@ -103,6 +103,7 @@ child of `google-map`.
          */
         latitude: {value: null, reflect: true}
       },
+
       /**
        * Specifies whether the InfoWindow is open or not
        *
@@ -112,15 +113,28 @@ child of `google-map`.
        */
        open: false,
 
-
       observe: {
         latitude: 'updatePosition',
         longitude: 'updatePosition',
       },
 
+      detached: function() {
+        this.marker.setMap(null);
+      },
+
+      attached: function() {
+        // If element is added back to DOM, put it back on the map.
+        if (this.marker) {
+          this.marker.setMap(this.map);
+        }
+      },
+
       updatePosition: function() {
         if (this.marker && this.latitude != null && this.longitude != null) {
-          this.marker.setPosition({lat: this.latitude, lng: this.longitude});
+          this.marker.setPosition({
+            lat: parseFloat(this.latitude),
+            lng: parseFloat(this.longitude)
+          });
         }
       },
 
@@ -282,7 +296,7 @@ To add custom map options, you can extend this element:
 
     <polymer-element name="my-google-map" extends="google-map">
       <script>
-        Polymer('my-google-map', {
+        Polymer({
 
           getMapOptions: function() {
             var mapOptions = this.super();
@@ -331,7 +345,6 @@ Fired when the Maps API has fully loaded.
 
   <div id="map"></div>
 
-  
   <core-selector id="selector" selectedAttribute="open" multi={{!singleInfoWindow}} on-map-marker-close="{{deselectMarker}}" on-map-marker-open="{{selectMarker}}">
     <content id="markers" select="google-map-marker"></content>
   </core-selector>
@@ -339,7 +352,7 @@ Fired when the Maps API has fully loaded.
 </template>
 <script>
 
-  Polymer('google-map', {
+  Polymer({
 
     /**
      * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
@@ -359,8 +372,9 @@ Fired when the Maps API has fully loaded.
     latitude: 37.77493,
 
     /**
-     * The libraries to load with this map. Defaults to "places". For more information
-     * https://developers.google.com/maps/documentation/javascript/libraries
+     * A comma separated list (e.g. "places,geometry") of libraries to load
+     * with this map. Defaults to "places". For more information see
+     * https://developers.google.com/maps/documentation/javascript/libraries.
      *
      * @attribute libraries
      * @type string
@@ -495,11 +509,18 @@ Fired when the Maps API has fully loaded.
 
       this.updateCenter();
       this.updateMarkers();
+      this.addMapListeners();
 
       this.fire('google-map-ready');
-
     },
 
+    /**
+     * Returns the an object with the current map configurations. Useful for
+     * overriding in a subclass.
+     *
+     * @method getMapOptions
+     * @return {object} Current map configuration.
+     */
     getMapOptions: function() {
       var mapOptions = {
         zoom: this.zoom,
@@ -553,6 +574,12 @@ Fired when the Maps API has fully loaded.
       }
     },
 
+    /**
+     * Explicitly resizes the map, updating its center. This is useful if the
+     * map does not show after you have unhidden it.
+     *
+     * @method resize
+     */
     resize: function() {
       if (this.map) {
         google.maps.event.trigger(this.map, 'resize');
@@ -561,18 +588,28 @@ Fired when the Maps API has fully loaded.
     },
 
     updateCenter: function() {
-      if (!this.map || this.latitude == null || this.longitude == null ||
-          typeof this.latitude === 'object' ||
-          typeof this.longitude === 'object') {
+      if (!this.map) {
         return;
+      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+        throw new TypeError('latitude must be a number');
+      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+        throw new TypeError('longitude must be a number');
       }
-      var center = new google.maps.LatLng(this.latitude, this.longitude);
-      if (!this.map.getCenter()) {
+
+      var newCenter = new google.maps.LatLng(this.latitude, this.longitude);
+      var oldCenter = this.map.getCenter();
+
+      if (!oldCenter) {
         // If the map does not have a center, set it right away.
-        this.map.setCenter(center);
+        this.map.setCenter(newCenter);
       } else {
+        // Using google.maps.LatLng returns corrected lat/lngs.
+        oldCenter = new google.maps.LatLng(oldCenter.lat(), oldCenter.lng());
+
         // If the map currently has a center, slowly pan to the new one.
-        this.map.panTo(center);
+        if (!oldCenter.equals(newCenter)) {
+          this.map.panTo(newCenter);
+        }
       }
       this.showCenterMarkerChanged();
     },
@@ -670,40 +707,52 @@ Fired when the Maps API has fully loaded.
       }
     },
 
-    selectMarker: function(event) {
+    selectMarker: function(e) {
 
-      // If singleInfoWindow is set, update core-selectors selected attribute to be the marker. 
-      // Else add the marker to core-selectors selected array.
+      // If singleInfoWindow is set, update core-selector's selected attribute to be the marker. 
+      // Else add the marker to core-selector's selected array.
       var markerSelector = this.$.selector;
-      var markerIndex = markerSelector.items.indexOf(event.srcElement);
+      var markerIndex = markerSelector.items.indexOf(e.target);
 
+    
       if (this.singleInfoWindow) {
         markerSelector.selected = markerIndex;
       } else {
-                
-        if (!markerSelector.selected) {
+        
+        if (markerSelector.selectedIndex == -1) {
           // Initialize selected array
           markerSelector.selected = [];
         }
-        if (markerSelector.selected.indexOf(markerIndex) == -1) {
-          // Add marker to selected array if it's not already in there
-          markerSelector.selected.push(markerIndex);
-        }
+
+        markerSelector.selected.push(markerIndex);
+
       }
     },
 
-    deselectMarker: function(event) { 
+    deselectMarker: function(e) { 
 
-      // If singleInfoWindow is set, update core-selectors selected attribute to be null.
-      // Else push the marker to core-selectors selected array.
+      // If singleInfoWindow is set, update core-selector's selected attribute to be null.
+      // Else push the marker to core-selector's selected array.
       var markerSelector = this.$.selector;
-      var markerIndex = markerSelector.items.indexOf(event.srcElement);
+      var markerIndex = markerSelector.items.indexOf(e.target);
 
       if (this.singleInfoWindow) {
         markerSelector.selected = null;
       } else {
         markerSelector.selected = markerSelector.selected.filter(function(i) {return i != markerIndex});
       }
+    },
+
+    addMapListeners: function() {
+      google.maps.event.addListener(this.map, 'center_changed', function() {
+        var center = this.map.getCenter();
+        this.latitude = center.lat();
+        this.longitude = center.lng();
+      }.bind(this));
+
+      google.maps.event.addListener(this.map, 'zoom_changed', function() {
+        this.zoom = this.map.getZoom();
+      }.bind(this));
     }
 
   });
