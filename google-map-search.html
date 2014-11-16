@@ -26,6 +26,15 @@ information on the API.
 @homepage http://googlewebcomponents.github.io/google-map/
 -->
 
+<!--
+Fired when the search element returns a result.
+
+@event google-map-search-result
+@param {Object} detail
+  @param {number} detail.latitude Latitude of the result.
+  @param {number} detail.longitude Longitude of the result.
+  @param {bool} detail.show Whether to showt the result on the map.
+-->
 <polymer-element name="google-map-search" attributes="query result map">
   <script>
     Polymer('google-map-search', {
@@ -71,6 +80,7 @@ information on the API.
           places.textSearch({query: this.query}, this.gotResults.bind(this));
         }
       },
+
       gotResults: function(results, status) {
         this.result = {
           latitude: results[0].geometry.location.lat(),
