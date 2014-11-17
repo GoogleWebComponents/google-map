@@ -611,7 +611,9 @@ Fired when the Maps API has fully loaded.
           this.centerMarker = null;
         }
       }
-      this.updateMarkers();
+      if (this.centerMarker) {
+        this.updateMarkers();
+      }
     },
 
     disableDefaultUIChanged: function() {
