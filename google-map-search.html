@@ -33,7 +33,7 @@ Fired when the search element returns a result.
 @param {Object} detail
   @param {number} detail.latitude Latitude of the result.
   @param {number} detail.longitude Longitude of the result.
-  @param {bool} detail.show Whether to showt the result on the map.
+  @param {bool} detail.show Whether to show the result on the map.
 -->
 <polymer-element name="google-map-search" attributes="query result map">
   <script>
@@ -87,7 +87,7 @@ Fired when the search element returns a result.
           longitude: results[0].geometry.location.lng(),
           show: true
         }
-        this.fire('google-map-search-result', result);
+        this.fire('google-map-search-result', this.result);
       }
     });
   </script>
