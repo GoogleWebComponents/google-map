@@ -288,7 +288,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
 <template>
 
   <style>
@@ -307,7 +307,7 @@ Fired when the Maps API has fully loaded.
 
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -445,6 +445,16 @@ Fired when the Maps API has fully loaded.
      * @default null
      */
     minZoom: null,
+
+    /**
+     * If true, sign-in is enabled.
+     * See https://developers.google.com/maps/documentation/javascript/signedin#enable_sign_in
+     *
+     * @attribute signedIn
+     * @type boolean
+     * @default false
+     */
+    signedIn: false,
 
     observe: {
       latitude: 'updateCenter',
