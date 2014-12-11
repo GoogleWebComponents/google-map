@@ -419,10 +419,14 @@ Fired when the Maps API has fully loaded.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
 <<<<<<< HEAD
+<<<<<<< HEAD
 <polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
 =======
 <polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries language">
 >>>>>>> f837dc2... Allows a preferred language to be specified
+=======
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn language">
+>>>>>>> 611456b... Fixed spacing
 <template>
 
   <style>
@@ -443,11 +447,7 @@ Fired when the Maps API has fully loaded.
 
   </style>
 
-<<<<<<< HEAD
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
-=======
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" language="{{language}}"></google-maps-api>
->>>>>>> f837dc2... Allows a preferred language to be specified
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -610,7 +610,7 @@ Fired when the Maps API has fully loaded.
      * see https://developers.google.com/maps/documentation/javascript/basics#Language
      *
      * Note: the Maps API defaults to the preferred language setting of the browser.
-     * Use this parameter to override that behavior. 
+     * Use this parameter to override that behavior.
      *
      * @attribute language
      * @type string
