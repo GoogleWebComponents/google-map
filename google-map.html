@@ -224,7 +224,6 @@ The `google-map` element renders a Google Map.
 
     <style>
       google-map {
-        display: block;
         height: 600px;
       }
     </style>
@@ -295,6 +294,8 @@ Fired when the Maps API has fully loaded.
 
     :host {
       position: relative;
+      display: block;
+      height: 100%;
     }
 
     #map {
