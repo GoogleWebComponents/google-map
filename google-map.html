@@ -224,7 +224,6 @@ The `google-map` element renders a Google Map.
 
     <style>
       google-map {
-        display: block;
         height: 600px;
       }
     </style>
@@ -294,7 +293,9 @@ Fired when the Maps API has fully loaded.
   <style>
 
     :host {
-      position: relative;
+      position: relative; 
+      display: block;
+      height: 100%;
     }
 
     #map {
@@ -402,6 +403,8 @@ Fired when the Maps API has fully loaded.
 
     /**
      * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+     * If there is a change in one of the non-draggable markers' locations, this will trigger it to fit again.
+     * Note: not including the center marker.
      *
      * @attribute fitToMarkers
      * @type boolean
@@ -448,7 +451,8 @@ Fired when the Maps API has fully loaded.
 
     observe: {
       latitude: 'updateCenter',
-      longitude: 'updateCenter'
+      longitude: 'updateCenter',
+      markers: 'updateMarkers'
     },
 
     created: function() {
@@ -463,7 +467,7 @@ Fired when the Maps API has fully loaded.
       this.map = new google.maps.Map(this.$.map, this.getMapOptions());
 
       this.updateCenter();
-      this.updateMarkersInitial();
+      this.updateMarkers();
       this.addMapListeners();
 
       this.fire('google-map-ready');
@@ -497,39 +501,50 @@ Fired when the Maps API has fully loaded.
     },
 
     updateMarkers: function() {
-      this.markers = Array.prototype.slice.call(
+      var newMarkers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
 
-      if (this.centerMarker) {
-        this.markers.push(this.centerMarker);
-      }
+      /* Check to see if there was a change to the location to one of the markers (not including the center nor draggable markers).
+         Note: Dependent upon the order of the markers. */
+      var isEqual = true;
 
-      this.onMutation(this, this.updateMarkers); // Watch for future updates.
-
-      // Set the map on each marker.
-      if (this.markers.length && this.map) {
-        for (var i = 0, m; m = this.markers[i]; ++i) {
-          m.map = this.map;
+      if (newMarkers.length != this.markers.length) {
+        isEqual = false;
+      } else {
+        for(var i = 0, m, n; m = newMarkers[i], n=this.markers[i]; ++i) {
+          if ( m.latitude != n.latitude || m.longitude != n.longitude ) {
+            isEqual = false;
+            break;
+          }
         }
-      }
-    }, 
-    updateMarkersInitial: function() {
-      this.updateMarkers();
+      } 
+      
+      if (!isEqual) {
+        this.markers = newMarkers;
+        // Set the map on each marker and zoom viewport to ensure they're in view.
+        if (this.markers.length && this.map) {
+          for (var i = 0, m; m = this.markers[i]; ++i) {
+            m.map = this.map;
+          }
 
-      //  Zoom to ensure the markers are initially in view.
-      if (this.markers.length && this.fitToMarkers) {
-        this.fitToMarkersChanged();
+         if (this.fitToMarkers) {
+           this.fitToMarkersChanged();
+          }
+        }
       }
     },
 
     /**
-     * Clears all markers from the map.
+     * Clears all markers from the map.  
      *
      * @method clear
      */
     clear: function() {
       for (var i = 0, m; m = this.markers[i]; ++i) {
         m.marker.setMap(null);
+      }
+      if (this.centerMarker) {
+        this.centerMarker.marker.setMap(null);
       }
     },
 
@@ -608,6 +623,7 @@ Fired when the Maps API has fully loaded.
         var center = this.map.getCenter();
         this.centerMarker.latitude = center.lat();
         this.centerMarker.longitude = center.lng();
+        this.centerMarker.map = this.map;
       } else {
         if (this.centerMarker) {
           //TODO(bamnet): Clean up markers so they can be removed easier from a map.
@@ -648,8 +664,6 @@ Fired when the Maps API has fully loaded.
     },
 
     fitToMarkersChanged: function() {
-      // TODO(ericbidelman): respect user's zoom level.
-
       if (this.map && this.fitToMarkers) {
         var latLngBounds = new google.maps.LatLngBounds();
         for (var i = 0, m; m = this.markers[i]; ++i) {
