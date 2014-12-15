@@ -287,7 +287,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn geojsonUrl">
 <template>
 
   <style>
@@ -457,6 +457,17 @@ Fired when the Maps API has fully loaded.
      */
     signedIn: false,
 
+    /**
+     * A URL pointing to a GeoJSON file, which can be loaded by
+     * google.maps.Data.
+     * See https://developers.google.com/maps/documentation/javascript/datalayer.
+     *
+     * @attribute geojsonUrl
+     * @type string
+     * @default null
+     */
+    geojsonUrl: null,
+
     observe: {
       latitude: 'updateCenter',
       longitude: 'updateCenter'
@@ -475,6 +486,7 @@ Fired when the Maps API has fully loaded.
 
       this.updateCenter();
       this.updateMarkers();
+      this.updateDataLayer();
       this.addMapListeners();
 
       this.fire('google-map-ready');
@@ -526,6 +538,12 @@ Fired when the Maps API has fully loaded.
         if (this.fitToMarkers) {
           this.fitToMarkersChanged();
         }
+      }
+    },
+
+    updateDataLayer: function() {
+      if (this.map && this.geojsonUrl) {
+        this.map.data.loadGeoJson(this.geojsonUrl);
       }
     },
 
@@ -652,6 +670,10 @@ Fired when the Maps API has fully loaded.
           this.map.setOptions({draggable: this.draggable});
           break;
       }
+    },
+
+    geojsonUrlChanged: function() {
+      this.updateDataLayer();
     },
 
     fitToMarkersChanged: function() {
