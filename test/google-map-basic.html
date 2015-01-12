@@ -12,7 +12,7 @@
 
   <google-map id="map1"></google-map>
   <google-map id="map2" latitude="37.555" longitude="-122.555"></google-map>
-  <google-map id="map3" zoomable zoom="11" minZoom="10" maxZoom="11" showCenterMarker fitToMarkers></google-map>
+  <google-map id="map3" zoomable zoom="11" minZoom="10" maxZoom="11" noAutoTilt showCenterMarker fitToMarkers></google-map>
 
 <script>
 var map = document.querySelector('#map1');
@@ -25,6 +25,17 @@ suite('google-map', function() {
   test('invalid lat/lng', function() {
   });
   test.skip('invalid lat/lng');
+
+  test('noAutoTilt', function() {
+    map.addEventListener('google-map-ready', function(e) {
+      // When noAutoTilt is set, tilt is left at default (45).
+      assert.equal(map.map.getTilt(), 45);
+    });
+    map3.addEventListener('google-map-ready', function(e) {
+      // When noAutoTilt is set, tilt is set to 0.
+      assert.equal(map3.map.getTilt(), 0);
+    });
+  });
 
   // TODO: check toggling showCenterMarker to see if marker is added/removed from map.
 
@@ -53,6 +64,7 @@ suite('google-map', function() {
     assert.isFalse(map.showCenterMarker);
     assert.isFalse(map.disableDefaultUI);
     assert.equal(map.zoom, 10);
+    assert.equal(map.noAutoTilt, false);
     assert.isNull(map.maxZoom);
     assert.isNull(map.minZoom);
     assert.isTrue(map.zoomable);
