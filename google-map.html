@@ -34,7 +34,7 @@ child of `google-map`.
 @status alpha
 @homepage http://googlewebcomponents.github.io/google-map
 -->
-<polymer-element name="google-map-marker" attributes="icon">
+<polymer-element name="google-map-marker" attributes="icon zIndex">
 <template>
   <style>
     :host {
@@ -82,6 +82,15 @@ child of `google-map`.
        * @default null
        */
       icon: null,
+
+      /**
+       * Z-index for the marker icon.
+       *
+       * @attribute zIndex
+       * @type number
+       * @default 0
+       */
+      zIndex: 0,
 
       publish: {
         /**
@@ -134,6 +143,12 @@ child of `google-map`.
         }
       },
 
+      zIndexChanged: function() {
+        if (this.marker) {
+          this.marker.setZIndex(this.zIndex);
+        }
+      },
+
       mapChanged: function() {
         if (this.map && this.map instanceof google.maps.Map) {
           this.mapReady();
@@ -169,7 +184,8 @@ child of `google-map`.
           title: this.title,
           draggable: this.draggable,
           visible: !this.hidden,
-          icon: this.icon
+          icon: this.icon,
+          zIndex: this.zIndex
         });
         this.contentChanged();
         setupDragHandler_.bind(this)();
