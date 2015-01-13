@@ -673,6 +673,12 @@ Fired when the Maps API has fully loaded.
       }
     },
 
+    addEventForwarder: function(name) {
+      google.maps.event.addListener(this.map, name, function(event) {
+        this.fire('google-map-' + name, event);
+      }.bind(this));
+    },
+
     addMapListeners: function() {
       google.maps.event.addListener(this.map, 'center_changed', function() {
         var center = this.map.getCenter();
@@ -683,6 +689,19 @@ Fired when the Maps API has fully loaded.
       google.maps.event.addListener(this.map, 'zoom_changed', function() {
         this.zoom = this.map.getZoom();
       }.bind(this));
+
+      this.addEventForwarder('click');
+      this.addEventForwarder('dblclick');
+      this.addEventForwarder('drag');
+      this.addEventForwarder('dragend');
+      this.addEventForwarder('dragstart');
+      this.addEventForwarder('idle');
+      this.addEventForwarder('mousemove');
+      this.addEventForwarder('mouseout');
+      this.addEventForwarder('mouseover');
+      this.addEventForwarder('projection-changed');
+      this.addEventForwarder('rightclick');
+      this.addEventForwarder('tiles-loaded');
     }
 
   });
