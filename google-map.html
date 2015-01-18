@@ -4,6 +4,7 @@
 <link rel="import" href="../google-apis/google-apis.html">
 <link rel="import" href="../core-selector/core-selector.html">
 
+
 <!--
 The `google-map-marker` element represents a map marker. It is used as a
 child of `google-map`.
@@ -258,7 +259,6 @@ The `google-map` element renders a Google Map.
 
     <style>
       google-map {
-        display: block;
         height: 600px;
       }
     </style>
@@ -322,13 +322,15 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries singleInfoWindow">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn singleInfoWindow">
 <template>
 
   <style>
 
     :host {
       position: relative;
+      display: block;
+      height: 100%;
     }
 
     #map {
@@ -341,7 +343,7 @@ Fired when the Maps API has fully loaded.
 
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -465,7 +467,7 @@ Fired when the Maps API has fully loaded.
 
     /**
      * If set, custom styles can be applied to the map.
-     * For style doucmentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
+     * For style documentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
      *
      * @attribute styles
      * @type JSON encoded array
@@ -490,6 +492,16 @@ Fired when the Maps API has fully loaded.
      * @default null
      */
     minZoom: null,
+
+    /**
+     * If true, sign-in is enabled.
+     * See https://developers.google.com/maps/documentation/javascript/signedin#enable_sign_in
+     *
+     * @attribute signedIn
+     * @type boolean
+     * @default false
+     */
+    signedIn: false,
 
     observe: {
       latitude: 'updateCenter',
