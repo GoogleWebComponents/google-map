@@ -673,7 +673,7 @@ Fired when the Maps API has fully loaded.
       }
     },
 
-    addEventForwarder: function(name) {
+    _addEventForwarder: function(name) {
       google.maps.event.addListener(this.map, name, function(event) {
         this.fire('google-map-' + name, event);
       }.bind(this));
@@ -690,18 +690,18 @@ Fired when the Maps API has fully loaded.
         this.zoom = this.map.getZoom();
       }.bind(this));
 
-      this.addEventForwarder('click');
-      this.addEventForwarder('dblclick');
-      this.addEventForwarder('drag');
-      this.addEventForwarder('dragend');
-      this.addEventForwarder('dragstart');
-      this.addEventForwarder('idle');
-      this.addEventForwarder('mousemove');
-      this.addEventForwarder('mouseout');
-      this.addEventForwarder('mouseover');
-      this.addEventForwarder('projection-changed');
-      this.addEventForwarder('rightclick');
-      this.addEventForwarder('tiles-loaded');
+      this._addEventForwarder('click');
+      this._addEventForwarder('dblclick');
+      this._addEventForwarder('drag');
+      this._addEventForwarder('dragend');
+      this._addEventForwarder('dragstart');
+      this._addEventForwarder('idle');
+      this._addEventForwarder('mousemove');
+      this._addEventForwarder('mouseout');
+      this._addEventForwarder('mouseover');
+      this._addEventForwarder('projection-changed');
+      this._addEventForwarder('rightclick');
+      this._addEventForwarder('tiles-loaded');
     }
 
   });
