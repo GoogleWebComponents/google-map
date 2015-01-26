@@ -2,6 +2,8 @@
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-apis.html">
+<link rel="import" href="../core-selector/core-selector.html">
+
 
 <!--
 The `google-map-marker` element represents a map marker. It is used as a
@@ -34,7 +36,7 @@ child of `google-map`.
 @status alpha
 @homepage http://googlewebcomponents.github.io/google-map
 -->
-<polymer-element name="google-map-marker" attributes="icon">
+<polymer-element name="google-map-marker" attributes="icon open">
 <template>
   <style>
     :host {
@@ -103,6 +105,15 @@ child of `google-map`.
         latitude: {value: null, reflect: true}
       },
 
+      /**
+       * Specifies whether the InfoWindow is open or not
+       *
+       * @attribute open
+       * @type boolean
+       * @default false
+       */
+       open: false,
+
       observe: {
         latitude: 'updatePosition',
         longitude: 'updatePosition',
@@ -140,23 +151,37 @@ child of `google-map`.
         }
       },
 
+      openChanged: function() {
+        this.toggleInfoWindow();
+      },
+      
       contentChanged: function() {
         this.onMutation(this, this.contentChanged); // Watch for future updates.
 
         var content = this.innerHTML;
         if (content) {
           if (!this.info) {
+
             // Create a new infowindow
             this.info = new google.maps.InfoWindow();
-            this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
-              this.info.open(this.map, this.marker);
+            this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+              
+              this.fire('map-marker-open');
+              
+            }.bind(this));
+            
+            this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+
+              this.fire('map-marker-close');
+
             }.bind(this));
           }
           this.info.setContent(content);
         } else {
           if (this.info) {
             // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-            google.maps.event.removeListener(this.infoHandler_);
+            google.maps.event.removeListener(this.openInfoHandler_);
+            google.maps.event.removeListener(this.closeInfoHandler_);
             this.info = null;
           }
         }
@@ -173,6 +198,16 @@ child of `google-map`.
         });
         this.contentChanged();
         setupDragHandler_.bind(this)();
+      },
+
+      toggleInfoWindow: function() {
+        if (this.info) {
+          if (this.open) {
+            this.info.open(this.map, this.marker);
+          } else {
+            this.info.close();
+          }
+        }
       },
 
       attributeChanged: function(attrName, oldVal, newVal) {
@@ -287,7 +322,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn singleInfoWindow">
 <template>
 
   <style>
@@ -312,7 +347,9 @@ Fired when the Maps API has fully loaded.
 
   <div id="map"></div>
 
-  <content id="markers" select="google-map-marker"></content>
+  <core-selector id="selector" selectedAttribute="open" multi={{!singleInfoWindow}} on-map-marker-close="{{deselectMarker}}" on-map-marker-open="{{selectMarker}}">
+    <content id="markers" select="google-map-marker"></content>
+  </core-selector>
 
 </template>
 <script>
@@ -418,6 +455,15 @@ Fired when the Maps API has fully loaded.
      * @default true
      */
     zoomable: true,
+
+    /**
+     * If set, all other info windows on markers are closed when opening a new one.
+     *
+     * @attribute singleInfoWindow
+     * @type boolean
+     * @default false
+     */
+    singleInfoWindow: false,
 
     /**
      * If set, custom styles can be applied to the map.
@@ -670,6 +716,42 @@ Fired when the Maps API has fully loaded.
         }
 
         this.map.setCenter(latLngBounds.getCenter());
+      }
+    },
+
+    selectMarker: function(e) {
+
+      // If singleInfoWindow is set, update core-selector's selected attribute to be the marker. 
+      // Else add the marker to core-selector's selected array.
+      var markerSelector = this.$.selector;
+      var markerIndex = markerSelector.items.indexOf(e.target);
+
+    
+      if (this.singleInfoWindow) {
+        markerSelector.selected = markerIndex;
+      } else {
+        
+        if (markerSelector.selectedIndex == -1) {
+          // Initialize selected array
+          markerSelector.selected = [];
+        }
+
+        markerSelector.selected.push(markerIndex);
+
+      }
+    },
+
+    deselectMarker: function(e) { 
+
+      // If singleInfoWindow is set, update core-selector's selected attribute to be null.
+      // Else push the marker to core-selector's selected array.
+      var markerSelector = this.$.selector;
+      var markerIndex = markerSelector.items.indexOf(e.target);
+
+      if (this.singleInfoWindow) {
+        markerSelector.selected = null;
+      } else {
+        markerSelector.selected = markerSelector.selected.filter(function(i) {return i != markerIndex});
       }
     },
 
