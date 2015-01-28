@@ -313,6 +313,7 @@ Fired when the Maps API has fully loaded.
   <div id="map"></div>
 
   <content id="markers" select="google-map-marker"></content>
+  <content id="objects" select="*"></content>
 
 </template>
 <script>
@@ -474,7 +475,7 @@ Fired when the Maps API has fully loaded.
       this.map = new google.maps.Map(this.$.map, this.getMapOptions());
 
       this.updateCenter();
-      this.updateMarkers();
+      this._updateObjects();
       this.addMapListeners();
 
       this.fire('google-map-ready');
@@ -507,6 +508,20 @@ Fired when the Maps API has fully loaded.
       return mapOptions;
     },
 
+    _updateObjects: function() {
+      this.objects = Array.prototype.slice.call(
+          this.$.objects.getDistributedNodes());
+
+      // Set the map on each non-marker object.
+      for (var i = 0, o; o = this.objects[i]; ++i) {
+        o.map = this.map;
+      }
+
+      this.updateMarkers();
+
+      this.onMutation(this, this._updateObjects); // Watch for future updates.
+    },
+
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           this.$.markers.getDistributedNodes());
@@ -514,8 +529,6 @@ Fired when the Maps API has fully loaded.
       if (this.centerMarker) {
         this.markers.push(this.centerMarker);
       }
-
-      this.onMutation(this, this.updateMarkers); // Watch for future updates.
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {

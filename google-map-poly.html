@@ -1,0 +1,491 @@
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+
+<link rel="import" href="./google-map-point.html">
+
+<!--
+The `google-map-poly` element represents a series of connected line segments (aka a polyline) which
+may also be closed to form a polygon (provided there are at least three points). It is used as a
+child of `google-map` and will include at least two `google-map-point` elements.
+
+<b>Example</b>—a simple line:
+
+    <google-map latitude="37.77493" longitude="-122.41942">
+      <google-map-poly>
+        <google-map-point latitude="37.77493" longitude="-122.41942"></google-map-point>
+        <google-map-point latitude="38.77493" longitude="-123.41942"></google-map-point>
+      </google-map-poly>
+    </google-map>
+
+<b>Example</b>—a semi-translucent blue triangle:
+
+    <google-map latitude="37.77493" longitude="-122.41942">
+      <google-map-poly closed fillColor="blue" fillOpacity=".5">
+        <google-map-point latitude="36.77493" longitude="-121.41942"></google-map-point>
+        <google-map-point latitude="38.77493" longitude="-122.41942"></google-map-point>
+        <google-map-point latitude="36.77493" longitude="-123.41942"></google-map-point>
+      </google-map-poly>
+    </google-map>
+
+@element google-map-poly
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-map
+-->
+
+<!--
+Fired when the `path` property is built based on child `google-map-point` elements, either initially
+or when they are changed.
+
+@event google-map-poly-path-built
+@param {MVCArray.<LatLng>} path The poly path.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-path-updated
+@param {MVCArray.<LatLng>} path The poly path.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-click
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-dblclick
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-drag
+@param {google.maps.MouseEvent} event The mouse event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-dragend
+@param {google.maps.MouseEvent} event The mouse event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-dragstart
+@param {google.maps.MouseEvent} event The mouse event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-mousedown
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-mousemove
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-mouseout
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-mouseover
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-mouseup
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+
+<!--
+Fired when the `path` property is updated based on user interaction (e.g. adding vertices).
+
+@event google-map-poly-rightclick
+@param {google.maps.PolyMouseEvent} event The poly event.
+-->
+<polymer-element name="google-map-poly"
+                 attributes="clickable closed draggable editable fillColor fillOpacity geodesic
+                             icons strokeColor strokeOpacity strokePosition strokeWeight zIndex">
+<template>
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <content id="points" select="google-map-point"></content>
+</template>
+<script>
+  Polymer({
+    // Poly attributes.
+
+    /**
+     * When set, the poly will generate mouse events.
+     *
+     * @attribute draggable
+     * @type boolean
+     * @default false
+     */
+    clickable: false,
+
+    /**
+     * When set, the path will be closed by connecting the last point to the first one and treating
+     * the poly as a polygon.
+     *
+     * @attribute closed
+     * @type boolean
+     * @default false
+     */
+    closed: false,
+
+    /**
+     * When set, the poly may be dragged to a new position.
+     *
+     * @attribute draggable
+     * @type boolean
+     * @default false
+     */
+    draggable: false,
+
+    /**
+     * When set, the poly's vertices may be individually moved or new ones added.
+     *
+     * @attribute editable
+     * @type boolean
+     * @default false
+     */
+    editable: false,
+
+    /**
+     * If the path is closed, the polygon fill color. All CSS3 colors are supported except for
+     * extended named colors.
+     *
+     * @attribute fillColor
+     * @type string
+     * @default ''
+     */
+    fillColor: '',
+
+    /**
+     * If the path is closed, the polygon fill opacity (between 0.0 and 1.0).
+     *
+     * @attribute fillOpacity
+     * @type number
+     * @default 0
+     */
+    fillOpacity: 0,
+
+    /**
+     * When set, the poly's edges are interpreted as geodesic and will follow the curvature of the
+     * Earth. When not set, the poly's edges are rendered as straight lines in screen space.
+     * Note that the poly of a geodesic poly may appear to change when dragged, as the dimensions
+     * are maintained relative to the surface of the earth.
+     *
+     * @attribute geodesic
+     * @type boolean
+     * @default false
+     */
+    geodesic: false,
+
+    /**
+     * If the path is not closed, the icons to be rendered along the polyline.
+     *
+     * @attribute icons
+     * @type array
+     * @default null
+     */
+    icons: null,
+
+    /**
+     * The color to draw the poly's stroke with. All CSS3 colors are supported except for extended
+     * named colors.
+     *
+     * @attribute strokeColor
+     * @type string
+     * @default 'black'
+     */
+    strokeColor: 'black',
+
+    /**
+     * The stroke opacity (between 0.0 and 1.0).
+     *
+     * @attribute strokeOpacity
+     * @type number
+     * @default 1
+     */
+    strokeOpacity: 1,
+
+    /**
+     * The stroke position (center, inside, or outside).
+     *
+     * @attribute strokePosition
+     * @type string
+     * @default ''
+     */
+    strokePosition: 'center',
+
+    /**
+     * The stroke width in pixels.
+     *
+     * @attribute strokeWeight
+     * @type number
+     * @default 3
+     */
+    strokeWeight: 3,
+
+    /**
+     * The Z-index relative to other polys.
+     *
+     * @attribute zIndex
+     * @type number
+     * @default 0
+     */
+    zIndex: 0,
+
+    // Poly properties.
+
+    /**
+     * The Google map object.
+     *
+     * @property map
+     * @type google.maps.Map
+     * @default null
+     */
+    map: null,
+
+    /**
+     * An Google Maps polygon or polyline object (depending on value of "closed" attribute).
+     *
+     * @property path
+     * @type MVCArray.<LatLng>
+     * @default null
+     */
+    path: null,
+
+    /**
+     * A Google Maps polyline or polygon object (depending on value of "closed" attribute).
+     *
+     * @property poly
+     * @type google.maps.Polyline|google.maps.Polygon
+     * @default null
+     */
+    poly: null,
+
+    /**
+     * When set, indicates that the user has begun editing the poly path (adding vertices).
+     *
+     * @property editing
+     * @type boolean
+     * @default false
+     */
+    editing: false,
+
+    // Lifecycle event handlers.
+
+    detached: function() {
+      this.poly.setMap(null);
+    },
+
+    attached: function() {
+      // If element is added back to DOM, put it back on the map.
+      this.poly && this.poly.setMap(this.map);
+    },
+
+    // Attribute/property change watchers.
+
+    attributeChanged: function(attrName, oldVal, newVal) {
+      if (!this.poly) return;
+
+      // Cannot use *Changed watchers for native properties.
+      switch (attrName) {
+        case 'hidden':
+          this.poly.setVisible(!this.hidden);
+          break;
+        case 'draggable':
+          this.poly.setDraggable(this.draggable);
+          break;
+      }
+    },
+
+    clickableChanged: function() {
+      this.poly && this.poly.set('clickable', this.clickable);
+    },
+
+    closedChanged: function() {
+      this.mapChanged();
+    },
+
+    editableChanged: function() {
+      this.poly && this.poly.setEditable(this.editable);
+    },
+
+    editingChanged: function() {
+      if (!this.editing) {
+        this.fire('google-map-poly-path-updated', this.path);
+      }
+    },
+
+    fillColorChanged: function() {
+      this.poly && this.poly.set('fillColor', this.fillColor);
+    },
+
+    fillOpacityChanged: function() {
+      this.poly && this.poly.set('fillOpacity', this.fillOpacity);
+    },
+
+    geodesicChanged: function() {
+      this.poly && this.poly.set('geodesic', this.geodesic);
+    },
+
+    iconsChanged: function() {
+      this.poly && this.poly.set('icons', this.icons);
+    },
+
+    mapChanged: function() {
+      // Poly will be rebuilt, so disconnect existing one from old map and listeners.
+      if (this.poly) {
+        this.poly.setMap(null);
+        google.maps.event.clearInstanceListeners(this.poly);
+      }
+
+      if (this.map && this.map instanceof google.maps.Map) {
+        this._createPoly();
+      }
+    },
+
+    strokeColorChanged: function() {
+      this.poly && this.poly.set('strokeColor', this.strokeColor);
+    },
+
+    strokeOpacityChanged: function() {
+      this.poly && this.poly.set('strokeOpacity', this.strokeOpacity);
+    },
+
+    strokePositionChanged: function() {
+      this.poly && this.poly.set('strokePosition', this._convertStrokePosition());
+    },
+
+    strokeWeightChanged: function() {
+      this.poly && this.poly.set('strokeWeight', this.strokeWeight);
+    },
+
+    zIndexChanged: function() {
+      this.poly && this.poly.set('zIndex', this.zIndex);
+    },
+
+    // Helper logic.
+
+    _buildPathFromPoints: function() {
+      this._points = Array.prototype.slice.call(this.$.points.getDistributedNodes());
+
+      // Build path from current points (ignoring vertex insertions while doing so).
+      this._building = true;
+      this.path.clear();
+      for (var i = 0, point; point = this._points[i]; ++i) {
+        this.path.push(point.getPosition());
+      }
+      this._building = false;
+
+      this.fire('google-map-poly-path-built', this.path);
+
+      // Watch for future updates.
+      this.onMutation(this, this._buildPathFromPoints);
+    },
+
+    _convertStrokePosition: function() {
+      return google.maps.StrokePosition && this.strokePosition?
+          google.maps.StrokePosition[this.strokePosition.toUpperCase()] : 0;
+    },
+
+    _createPoly: function() {
+      // Build poly's path and register mutation listeners on first creation.
+      if (!this.path) {
+        this.path = new google.maps.MVCArray();
+        google.maps.event.addListener(this.path, 'insert_at', this._startEditing.bind(this));
+        google.maps.event.addListener(this.path, 'set_at', this._updatedPoint.bind(this));
+        this._buildPathFromPoints();
+      }
+
+      var options = {
+        clickable: this.clickable || this.draggable,  // draggable must be clickable to work.
+        draggable: this.draggable,
+        editable: this.editable,
+        geodesic: this.geodesic,
+        map: this.map,
+        path: this.path,
+        strokeColor: this.strokeColor,
+        strokeOpacity: this.strokeOpacity,
+        strokePosition: this._convertStrokePosition(),
+        strokeWeight: this.strokeWeight,
+        visible: !this.hidden,
+        zIndex: this.zIndex
+      };
+
+      if (this.closed) {
+        options.fillColor = this.fillColor;
+        options.fillOpacity = this.fillOpacity;
+        this.poly = new google.maps.Polygon(options);
+      } else {
+        options.icons = this.icons;
+        this.poly = new google.maps.Polyline(options);
+      }
+
+      this._forwardEvent('click');
+      this._forwardEvent('dblclick');
+      this._forwardEvent('drag');
+      this._forwardEvent('dragend');
+      this._forwardEvent('dragstart');
+      this._forwardEvent('mousedown');
+      this._forwardEvent('mousemove');
+      this._forwardEvent('mouseout');
+      this._forwardEvent('mouseover');
+      this._forwardEvent('mouseup');
+      this._forwardEvent('rightclick');
+    },
+
+    _forwardEvent: function(name) {
+      google.maps.event.addListener(this.poly, name, function(event) {
+        this.fire('google-map-poly-' + name, event);
+      }.bind(this));
+    },
+
+    _startEditing: function(index) {
+      if (this._building) return;  // Ignore changes while building path.
+
+      // Signal start of editing when first vertex inserted, end when map clicked.
+      if (!this.editing) {
+        this.editing = true;
+        google.maps.event.addListenerOnce(this.map, 'click', function() {
+          this.editing = false;
+        }.bind(this));
+      }
+    },
+
+    _updatedPoint: function(index, vertex) {
+      if (this.editing) return;  // Ignore changes while editing, parent will wait for event.
+
+      // Update existing point so bound properties are updated. too.
+      this._points[index].latitude = vertex.lat();
+      this._points[index].longitude = vertex.lng();
+    }
+  });
+</script>
+</polymer-element>
