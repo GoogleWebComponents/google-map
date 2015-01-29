@@ -89,7 +89,7 @@ Fired for a rightclick on the marker.
 @event google-map-marker-rightclick
 @param {google.maps.MouseEvent} event The mouse event.
 -->
-<polymer-element name="google-map-marker" attributes="icon">
+<polymer-element name="google-map-marker" attributes="clickEvents icon mouseEvents">
 <template>
   <style>
     :host {
@@ -130,6 +130,15 @@ Fired for a rightclick on the marker.
       info: null,
 
       /**
+       * When set, enables the firing of *click events.
+       *
+       * @attribute clickEvents
+       * @type boolean
+       * @default false
+       */
+      clickEvents: false,
+
+      /**
        * Image URL for the marker icon.
        *
        * @attribute icon
@@ -137,6 +146,15 @@ Fired for a rightclick on the marker.
        * @default null
        */
       icon: null,
+
+      /**
+       * When set, enables the firing of mouse* events.
+       *
+       * @attribute mouseEvents
+       * @type boolean
+       * @default false
+       */
+      mouseEvents: false,
 
       publish: {
         /**
@@ -183,6 +201,38 @@ Fired for a rightclick on the marker.
         }
       },
 
+      clickEventsChanged: function() {
+        if (this.map) {
+          if (this.clickEvents) {
+            this._forwardEvent('click');
+            this._forwardEvent('dblclick');
+            this._forwardEvent('rightclick');
+          } else {
+            this._clearListener('click');
+            this._clearListener('dblclick');
+            this._clearListener('rightclick');
+          }
+        }
+      },
+
+      mouseEventsChanged: function() {
+        if (this.map) {
+          if (this.mouseEvents) {
+            this._forwardEvent('mousedown');
+            this._forwardEvent('mousemove');
+            this._forwardEvent('mouseout');
+            this._forwardEvent('mouseover');
+            this._forwardEvent('mouseup');
+          } else {
+            this._clearListener('mousedown');
+            this._clearListener('mousemove');
+            this._clearListener('mouseout');
+            this._clearListener('mouseover');
+            this._clearListener('mouseup');
+          }
+        }
+      },
+
       iconChanged: function() {
         if (this.marker) {
           this.marker.setIcon(this.icon);
@@ -218,6 +268,7 @@ Fired for a rightclick on the marker.
       },
 
       mapReady: function() {
+        this._listeners = {};
         this.marker = new google.maps.Marker({
           map: this.map,
           position: new google.maps.LatLng(this.latitude, this.longitude),
@@ -227,20 +278,21 @@ Fired for a rightclick on the marker.
           icon: this.icon
         });
         this.contentChanged();
+        this.clickEventsChanged();
+        this.contentChanged();
+        this.mouseEventsChanged();
         setupDragHandler_.bind(this)();
+      },
 
-        this._forwardEvent('click');
-        this._forwardEvent('dblclick');
-        this._forwardEvent('mousedown');
-        this._forwardEvent('mousemove');
-        this._forwardEvent('mouseout');
-        this._forwardEvent('mouseover');
-        this._forwardEvent('mouseup');
-        this._forwardEvent('rightclick');
+      _clearListener: function(name) {
+        if (this._listeners[name]) {
+          google.maps.event.removeListener(this._listeners[name]);
+          this._listeners[name] = null;
+        }
       },
 
       _forwardEvent: function(name) {
-        google.maps.event.addListener(this.marker, name, function(event) {
+        this._listeners[name] = google.maps.event.addListener(this.marker, name, function(event) {
           this.fire('google-map-marker-' + name, event);
         }.bind(this));
       },
