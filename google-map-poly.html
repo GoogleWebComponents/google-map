@@ -123,8 +123,9 @@ Fired when the poly is right-clicked on.
 @param {google.maps.PolyMouseEvent} event The poly event.
 -->
 <polymer-element name="google-map-poly"
-                 attributes="clickable closed draggable editable fillColor fillOpacity geodesic
-                             icons strokeColor strokeOpacity strokePosition strokeWeight zIndex">
+                 attributes="clickable clickEvents closed draggable dragEvents editable fillColor
+                             fillOpacity geodesic icons mouseEvents strokeColor strokeOpacity
+                             strokePosition strokeWeight zIndex">
 <template>
   <style>
     :host {
@@ -147,6 +148,15 @@ Fired when the poly is right-clicked on.
     clickable: false,
 
     /**
+     * When set, enables the firing of *click events.
+     *
+     * @attribute clickEvents
+     * @type boolean
+     * @default false
+     */
+    clickEvents: false,
+
+    /**
      * When set, the path will be closed by connecting the last point to the first one and treating
      * the poly as a polygon.
      *
@@ -164,6 +174,15 @@ Fired when the poly is right-clicked on.
      * @default false
      */
     draggable: false,
+
+    /**
+     * When set, enables the firing of drag* events.
+     *
+     * @attribute dragEvents
+     * @type boolean
+     * @default false
+     */
+    dragEvents: false,
 
     /**
      * When set, the poly's vertices may be individually moved or new ones added.
@@ -213,6 +232,15 @@ Fired when the poly is right-clicked on.
      * @default null
      */
     icons: null,
+
+    /**
+     * When set, enables the firing of mouse* events.
+     *
+     * @attribute mouseEvents
+     * @type boolean
+     * @default false
+     */
+    mouseEvents: false,
 
     /**
      * The color to draw the poly's stroke with. All CSS3 colors are supported except for extended
@@ -329,8 +357,36 @@ Fired when the poly is right-clicked on.
       this.poly && this.poly.set('clickable', this.clickable);
     },
 
+    clickEventsChanged: function() {
+      if (this.map) {
+        if (this.clickEvents) {
+          this._forwardEvent('click');
+          this._forwardEvent('dblclick');
+          this._forwardEvent('rightclick');
+        } else {
+          this._clearListener('click');
+          this._clearListener('dblclick');
+          this._clearListener('rightclick');
+        }
+      }
+    },
+
     closedChanged: function() {
       this.mapChanged();
+    },
+
+    dragEventsChanged: function() {
+      if (this.map) {
+        if (this.clickEvents) {
+          this._forwardEvent('drag');
+          this._forwardEvent('dragend');
+          this._forwardEvent('dragstart');
+        } else {
+          this._clearListener('drag');
+          this._clearListener('dragend');
+          this._clearListener('dragstart');
+        }
+      }
     },
 
     editableChanged: function() {
@@ -368,6 +424,24 @@ Fired when the poly is right-clicked on.
 
       if (this.map && this.map instanceof google.maps.Map) {
         this._createPoly();
+      }
+    },
+
+    mouseEventsChanged: function() {
+      if (this.map) {
+        if (this.mouseEvents) {
+          this._forwardEvent('mousedown');
+          this._forwardEvent('mousemove');
+          this._forwardEvent('mouseout');
+          this._forwardEvent('mouseover');
+          this._forwardEvent('mouseup');
+        } else {
+          this._clearListener('mousedown');
+          this._clearListener('mousemove');
+          this._clearListener('mouseout');
+          this._clearListener('mouseover');
+          this._clearListener('mouseup');
+        }
       }
     },
 
@@ -410,6 +484,13 @@ Fired when the poly is right-clicked on.
       this.onMutation(this, this._buildPathFromPoints);
     },
 
+    _clearListener: function(name) {
+      if (this._listeners[name]) {
+        google.maps.event.removeListener(this._listeners[name]);
+        this._listeners[name] = null;
+      }
+    },
+
     _convertStrokePosition: function() {
       return google.maps.StrokePosition && this.strokePosition?
           google.maps.StrokePosition[this.strokePosition.toUpperCase()] : 0;
@@ -448,21 +529,14 @@ Fired when the poly is right-clicked on.
         this.poly = new google.maps.Polyline(options);
       }
 
-      this._forwardEvent('click');
-      this._forwardEvent('dblclick');
-      this._forwardEvent('drag');
-      this._forwardEvent('dragend');
-      this._forwardEvent('dragstart');
-      this._forwardEvent('mousedown');
-      this._forwardEvent('mousemove');
-      this._forwardEvent('mouseout');
-      this._forwardEvent('mouseover');
-      this._forwardEvent('mouseup');
-      this._forwardEvent('rightclick');
+      this._listeners = {};
+      this.clickEventsChanged();
+      this.dragEventsChanged();
+      this.mouseEventsChanged();
     },
 
     _forwardEvent: function(name) {
-      google.maps.event.addListener(this.poly, name, function(event) {
+      this._listeners[name] = google.maps.event.addListener(this.poly, name, function(event) {
         this.fire('google-map-poly-' + name, event);
       }.bind(this));
     },
