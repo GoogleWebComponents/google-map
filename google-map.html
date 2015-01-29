@@ -240,6 +240,12 @@ Fired for a rightclick on the marker.
       },
 
       mapChanged: function() {
+        // Marker will be rebuilt, so disconnect existing one from old map and listeners.
+        if (this.marker) {
+          this.marker.setMap(null);
+          google.maps.event.clearInstanceListeners(this.marker);
+        }
+
         if (this.map && this.map instanceof google.maps.Map) {
           this.mapReady();
         }
