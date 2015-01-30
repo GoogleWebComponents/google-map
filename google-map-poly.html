@@ -139,7 +139,7 @@ Fired when the poly is right-clicked on.
     // Poly attributes.
 
     /**
-     * When set, the poly will generate mouse events.
+     * When true, the poly will generate mouse events.
      *
      * @attribute draggable
      * @type boolean
@@ -148,7 +148,7 @@ Fired when the poly is right-clicked on.
     clickable: false,
 
     /**
-     * When set, enables the firing of *click events.
+     * When true, poly *click events will be automatically registered.
      *
      * @attribute clickEvents
      * @type boolean
@@ -157,7 +157,7 @@ Fired when the poly is right-clicked on.
     clickEvents: false,
 
     /**
-     * When set, the path will be closed by connecting the last point to the first one and treating
+     * When true, the path will be closed by connecting the last point to the first one and treating
      * the poly as a polygon.
      *
      * @attribute closed
@@ -167,7 +167,7 @@ Fired when the poly is right-clicked on.
     closed: false,
 
     /**
-     * When set, the poly may be dragged to a new position.
+     * When true, the poly may be dragged to a new position.
      *
      * @attribute draggable
      * @type boolean
@@ -176,7 +176,7 @@ Fired when the poly is right-clicked on.
     draggable: false,
 
     /**
-     * When set, enables the firing of drag* events.
+     * When true, poly drag* events will be automatically registered.
      *
      * @attribute dragEvents
      * @type boolean
@@ -185,7 +185,7 @@ Fired when the poly is right-clicked on.
     dragEvents: false,
 
     /**
-     * When set, the poly's vertices may be individually moved or new ones added.
+     * When true, the poly's vertices may be individually moved or new ones added.
      *
      * @attribute editable
      * @type boolean
@@ -213,7 +213,7 @@ Fired when the poly is right-clicked on.
     fillOpacity: 0,
 
     /**
-     * When set, the poly's edges are interpreted as geodesic and will follow the curvature of the
+     * When true, the poly's edges are interpreted as geodesic and will follow the curvature of the
      * Earth. When not set, the poly's edges are rendered as straight lines in screen space.
      * Note that the poly of a geodesic poly may appear to change when dragged, as the dimensions
      * are maintained relative to the surface of the earth.
@@ -234,7 +234,7 @@ Fired when the poly is right-clicked on.
     icons: null,
 
     /**
-     * When set, enables the firing of mouse* events.
+     * When true, poly mouse* events will be automatically registered.
      *
      * @attribute mouseEvents
      * @type boolean
@@ -318,7 +318,7 @@ Fired when the poly is right-clicked on.
     poly: null,
 
     /**
-     * When set, indicates that the user has begun editing the poly path (adding vertices).
+     * When true, indicates that the user has begun editing the poly path (adding vertices).
      *
      * @property editing
      * @type boolean
