@@ -257,7 +257,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       contentChanged: function() {
         this.onMutation(this, this.contentChanged); // Watch for future updates.
 
-        var content = this.innerHTML;
+        var content = this.innerHTML.trim();
         if (content) {
           if (!this.info) {
             // Create a new infowindow
