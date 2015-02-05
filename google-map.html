@@ -434,7 +434,8 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
+
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn language">
 <template>
 
   <style>
@@ -455,7 +456,7 @@ Fired when the Maps API has fully loaded.
 
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -612,6 +613,19 @@ Fired when the Maps API has fully loaded.
      * @default false
      */
     signedIn: false,
+
+    /**
+     * The localized language to load the Maps API with. For more information
+     * see https://developers.google.com/maps/documentation/javascript/basics#Language
+     *
+     * Note: the Maps API defaults to the preferred language setting of the browser.
+     * Use this parameter to override that behavior.
+     *
+     * @attribute language
+     * @type string
+     * @default null
+     */
+    language: null,
 
     observe: {
       latitude: 'updateCenter',
