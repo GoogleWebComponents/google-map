@@ -92,7 +92,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
 @event google-map-marker-rightclick
 @param {google.maps.MouseEvent} event The mouse event.
 -->
-<polymer-element name="google-map-marker" attributes="clickEvents icon mouseEvents">
+<polymer-element name="google-map-marker" attributes="clickEvents icon mouseEvents zIndex">
 <template>
   <style>
     :host {
@@ -158,6 +158,15 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
        * @default false
        */
       mouseEvents: false,
+
+      /**
+       * Z-index for the marker icon.
+       *
+       * @attribute zIndex
+       * @type number
+       * @default 0
+       */
+      zIndex: 0,
 
       publish: {
         /**
@@ -242,6 +251,12 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
         }
       },
 
+      zIndexChanged: function() {
+        if (this.marker) {
+          this.marker.setZIndex(this.zIndex);
+        }
+      },
+
       mapChanged: function() {
         // Marker will be rebuilt, so disconnect existing one from old map and listeners.
         if (this.marker) {
@@ -284,7 +299,8 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
           title: this.title,
           draggable: this.draggable,
           visible: !this.hidden,
-          icon: this.icon
+          icon: this.icon,
+          zIndex: this.zIndex
         });
         this.contentChanged();
         this.clickEventsChanged();
