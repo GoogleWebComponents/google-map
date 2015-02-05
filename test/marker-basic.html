@@ -41,6 +41,7 @@ suite('markers', function() {
     assert.isNull(markerEl.map);
     assert.isNull(markerEl.icon);
     assert.isNull(markerEl.info);
+    assert.equal(markerEl.zIndex, 0);
     assert.equal(markerEl.latitude, 37.779);
     assert.equal(markerEl.longitude, -122.3892);
     assert.isNull(markerEl.offsetParent,
@@ -52,6 +53,7 @@ suite('markers', function() {
       var markerEl = map.children[0];
       markerEl.latitude = 37.77493;
       markerEl.longitude = -122.41942;
+      markerEl.zIndex = 1;
 
       assert.equal(
           markerEl.map, map.map, "marker's map is not the google-map's");
@@ -59,6 +61,7 @@ suite('markers', function() {
       asyncPlatformFlush(function() {
         assert.equal(markerEl.marker.getPosition().lat(), markerEl.latitude);
         assert.equal(markerEl.marker.getPosition().lng(), markerEl.longitude);
+        assert.equal(markerEl.marker.getZIndex(), markerEl.zIndex);
 
         markerEl.icon = 'https://www.google.com/images/srpr/logo11w.png';
         asyncPlatformFlush(function() {
