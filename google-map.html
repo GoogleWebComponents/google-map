@@ -145,7 +145,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
        * Image URL for the marker icon.
        *
        * @attribute icon
-       * @type string
+       * @type string|google.maps.Icon|google.maps.Symbol
        * @default null
        */
       icon: null,
@@ -257,7 +257,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       contentChanged: function() {
         this.onMutation(this, this.contentChanged); // Watch for future updates.
 
-        var content = this.innerHTML;
+        var content = this.innerHTML.trim();
         if (content) {
           if (!this.info) {
             // Create a new infowindow
@@ -418,7 +418,7 @@ Fired when the Maps API has fully loaded.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
+<polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
 <template>
 
   <style>
@@ -496,6 +496,15 @@ Fired when the Maps API has fully loaded.
      * @default 10
      */
     zoom: 10,
+
+    /**
+     * When set, prevents the map from tilting (when the zoom level and viewport supports it).
+     *
+     * @attribute noAutoTilt
+     * @type boolean
+     * @default false
+     */
+    noAutoTilt: false,
 
     /**
      * When set, displays a map marker at the center point.
@@ -622,6 +631,7 @@ Fired when the Maps API has fully loaded.
     getMapOptions: function() {
       var mapOptions = {
         zoom: this.zoom,
+        tilt: this.noAutoTilt ? 0 : 45,
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUI,
         disableDoubleClickZoom: !this.zoomable,
