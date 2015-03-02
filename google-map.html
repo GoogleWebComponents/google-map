@@ -855,7 +855,7 @@ attribute to be true.
 
     dragEventsChanged: function() {
       if (this.map) {
-        if (this.clickEvents) {
+        if (this.dragEvents) {
           this._forwardEvent('drag');
           this._forwardEvent('dragend');
           this._forwardEvent('dragstart');
@@ -869,7 +869,7 @@ attribute to be true.
 
     mouseEventsChanged: function() {
       if (this.map) {
-        if (this.clickEvents) {
+        if (this.mouseEvents) {
           this._forwardEvent('mousemove');
           this._forwardEvent('mouseout');
           this._forwardEvent('mouseover');
@@ -917,7 +917,9 @@ attribute to be true.
           this.centerMarker = null;
         }
       }
-      this.updateMarkers();
+      if (this.centerMarker) {
+        this.updateMarkers();
+      }
     },
 
     disableDefaultUIChanged: function() {
