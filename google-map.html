@@ -904,7 +904,9 @@ attribute to be true.
           this.centerMarker = null;
         }
       }
-      this.updateMarkers();
+      if (this.centerMarker) {
+        this.updateMarkers();
+      }
     },
 
     disableDefaultUIChanged: function() {
