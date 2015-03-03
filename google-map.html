@@ -489,7 +489,7 @@ attribute to be true.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn clickEvents dragEvents mouseEvents">
+<polymer-element name="google-map" attributes="apiKey clientId latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn clickEvents dragEvents mouseEvents">
 <template>
 
   <style>
@@ -510,7 +510,7 @@ attribute to be true.
 
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -528,6 +528,15 @@ attribute to be true.
      * @type string
      */
     apiKey: null,
+
+    /**
+     * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see developers.google.com/maps/documentation/business/.
+     * If set, a Client ID will take precedence over an API Key.
+     *
+     * @attribute clientId
+     * @type string
+     */
+    clientId: null,
 
     /**
      * A latitude to center the map on.
