@@ -1,6 +1,6 @@
 {
   "name": "google-map",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "homepage": "http://googlewebcomponents.github.io/google-map",
   "description": "Google Maps web components",
   "main": "google-map.html",
@@ -27,9 +27,9 @@
     "maps"
   ],
   "dependencies": {
-    "google-apis": "GoogleWebComponents/google-apis#~0.4.2"
+    "google-apis": "GoogleWebComponents/google-apis#^0.4.4"
   },
-   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^1.1.2"
+  "devDependencies": {
+    "web-component-tester": "*"
   }
 }
