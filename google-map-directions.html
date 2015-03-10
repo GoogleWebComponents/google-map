@@ -34,14 +34,14 @@ Fired whenever the directions service returns a result.
   @param {object} detail.response The directions service response.
 -->
 
-<polymer-element name="google-map-directions" attributes="apiKey map startAddress endAddress travelMode response libraries">
+<polymer-element name="google-map-directions" attributes="apiKey map startAddress endAddress travelMode version response libraries">
   <template>
     <style>
       :host {
         display: none;
       }
     </style>
-    <google-maps-api apiKey="{{apiKey}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
+    <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
   </template>
   <script>
     Polymer({
@@ -104,6 +104,15 @@ Fired whenever the directions service returns a result.
        * @default "places"
        */
       libraries: "places",
+
+      /**
+       * Version of the Google Maps API to use.
+       *
+       * @attribute version
+       * @type string
+       * @default 3.exp
+       */
+      version: '3.exp',
 
       /**
        * The response from the directions service.
