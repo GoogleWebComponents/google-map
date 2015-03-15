@@ -49,7 +49,7 @@ Fired whenever the directions service returns a result.
       /**
        * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
        *
-       * @property apiKey
+       * @attribute apiKey
        * @type string
        */
       apiKey: null,
@@ -91,16 +91,7 @@ Fired whenever the directions service returns a result.
       travelMode: 'DRIVING',
 
       /**
-       * Options for rendering.
-       *
-       * @attribute rendererOptions
-       * @type object
-       * @default {}
-       */
-      rendererOptions: {},
-
-      /**
-       * A panel for displaying directions
+       * A panel for displaying directions.
        *
        * @attribute panel
        * @type HTMLElement
@@ -138,6 +129,17 @@ Fired whenever the directions service returns a result.
        * @attribute response
        * @type object
        */
+
+      created: function() {
+        /**
+         * Options for rendering.
+         *
+         * @attribute rendererOptions
+         * @type object
+         * @default {}
+         */
+        this.rendererOptions = {};
+      },
 
       observe: {
         startAddress: 'route',
