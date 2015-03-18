@@ -45,6 +45,7 @@ Fired when the search element returns a result.
   @param {bool} detail.show Whether to show the result on the map.
 */
     properties: {
+
       /**
        * The Google map object.
        */
@@ -52,6 +53,7 @@ Fired when the search element returns a result.
         type: Object,
         value: null
       },
+
       /**
        * The search query.
        */
@@ -71,6 +73,18 @@ Fired when the search element returns a result.
       }
 
       /**
+       * Space-separated list of result types.
+       * The search will only return results of the listed types.
+       * See https://developers.google.com/places/documentation/supported_types
+       * for a list of supported types.
+       * Leave empty or null to search for all result types.
+       */
+      types: {
+        type: String,
+        value: null
+      } 
+
+      /**
        * The search results.
        */
       results: {
@@ -81,7 +95,7 @@ Fired when the search element returns a result.
     },
 
     observers: [
-      'search(query,map,currentMapArea)'
+      'search(query,map,types,currentMapArea)'
     ],
 
     /**
@@ -92,8 +106,12 @@ Fired when the search element returns a result.
     search: function() {
       if (this.query && this.map) {
         var places = new google.maps.places.PlacesService(this.map);
+        var types = this.types && typeof this.types == 'string' ?
+                    this.types.split(' ') : null;
+
         places.textSearch({
           query: this.query,
+          types: types,
           bounds: this.currentMapArea ? this.map.getBounds() : null
         }, this._gotResults.bind(this));
       }
