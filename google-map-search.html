@@ -63,6 +63,40 @@ Fired when the search element returns a result.
       },
 
       /**
+       * Latitude of the center of the search area.
+       * Ignored if `currentMapArea` is true.
+       */
+      latitude: {
+        type: Number,
+        value: null
+      },
+
+      /**
+       * Longitude of the center of the search area.
+       * Ignored if `currentMapArea` is true.
+       */
+      longitude: {
+        type: Number,
+        value: null
+      },
+
+      /**
+       * Search radius, in meters.
+       * If `latitude` and `longitude` are not specified,
+       * the center of the currently visible map area is used.
+       *
+       * Ignored if `currentMapArea` is true.
+       *
+       * @attribute radius
+       * @type number
+       * @default null
+       */
+      radius: {
+        type: Number,
+        value: null
+      },
+
+      /**
        * Restrict the search only to the current map area.
        *
        * @attribute currentMapArea
@@ -70,7 +104,7 @@ Fired when the search element returns a result.
       currentMapArea: {
         type: Boolean,
         value: true
-      }
+      },
 
       /**
        * Space-separated list of result types.
@@ -82,7 +116,7 @@ Fired when the search element returns a result.
       types: {
         type: String,
         value: null
-      } 
+      },
 
       /**
        * The search results.
@@ -95,7 +129,8 @@ Fired when the search element returns a result.
     },
 
     observers: [
-      'search(query,map,types,currentMapArea)'
+      'search(query,map,location,radius,types,currentMapArea)',
+      '_updateLocation(latitude,longitude)'
     ],
 
     /**
@@ -106,13 +141,24 @@ Fired when the search element returns a result.
     search: function() {
       if (this.query && this.map) {
         var places = new google.maps.places.PlacesService(this.map);
-        var types = this.types && typeof this.types == 'string' ?
-                    this.types.split(' ') : null;
+
+        if (this.types && typeof this.types == 'string') {
+          var types = this.types.split(' ');
+        }
+
+        if (this.currentMapArea) {
+          var bounds = this.map.getBounds();
+        } else if (this.radius) {
+          var radius = this.radius;
+          var location = this.location ? this.location : this.map.getCenter();
+        }
 
         places.textSearch({
           query: this.query,
           types: types,
-          bounds: this.currentMapArea ? this.map.getBounds() : null
+          bounds: bounds,
+          radius: radius,
+          location: location
         }, this._gotResults.bind(this));
       }
     },
@@ -126,6 +172,19 @@ Fired when the search element returns a result.
         return result;
       });
       this.fire('google-map-search-results', this.results);
+    },
+
+    _updateLocation: function() {
+      if (!this.map) {
+        return;
+      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+        throw new TypeError('latitude must be a number');
+      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+        throw new TypeError('longitude must be a number');
+      }
+
+      // Update location. This will trigger a new search.
+      this.location = new google.maps.LatLng(this.latitude, this.longitude);
     }
   });
 </script>
