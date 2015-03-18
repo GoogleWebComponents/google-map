@@ -85,7 +85,10 @@ Fired when the search element returns a result.
     search: function() {
       if (this.query && this.map) {
         var places = new google.maps.places.PlacesService(this.map);
-        places.textSearch({query: this.query}, this._gotResults.bind(this));
+        places.textSearch({
+          query: this.query,
+          bounds: this.map.getBounds()
+        }, this._gotResults.bind(this));
       }
     },
 
