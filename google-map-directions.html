@@ -34,17 +34,25 @@ Fired whenever the directions service returns a result.
   @param {object} detail.response The directions service response.
 -->
 
-<polymer-element name="google-map-directions" attributes="map startAddress endAddress travelMode response libraries">
+<polymer-element name="google-map-directions" attributes="apiKey map startAddress endAddress travelMode version response libraries rendererOptions panel">
   <template>
     <style>
       :host {
         display: none;
       }
     </style>
-    <google-maps-api on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
+    <google-maps-api apiKey="{{apiKey}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
   </template>
   <script>
     Polymer({
+
+      /**
+       * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
+       *
+       * @attribute apiKey
+       * @type string
+       */
+      apiKey: null,
 
       /**
        * The Google map object.
@@ -83,6 +91,15 @@ Fired whenever the directions service returns a result.
       travelMode: 'DRIVING',
 
       /**
+       * A panel for displaying directions.
+       *
+       * @attribute panel
+       * @type HTMLElement
+       * @default null
+       */
+      panel: null,
+
+      /**
        * A comma separated list (e.g. "places,geometry") of libraries to load
        * with this map. Defaults to "places". For more information see
        * https://developers.google.com/maps/documentation/javascript/libraries.
@@ -98,11 +115,31 @@ Fired whenever the directions service returns a result.
       libraries: "places",
 
       /**
+       * Version of the Google Maps API to use.
+       *
+       * @attribute version
+       * @type string
+       * @default 3.exp
+       */
+      version: '3.exp',
+
+      /**
        * The response from the directions service.
        *
        * @attribute response
        * @type object
        */
+
+      created: function() {
+        /**
+         * Options for rendering.
+         *
+         * @attribute rendererOptions
+         * @type object
+         * @default {}
+         */
+        this.rendererOptions = {};
+      },
 
       observe: {
         startAddress: 'route',
@@ -120,13 +157,15 @@ Fired whenever the directions service returns a result.
       mapChanged: function() {
         if (this.map && this.map instanceof google.maps.Map) {
           if (!this.directionsRenderer) {
-            this.directionsRenderer = new google.maps.DirectionsRenderer();
+            this.directionsRenderer = new google.maps.DirectionsRenderer(this.rendererOptions);
           }
           this.directionsRenderer.setMap(this.map);
+          this.directionsRenderer.setPanel(this.panel);
           this.responseChanged();
         } else {
           // If there is no more map, remove the directionsRenderer from the map and delete it.
           this.directionsRenderer.setMap(null);
+          this.directionsRenderer.setPanel(null);
           this.directionsRenderer = null;
         }
       },
