@@ -194,7 +194,9 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       },
 
       detached: function() {
-        this.marker.setMap(null);
+          if (this.marker) {
+            this.marker.setMap(null);
+          }
       },
 
       attached: function() {
