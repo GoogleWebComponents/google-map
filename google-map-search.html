@@ -27,7 +27,7 @@ information on the API.
 -->
 
 <!--
-Fired when the search element returns a result.
+Fired when the Places API service returns a response.
 
 @event google-map-search-result
 @param {Object} detail
@@ -88,8 +88,10 @@ Fired when the search element returns a result.
             longitude: results[0].geometry.location.lng(),
             show: true
           };
-          this.fire('google-map-search-result', this.result);
+        } else {
+          this.result = null;
         }
+        this.fire('google-map-search-result', this.result);
       }
     });
   </script>
