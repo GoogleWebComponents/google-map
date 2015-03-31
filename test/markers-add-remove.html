@@ -26,8 +26,7 @@ suite('markers', function() {
       // Check if marker children were setup and can be added/removed.
       assert.equal(map.markers.length, 2);
 
-      asyncPlatformFlush(function() {
-
+      flush(function() {
         var marker = map.markers[0];
         marker.remove();
 

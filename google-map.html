@@ -2,370 +2,7 @@
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-maps-api.html">
-
-<!--
-The `google-map-marker` element represents a map marker. It is used as a
-child of `google-map`.
-
-<b>Example</b>:
-
-    <google-map latitude="37.77493" longitude="-122.41942">
-      <google-map-marker latitude="37.779" longitude="-122.3892"
-          title="Go Giants!"></google-map-marker>
-    </google-map>
-
-<b>Example</b> - marker with info window (children create the window content):
-
-    <google-map-marker latitude="37.77493" longitude="-122.41942">
-      <img src="image.png">
-    </google-map-marker>
-
-<b>Example</b> - a draggable marker:
-
-    <google-map-marker latitude="37.77493" longitude="-122.41942"
-         draggable="true"></google-map-marker>
-
-<b>Example</b> - hide a marker:
-
-    <google-map-marker latitude="37.77493" longitude="-122.41942"
-        hidden></google-map-marker>
-
-@element google-map-marker
-@status alpha
-@homepage http://googlewebcomponents.github.io/google-map
--->
-<!--
-Fired when the marker icon was clicked. Requires the clickEvents attribute to be true.
-
-@event google-map-marker-click
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired when the marker icon was double clicked. Requires the clickEvents attribute to be true.
-
-@event google-map-marker-dblclick
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired for a mousedown on the marker. Requires the mouseEvents attribute to be true.
-
-@event google-map-marker-mousedown
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired when the DOM `mousemove` event is fired on the marker. Requires the mouseEvents attribute to
-be true.
-
-@event google-map-marker-mousemove
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired when the mouse leaves the area of the marker icon. Requires the mouseEvents attribute to be
-true.
-
-@event google-map-marker-mouseout
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired when the mouse enters the area of the marker icon. Requires the mouseEvents attribute to be
-true.
-
-@event google-map-marker-mouseover
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired for a mouseup on the marker. Requires the mouseEvents attribute to be true.
-
-@event google-map-marker-mouseup
-@param {google.maps.MouseEvent} event The mouse event.
--->
-
-<!--
-Fired for a rightclick on the marker. Requires the clickEvents attribute to be true.
-
-@event google-map-marker-rightclick
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<polymer-element name="google-map-marker" attributes="clickEvents icon mouseEvents zIndex">
-<template>
-  <style>
-    :host {
-      display: none;
-    }
-  </style>
-</template>
-<script>
-  (function() {
-
-    Polymer({
-
-      /**
-       * A Google Maps marker object.
-       *
-       * @property marker
-       * @type google.maps.Marker
-       * @default null
-       */
-      marker: null,
-
-      /**
-       * The Google map object.
-       *
-       * @property map
-       * @type google.maps.Map
-       * @default null
-       */
-      map: null,
-
-      /**
-       * A Google Map Infowindow object.
-       *
-       * @property info
-       * @type google.map.InfoWindow
-       * @default null
-       */
-      info: null,
-
-      /**
-       * When true, marker *click events are automatically registered.
-       *
-       * @attribute clickEvents
-       * @type boolean
-       * @default false
-       */
-      clickEvents: false,
-
-      /**
-       * Image URL for the marker icon.
-       *
-       * @attribute icon
-       * @type string|google.maps.Icon|google.maps.Symbol
-       * @default null
-       */
-      icon: null,
-
-      /**
-       * When true, marker mouse* events are automatically registered.
-       *
-       * @attribute mouseEvents
-       * @type boolean
-       * @default false
-       */
-      mouseEvents: false,
-
-      /**
-       * Z-index for the marker icon.
-       *
-       * @attribute zIndex
-       * @type number
-       * @default 0
-       */
-      zIndex: 0,
-
-      publish: {
-        /**
-         * The marker's longitude coordinate.
-         *
-         * @attribute longitude
-         * @type number
-         * @default null
-         */
-        longitude: {value: null, reflect: true},
-
-        /**
-         * The marker's latitude coordinate.
-         *
-         * @attribute latitude
-         * @type number
-         * @default null
-         */
-        latitude: {value: null, reflect: true}
-      },
-
-      observe: {
-        latitude: 'updatePosition',
-        longitude: 'updatePosition',
-      },
-
-      detached: function() {
-          if (this.marker) {
-            this.marker.setMap(null);
-          }
-      },
-
-      attached: function() {
-        // If element is added back to DOM, put it back on the map.
-        if (this.marker) {
-          this.marker.setMap(this.map);
-        }
-      },
-
-      updatePosition: function() {
-        if (this.marker && this.latitude != null && this.longitude != null) {
-          this.marker.setPosition({
-            lat: parseFloat(this.latitude),
-            lng: parseFloat(this.longitude)
-          });
-        }
-      },
-
-      clickEventsChanged: function() {
-        if (this.map) {
-          if (this.clickEvents) {
-            this._forwardEvent('click');
-            this._forwardEvent('dblclick');
-            this._forwardEvent('rightclick');
-          } else {
-            this._clearListener('click');
-            this._clearListener('dblclick');
-            this._clearListener('rightclick');
-          }
-        }
-      },
-
-      mouseEventsChanged: function() {
-        if (this.map) {
-          if (this.mouseEvents) {
-            this._forwardEvent('mousedown');
-            this._forwardEvent('mousemove');
-            this._forwardEvent('mouseout');
-            this._forwardEvent('mouseover');
-            this._forwardEvent('mouseup');
-          } else {
-            this._clearListener('mousedown');
-            this._clearListener('mousemove');
-            this._clearListener('mouseout');
-            this._clearListener('mouseover');
-            this._clearListener('mouseup');
-          }
-        }
-      },
-
-      iconChanged: function() {
-        if (this.marker) {
-          this.marker.setIcon(this.icon);
-        }
-      },
-
-      zIndexChanged: function() {
-        if (this.marker) {
-          this.marker.setZIndex(this.zIndex);
-        }
-      },
-
-      mapChanged: function() {
-        // Marker will be rebuilt, so disconnect existing one from old map and listeners.
-        if (this.marker) {
-          this.marker.setMap(null);
-          google.maps.event.clearInstanceListeners(this.marker);
-        }
-
-        if (this.map && this.map instanceof google.maps.Map) {
-          this.mapReady();
-        }
-      },
-
-      contentChanged: function() {
-        this.onMutation(this, this.contentChanged); // Watch for future updates.
-
-        var content = this.innerHTML.trim();
-        if (content) {
-          if (!this.info) {
-            // Create a new infowindow
-            this.info = new google.maps.InfoWindow();
-            this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
-              this.info.open(this.map, this.marker);
-            }.bind(this));
-          }
-          this.info.setContent(content);
-        } else {
-          if (this.info) {
-            // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-            google.maps.event.removeListener(this.infoHandler_);
-            this.info = null;
-          }
-        }
-      },
-
-      mapReady: function() {
-        this._listeners = {};
-        this.marker = new google.maps.Marker({
-          map: this.map,
-          position: new google.maps.LatLng(this.latitude, this.longitude),
-          title: this.title,
-          draggable: this.draggable,
-          visible: !this.hidden,
-          icon: this.icon,
-          zIndex: this.zIndex
-        });
-        this.contentChanged();
-        this.clickEventsChanged();
-        this.contentChanged();
-        this.mouseEventsChanged();
-        setupDragHandler_.bind(this)();
-      },
-
-      _clearListener: function(name) {
-        if (this._listeners[name]) {
-          google.maps.event.removeListener(this._listeners[name]);
-          this._listeners[name] = null;
-        }
-      },
-
-      _forwardEvent: function(name) {
-        this._listeners[name] = google.maps.event.addListener(this.marker, name, function(event) {
-          this.fire('google-map-marker-' + name, event);
-        }.bind(this));
-      },
-
-      attributeChanged: function(attrName, oldVal, newVal) {
-        if (!this.marker) {
-          return;
-        }
-
-        // Cannot use *Changed watchers for native properties.
-        switch (attrName) {
-          case 'hidden':
-            this.marker.setVisible(!this.hidden);
-            break;
-          case 'draggable':
-            this.marker.setDraggable(this.draggable);
-            setupDragHandler_.bind(this)();
-            break;
-          case 'title':
-            this.marker.setTitle(this.title);
-            break;
-        }
-      }
-
-    });
-
-    function onDragEnd_(e, details, sender) {
-      this.latitude = e.latLng.lat();
-      this.longitude = e.latLng.lng();
-    }
-
-    function setupDragHandler_() {
-      if (this.draggable) {
-        this.dragHandler_ = google.maps.event.addListener(
-            this.marker, 'dragend', onDragEnd_.bind(this));
-      } else {
-        google.maps.event.removeListener(this.dragHandler_);
-        this.dragHandler_ = null;
-      }
-    }
-
-  })();
-
-</script>
-</polymer-element>
-
+<link rel="import" href="google-map-marker.html">
 <!--
 The `google-map` element renders a Google Map.
 
@@ -491,11 +128,10 @@ attribute to be true.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey clientId latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn clickEvents dragEvents mouseEvents language">
-<template>
+
+<dom-module id="google-map">
 
   <style>
-
     :host {
       position: relative;
       display: block;
@@ -511,217 +147,288 @@ attribute to be true.
     }
 
   </style>
+  <template>
+    <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="mapApiLoaded" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
 
-  <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
+    <div id="map"></div>
 
-  <div id="map"></div>
+    <content id="markers" select="google-map-marker"></content>
 
-  <content id="markers" select="google-map-marker"></content>
+  </template>
+</dom-module>
 
-</template>
 <script>
 
   Polymer({
 
-    /**
-     * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
-     *
-     * @property apiKey
-     * @type string
-     */
-    apiKey: null,
+    is: 'google-map',
 
-    /**
-     * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see developers.google.com/maps/documentation/business/.
-     * If set, a Client ID will take precedence over an API Key.
-     *
-     * @attribute clientId
-     * @type string
-     */
-    clientId: null,
+    properties: {
+      /**
+       * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
+       *
+       * @property apiKey
+       * @type string
+       */
+      apiKey: String,
 
-    /**
-     * A latitude to center the map on.
-     *
-     * @attribute latitude
-     * @type number
-     * @default 37.77493
-     */
-    latitude: 37.77493,
+      /**
+       * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see developers.google.com/maps/documentation/business/.
+       * If set, a Client ID will take precedence over an API Key.
+       *
+       * @attribute clientId
+       * @type string
+       */
+      clientId: String,
 
-    /**
-     * A comma separated list (e.g. "places,geometry") of libraries to load
-     * with this map. Defaults to "places". For more information see
-     * https://developers.google.com/maps/documentation/javascript/libraries.
-     *
-     * @attribute libraries
-     * @type string
-     * @default "places"
-     */
-    libraries: "places",
+      /**
+       * A latitude to center the map on.
+       *
+       * @attribute latitude
+       * @type number
+       * @default 37.77493
+       */
+      latitude: {
+        type: Number,
+        value: 37.77493
+      },
 
-    /**
-     * A longitude to center the map on.
-     *
-     * @attribute longitude
-     * @type number
-     * @default -122.41942
-     */
-    longitude: -122.41942,
+      /**
+       * A comma separated list (e.g. "places,geometry") of libraries to load
+       * with this map. Defaults to "places". For more information see
+       * https://developers.google.com/maps/documentation/javascript/libraries.
+       *
+       * @attribute libraries
+       * @type string
+       * @default "places"
+       */
+      libraries: {
+        type: String,
+        value: "places"
+      },
 
-    /**
-     * A zoom level to set the map to.
-     *
-     * @attribute zoom
-     * @type number
-     * @default 10
-     */
-    zoom: 10,
+      /**
+       * A longitude to center the map on.
+       *
+       * @attribute longitude
+       * @type number
+       * @default -122.41942
+       */
+      longitude: {
+        type: Number,
+        value: -122.41942
+      },
 
-    /**
-     * When set, prevents the map from tilting (when the zoom level and viewport supports it).
-     *
-     * @attribute noAutoTilt
-     * @type boolean
-     * @default false
-     */
-    noAutoTilt: false,
+      /**
+       * A zoom level to set the map to.
+       *
+       * @attribute zoom
+       * @type number
+       * @default 10
+       */
+      zoom: {
+        type: Number,
+        value: 10,
+        observer: 'zoomChanged'
+      },
 
-    /**
-     * When set, displays a map marker at the center point.
-     *
-     * @attribute showCenterMarker
-     * @type boolean
-     * @default false
-     */
-    showCenterMarker: false,
+      /**
+       * When set, prevents the map from tilting (when the zoom level and viewport supports it).
+       *
+       * @attribute noAutoTilt
+       * @type boolean
+       * @default false
+       */
+      noAutoTilt: {
+        type: Boolean,
+        value: false
+      },
 
-    /**
-     * Map type to display. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
-     *
-     * @attribute mapType
-     * @type string
-     * @default roadmap
-     */
-    mapType: 'roadmap', // roadmap, satellite, hybrid, terrain
+      /**
+       * When set, displays a map marker at the center point.
+       *
+       * @attribute showCenterMarker
+       * @type boolean
+       * @default false
+       */
+      showCenterMarker: {
+        type: Boolean,
+        value: false,
+        observer: 'showCenterMarkerChanged'
+      },
 
-    /**
-     * Version of the Google Maps API to use.
-     *
-     * @attribute version
-     * @type string
-     * @default 3.exp
-     */
-    version: '3.exp',
+      /**
+       * Map type to display. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
+       *
+       * @attribute mapType
+       * @type string
+       * @default roadmap
+       */
+      mapType: {
+        type: String,
+        value: 'roadmap', // roadmap, satellite, hybrid, terrain,
+        observer: 'mapTypeChanged'
+      },
 
-    /**
-     * If set, removes the map's default UI controls.
-     *
-     * @attribute disableDefaultUI
-     * @type boolean
-     * @default false
-     */
-    disableDefaultUI: false,
+      /**
+       * Version of the Google Maps API to use.
+       *
+       * @attribute version
+       * @type string
+       * @default 3.exp
+       */
+      version: {
+        type: String,
+        value: '3.exp'
+      },
 
-    /**
-     * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
-     *
-     * @attribute fitToMarkers
-     * @type boolean
-     * @default false
-     */
-    fitToMarkers: false,
+      /**
+       * If set, removes the map's default UI controls.
+       *
+       * @attribute disableDefaultUI
+       * @type boolean
+       * @default false
+       */
+      disableDefaultUI: {
+        type: Boolean,
+        value: false,
+        observer: 'disableDefaultUIChanged'
+      },
 
-    /**
-     * If false, prevent the user from zooming the map interactively.
-     *
-     * @attribute zoomable
-     * @type boolean
-     * @default true
-     */
-    zoomable: true,
+      /**
+       * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
+       *
+       * @attribute fitToMarkers
+       * @type boolean
+       * @default false
+       */
+      fitToMarkers: {
+        type: Boolean,
+        value: false,
+        observer: 'fitToMarkersChanged'
+      },
 
-    /**
-     * If set, custom styles can be applied to the map.
-     * For style documentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
-     *
-     * @attribute styles
-     * @type JSON encoded array
-     * @default null
-     */
-    styles: {},
+      /**
+       * If false, prevent the user from zooming the map interactively.
+       *
+       * @attribute zoomable
+       * @type boolean
+       * @default true
+       */
+      zoomable: {
+        type: Boolean,
+        value: true,
+        observer: 'zoomableChanged'
+      },
 
-    /**
-     * A maximum zoom level which will be displayed on the map.
-     *
-     * @attribute maxZoom
-     * @type number
-     * @default null
-     */
-    maxZoom: null,
+      /**
+       * If set, custom styles can be applied to the map.
+       * For style documentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
+       *
+       * @attribute styles
+       * @type JSON encoded array
+       * @default null
+       */
+      styles: {
+        type: Object,
+        value: function() { return {}}
+      },
 
-    /**
-     * A minimum zoom level which will be displayed on the map.
-     *
-     * @attribute minZoom
-     * @type number
-     * @default null
-     */
-    minZoom: null,
+      /**
+       * A maximum zoom level which will be displayed on the map.
+       *
+       * @attribute maxZoom
+       * @type number
+       * @default null
+       */
+      maxZoom: {
+        type: Number,
+        observer: 'maxZoomChanged'
+      },
 
-    /**
-     * If true, sign-in is enabled.
-     * See https://developers.google.com/maps/documentation/javascript/signedin#enable_sign_in
-     *
-     * @attribute signedIn
-     * @type boolean
-     * @default false
-     */
-    signedIn: false,
+      /**
+       * A minimum zoom level which will be displayed on the map.
+       *
+       * @attribute minZoom
+       * @type number
+       * @default null
+       */
+      minZoom: {
+        type: Number,
+        observer: 'minZoomChanged'
+      },
 
-    /**
-     * The localized language to load the Maps API with. For more information
-     * see https://developers.google.com/maps/documentation/javascript/basics#Language
-     *
-     * Note: the Maps API defaults to the preffered language setting of the browser.
-     * Use this parameter to override that behavior. 
-     *
-     * @attribute language
-     * @type string
-     * @default null
-     */
-    language: null,
+      /**
+       * If true, sign-in is enabled.
+       * See https://developers.google.com/maps/documentation/javascript/signedin#enable_sign_in
+       *
+       * @attribute signedIn
+       * @type boolean
+       * @default false
+       */
+      signedIn: {
+        type: Boolean,
+        value: false
+      },
 
-    /**
-     * When true, map *click events are automatically registered.
-     *
-     * @attribute clickEvents
-     * @type boolean
-     * @default false
-     */
-    clickEvents: false,
+      /**
+       * The localized language to load the Maps API with. For more information
+       * see https://developers.google.com/maps/documentation/javascript/basics#Language
+       *
+       * Note: the Maps API defaults to the preffered language setting of the browser.
+       * Use this parameter to override that behavior. 
+       *
+       * @attribute language
+       * @type string
+       * @default null
+       */
+      language: {
+        type: String
+      },
 
-    /**
-     * When true, map drag* events are automatically registered.
-     *
-     * @attribute dragEvents
-     * @type boolean
-     * @default false
-     */
-    dragEvents: false,
+      /**
+       * When true, map *click events are automatically registered.
+       *
+       * @attribute clickEvents
+       * @type boolean
+       * @default false
+       */
+      clickEvents: {
+        type: Boolean,
+        value: false,
+        observer: 'clickEventsChanged'
+      },
 
-    /**
-     * When true, map mouse* events are automatically registered.
-     *
-     * @attribute mouseEvents
-     * @type boolean
-     * @default false
-     */
-    mouseEvents: false,
+      /**
+       * When true, map drag* events are automatically registered.
+       *
+       * @attribute dragEvents
+       * @type boolean
+       * @default false
+       */
+      dragEvents: {
+        type: Boolean,
+        value: false,
+        observer: 'dragEventsChanged'
+      },
 
-    observe: {
-      latitude: 'updateCenter',
-      longitude: 'updateCenter'
+      /**
+       * When true, map mouse* events are automatically registered.
+       *
+       * @attribute mouseEvents
+       * @type boolean
+       * @default false
+       */
+      mouseEvents: {
+        type: Boolean,
+        value: false,
+        observer: 'mouseEventsChanged'
+      }
+
+    },
+
+    observers: {
+      'latitude longitude': 'updateCenter'
     },
 
     created: function() {
@@ -730,6 +437,11 @@ attribute to be true.
 
     attached: function() {
       this.resize();
+    },
+
+    detached: function() {
+      if (this._mutationObserver)
+        this._mutationObserver.disconnect();
     },
 
     mapApiLoaded: function() {
@@ -773,13 +485,20 @@ attribute to be true.
 
     updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
-          this.$.markers.getDistributedNodes());
+          Polymer.dom(this.$.markers).getDistributedNodes());
 
       if (this.centerMarker) {
         this.markers.push(this.centerMarker);
       }
 
-      this.onMutation(this, this.updateMarkers); // Watch for future updates.
+      // Watch for future updates.
+      if (this._mutationObserver)
+        this._mutationObserver.disconnect();
+      this._mutationObserver = new MutationObserver( this.updateMarkers.bind(this));
+      this._mutationObserver.observe(this, { 
+        childList: true,
+        subtree: true
+      });
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
@@ -1013,4 +732,3 @@ attribute to be true.
   });
 
 </script>
-</polymer-element>

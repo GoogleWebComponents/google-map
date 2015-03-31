@@ -12,7 +12,7 @@
 
   <google-map id="map1"></google-map>
   <google-map id="map2" latitude="37.555" longitude="-122.555"></google-map>
-  <google-map id="map3" zoomable zoom="11" minZoom="10" maxZoom="11" noAutoTilt showCenterMarker fitToMarkers></google-map>
+  <google-map id="map3" zoomable zoom="11" min-zoom="10" max-zoom="11" no-auto-tilt show-center-marker fit-to-markers></google-map>
 
 <script>
 var map = document.querySelector('#map1');
@@ -65,8 +65,8 @@ suite('google-map', function() {
     assert.isFalse(map.disableDefaultUI);
     assert.equal(map.zoom, 10);
     assert.equal(map.noAutoTilt, false);
-    assert.isNull(map.maxZoom);
-    assert.isNull(map.minZoom);
+    assert.isUndefined(map.maxZoom);
+    assert.isUndefined(map.minZoom);
     assert.isTrue(map.zoomable);
     assert.equal(map.latitude, 37.77493);
     assert.equal(map.longitude, -122.41942);

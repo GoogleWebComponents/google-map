@@ -35,10 +35,12 @@ Fired when the search element returns a result.
   @param {number} detail.longitude Longitude of the result.
   @param {bool} detail.show Whether to show the result on the map.
 -->
-<polymer-element name="google-map-search" attributes="query result map">
-  <script>
-    Polymer('google-map-search', {
+<script>
+  Polymer({
 
+    is: 'google-map-search',
+
+    properties: {
       /**
        * The Google map object.
        *
@@ -46,7 +48,7 @@ Fired when the search element returns a result.
        * @type google.maps.Map
        * @default null
        */
-      map: null,
+      map: Object,
 
       /**
        * The search query.
@@ -55,7 +57,7 @@ Fired when the search element returns a result.
        * @type string
        * @default null
        */
-      query: null,
+      query: String,
 
       /**
        * The search result.
@@ -63,32 +65,35 @@ Fired when the search element returns a result.
        * @attribute result
        * @type object
        */
-
-      observe: {
-        query: 'search',
-        map: 'search'
-      },
-
-      /**
-       * Performance a search using for `query` for the search term.
-       *
-       * @method search
-       */
-      search: function() {
-        if (this.query && this.map) {
-          var places = new google.maps.places.PlacesService(this.map);
-          places.textSearch({query: this.query}, this.gotResults.bind(this));
-        }
-      },
-
-      gotResults: function(results, status) {
-        this.result = {
-          latitude: results[0].geometry.location.lat(),
-          longitude: results[0].geometry.location.lng(),
-          show: true
-        }
-        this.fire('google-map-search-result', this.result);
+      result: {
+        type: Object,
+        notify: true
       }
-    });
-  </script>
-</polymer-element>
+    }
+
+    observers: {
+      'query map', 'search'
+    },
+
+    /**
+     * Performance a search using for `query` for the search term.
+     *
+     * @method search
+     */
+    search: function() {
+      if (this.query && this.map) {
+        var places = new google.maps.places.PlacesService(this.map);
+        places.textSearch({query: this.query}, this.gotResults.bind(this));
+      }
+    },
+
+    gotResults: function(results, status) {
+      this.result = {
+        latitude: results[0].geometry.location.lat(),
+        longitude: results[0].geometry.location.lng(),
+        show: true
+      }
+      this.fire('google-map-search-result', this.result);
+    }
+  });
+</script>

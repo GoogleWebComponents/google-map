@@ -27,7 +27,8 @@
     "maps"
   ],
   "dependencies": {
-    "google-apis": "GoogleWebComponents/google-apis#^0.4.4"
+    "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
+    "polymer": "Polymer/polymer#0-8.preview"
   },
   "devDependencies": {
     "web-component-tester": "*"

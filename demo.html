@@ -4,10 +4,15 @@
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Google Map demo</title>
-  <script src="../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../webcomponentsjs/webcomponents.js"></script>
   <link rel="import" href="google-map.html">
+  <link rel="import" href="google-map-marker.html">
   <link rel="import" href="google-map-directions.html">
   <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
     #controlsToggle {
       position: absolute;
       left: 10%;
@@ -15,7 +20,7 @@
     }
   </style>
 </head>
-<body fullbleed unresolved>
+<body fullbleed>
 
 <google-map latitude="37.779" longitude="-122.3892" minZoom="9" maxZoom="11" language="en" fit>
   <google-map-marker latitude="37.779" longitude="-122.3892"
@@ -24,7 +29,7 @@
   </google-map-marker>
 </google-map>
 
-<google-map-directions startAddress="San Francisco" endAddress="Mountain View" language=
+<google-map-directions start-address="San Francisco" end-address="Mountain View" language=
 "en"></google-map-directions>
 
 <button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
