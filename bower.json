@@ -1,8 +1,8 @@
 {
   "name": "google-map",
   "version": "0.4.2",
-  "homepage": "http://googlewebcomponents.github.io/google-map",
   "description": "Google Maps web components",
+  "homepage": "https://googlewebcomponents.github.io/google-map",
   "main": "google-map.html",
   "authors": [
     "Frankie Fu <ffu@google.com>",
