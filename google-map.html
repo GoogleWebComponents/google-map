@@ -148,10 +148,17 @@ attribute to be true.
 
   </style>
   <template>
-    <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="mapApiLoaded" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
+    <google-maps-api 
+      api-key="{{apiKey}}" 
+      client-id="{{clientId}}" 
+      version="{{version}}" 
+      libraries="{{libraries}}" 
+      signed-in="{{signedIn}}" 
+      language="{{language}}"
+      on-api-load="mapApiLoaded"></google-maps-api>
 
     <div id="map"></div>
-
+    
     <content id="markers" select="google-map-marker"></content>
 
   </template>
