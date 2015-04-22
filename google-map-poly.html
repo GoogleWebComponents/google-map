@@ -363,7 +363,7 @@ Fired when the poly is right-clicked on. Requires the clickEvents attribute to b
     },
 
     clickEventsChanged: function() {
-      if (this.map) {
+      if (this.poly) {
         if (this.clickEvents) {
           this._forwardEvent('click');
           this._forwardEvent('dblclick');
@@ -381,7 +381,7 @@ Fired when the poly is right-clicked on. Requires the clickEvents attribute to b
     },
 
     dragEventsChanged: function() {
-      if (this.map) {
+      if (this.poly) {
         if (this.clickEvents) {
           this._forwardEvent('drag');
           this._forwardEvent('dragend');
@@ -433,7 +433,7 @@ Fired when the poly is right-clicked on. Requires the clickEvents attribute to b
     },
 
     mouseEventsChanged: function() {
-      if (this.map) {
+      if (this.poly) {
         if (this.mouseEvents) {
           this._forwardEvent('mousedown');
           this._forwardEvent('mousemove');
