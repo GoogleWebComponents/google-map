@@ -32,7 +32,7 @@ child of `google-map`.
 
 @element google-map-marker
 @status alpha
-@homepage http://googlewebcomponents.github.io/google-map
+@homepage https://googlewebcomponents.github.io/google-map
 -->
 <!--
 Fired when the marker icon was clicked. Requires the clickEvents attribute to be true.
@@ -194,7 +194,9 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       },
 
       detached: function() {
-        this.marker.setMap(null);
+          if (this.marker) {
+            this.marker.setMap(null);
+          }
       },
 
       attached: function() {
@@ -421,7 +423,7 @@ To add custom map options, you can extend this element:
     </polymer-element>
 
 @element google-map
-@homepage http://googlewebcomponents.github.io/google-map
+@homepage https://googlewebcomponents.github.io/google-map
 @blurb Element wrapper around Google Maps API.
 -->
 <!--
@@ -489,7 +491,7 @@ attribute to be true.
 - Handle removals and support .innerHTML = ''.
 - Use <google-maps-api>.api instead of google.maps namespace.
 -->
-<polymer-element name="google-map" attributes="apiKey clientId latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn clickEvents dragEvents mouseEvents">
+<polymer-element name="google-map" attributes="apiKey clientId latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn clickEvents dragEvents mouseEvents language">
 <template>
 
   <style>
@@ -510,7 +512,7 @@ attribute to be true.
 
   </style>
 
-  <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}"></google-maps-api>
+  <google-maps-api apiKey="{{apiKey}}" clientId="{{clientId}}" version="{{version}}" on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" signedIn="{{signedIn}}" language="{{language}}"></google-maps-api>
 
   <div id="map"></div>
 
@@ -677,6 +679,19 @@ attribute to be true.
      * @default false
      */
     signedIn: false,
+
+    /**
+     * The localized language to load the Maps API with. For more information
+     * see https://developers.google.com/maps/documentation/javascript/basics#Language
+     *
+     * Note: the Maps API defaults to the preffered language setting of the browser.
+     * Use this parameter to override that behavior.
+     *
+     * @attribute language
+     * @type string
+     * @default null
+     */
+    language: null,
 
     /**
      * When true, map *click events are automatically registered.

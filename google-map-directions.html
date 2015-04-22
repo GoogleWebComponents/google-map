@@ -23,7 +23,7 @@ information on the API.
 
 @element google-map-directions
 @status alpha
-@homepage http://googlewebcomponents.github.io/google-map/
+@homepage https://googlewebcomponents.github.io/google-map
 -->
 
 <!--
@@ -34,14 +34,14 @@ Fired whenever the directions service returns a result.
   @param {object} detail.response The directions service response.
 -->
 
-<polymer-element name="google-map-directions" attributes="map startAddress endAddress travelMode response libraries">
+<polymer-element name="google-map-directions" attributes="map startAddress endAddress travelMode response libraries language">
   <template>
     <style>
       :host {
         display: none;
       }
     </style>
-    <google-maps-api on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}"></google-maps-api>
+    <google-maps-api on-api-load="{{mapApiLoaded}}" libraries="{{libraries}}" language="{{language}}"></google-maps-api>
   </template>
   <script>
     Polymer({
@@ -96,6 +96,19 @@ Fired whenever the directions service returns a result.
        * @default "places"
        */
       libraries: "places",
+
+      /**
+       * The localized language to load the Maps API with. For more information
+       * see https://developers.google.com/maps/documentation/javascript/basics#Language
+       *
+       * Note: the Maps API defaults to the preffered language setting of the browser.
+       * Use this parameter to override that behavior.
+       *
+       * @attribute language
+       * @type string
+       * @default null
+       */
+      language: null,
 
       /**
        * The response from the directions service.
