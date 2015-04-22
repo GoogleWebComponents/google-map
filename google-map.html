@@ -216,7 +216,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       },
 
       clickEventsChanged: function() {
-        if (this.map) {
+        if (this.map && this.marker) {
           if (this.clickEvents) {
             this._forwardEvent('click');
             this._forwardEvent('dblclick');
@@ -230,7 +230,7 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       },
 
       mouseEventsChanged: function() {
-        if (this.map) {
+        if (this.map && this.marker) {
           if (this.mouseEvents) {
             this._forwardEvent('mousedown');
             this._forwardEvent('mousemove');
