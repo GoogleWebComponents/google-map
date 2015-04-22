@@ -1,0 +1,52 @@
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
+
+<!--
+The `google-map-point` element represents a point on a map. It's used as either the base element or
+a building block for other google-map-* elements.
+
+<b>Example</b>:
+
+    <google-map-point latitude="37.77493" longitude="-122.41942"></google-map-point>
+
+@element google-map-point
+@status alpha
+@homepage https://googlewebcomponents.github.io/google-map
+-->
+<polymer-element hidden name="google-map-point">
+  <script>
+    Polymer({
+      publish: {
+        /**
+         * The point's longitude coordinate.
+         *
+         * @attribute longitude
+         * @type number
+         * @default null
+         */
+        longitude: {value: null, reflect: true},
+
+        /**
+         * The point's latitude coordinate.
+         *
+         * @attribute latitude
+         * @type number
+         * @default null
+         */
+        latitude: {value: null, reflect: true}
+      },
+
+      /**
+       * Returns the point as a Google Maps LatLng object.
+       *
+       * @method getPosition
+       * @return {google.maps.LatLnt} The LatLng object.
+       */
+      getPosition: function() {
+        return new google.maps.LatLng(this.latitude, this.longitude);
+      }
+    });
+  </script>
+</polymer-element>
