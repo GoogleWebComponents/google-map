@@ -48,8 +48,10 @@ Fired when the search element returns a result.
        * @type google.maps.Map
        * @default null
        */
-      map: Object,
-
+      map: {
+        type: Object,
+        value: null
+      },
       /**
        * The search query.
        *
@@ -57,7 +59,10 @@ Fired when the search element returns a result.
        * @type string
        * @default null
        */
-      query: String,
+      query: {
+        type: String,
+        value: null
+      },
 
       /**
        * The search result.
@@ -67,6 +72,7 @@ Fired when the search element returns a result.
        */
       result: {
         type: Object,
+        value: null,
         notify: true
       }
     }

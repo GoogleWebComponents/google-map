@@ -69,7 +69,10 @@ Fired whenever the directions service returns a result.
        * @type string|google.maps.LatLng
        * @default null
        */
-      startAddress: String,
+      startAddress: {
+        type: String,
+        value: null
+      },
 
       /**
        * End address or latlng for directions to end.
@@ -78,7 +81,10 @@ Fired whenever the directions service returns a result.
        * @type string|google.maps.LatLng
        * @default null
        */
-      endAddress: String,
+      endAddress: {
+        type: String,
+        value: null
+      },
 
       /**
        * Travel mode to use.  One of 'DRIVING', 'WALKING', 'BICYCLING', 'TRANSIT'.
@@ -121,7 +127,10 @@ Fired whenever the directions service returns a result.
        * @type string
        * @default null
        */
-      language: String,
+      language: {
+        type: String,
+        value: null
+      },
 
       /**
        * The response from the directions service.
