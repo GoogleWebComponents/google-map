@@ -140,7 +140,8 @@ Fired whenever the directions service returns a result.
        */
       response: {
         type: Object,
-        observer: 'responseChanged'
+        observer: 'responseChanged',
+        notify: true
       }
     },
     observers: [

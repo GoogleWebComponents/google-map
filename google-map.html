@@ -189,7 +189,7 @@ attribute to be true.
       clientId: String,
 
       /**
-       * A latitude to center the map on.
+       * A latitude fcto center the map on.
        *
        * @attribute latitude
        * @type number
@@ -253,19 +253,6 @@ attribute to be true.
       noAutoTilt: {
         type: Boolean,
         value: false
-      },
-
-      /**
-       * When set, displays a map marker at the center point.
-       *
-       * @attribute showCenterMarker
-       * @type boolean
-       * @default false
-       */
-      showCenterMarker: {
-        type: Boolean,
-        value: false,
-        observer: 'showCenterMarkerChanged'
       },
 
       /**
@@ -451,8 +438,9 @@ attribute to be true.
     },
 
     detached: function() {
-      if (this._mutationObserver)
+      if (this._mutationObserver) {
         this._mutationObserver.disconnect();
+      }
     },
 
     mapApiLoaded: function() {
@@ -498,13 +486,10 @@ attribute to be true.
       this.markers = Array.prototype.slice.call(
           Polymer.dom(this.$.markers).getDistributedNodes());
 
-      if (this.centerMarker) {
-        this.markers.push(this.centerMarker);
-      }
-
       // Watch for future updates.
-      if (this._mutationObserver)
+      if (this._mutationObserver) {
         this._mutationObserver.disconnect();
+      }
       this._mutationObserver = new MutationObserver( this.updateMarkers.bind(this));
       this._mutationObserver.observe(this, { 
         childList: true,
@@ -571,7 +556,6 @@ attribute to be true.
           this.map.panTo(newCenter);
         }
       }
-      this.showCenterMarkerChanged();
     },
 
     zoomChanged: function() {
@@ -637,29 +621,6 @@ attribute to be true.
     mapTypeChanged: function() {
       if (this.map) {
         this.map.setMapTypeId(this.mapType);
-      }
-    },
-
-    showCenterMarkerChanged: function() {
-      if (!this.map) {
-        return;
-      }
-      if (this.showCenterMarker) {
-        if (!this.centerMarker) {
-          this.centerMarker = document.createElement('google-map-marker');
-        }
-        var center = this.map.getCenter();
-        this.centerMarker.latitude = center.lat();
-        this.centerMarker.longitude = center.lng();
-      } else {
-        if (this.centerMarker) {
-          //TODO(bamnet): Clean up markers so they can be removed easier from a map.
-          this.centerMarker.marker.setMap(null);
-          this.centerMarker = null;
-        }
-      }
-      if (this.centerMarker) {
-        this.updateMarkers();
       }
     },
 
