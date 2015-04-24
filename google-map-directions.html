@@ -134,9 +134,9 @@ Fired whenever the directions service returns a result.
         observer: 'responseChanged'
       }
     },
-    observers: {
-      'startAddress endAddress travelMode': 'route'
-    },
+    observers: [
+      'route(startAddress endAddress travelMode)'
+    ],
     mapApiLoaded: function() {
       this.route();
     },

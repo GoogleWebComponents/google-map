@@ -214,9 +214,9 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       }
     },
 
-    observers: {
-      'latitude longitude': 'updatePosition'
-    },
+    observers: [
+      'updatePosition(latitude longitude)'
+    ],
 
     detached: function() {
       if (this.marker) {

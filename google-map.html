@@ -434,9 +434,9 @@ attribute to be true.
 
     },
 
-    observers: {
-      'latitude longitude': 'updateCenter'
-    },
+    observers: [
+      'updateCenter(latitude longitude)'
+    ],
 
     created: function() {
       this.markers = [];

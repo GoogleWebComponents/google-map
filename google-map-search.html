@@ -71,9 +71,9 @@ Fired when the search element returns a result.
       }
     }
 
-    observers: {
-      'query map', 'search'
-    },
+    observers: [
+      'search(query,map)'
+    ],
 
     /**
      * Performance a search using for `query` for the search term.
