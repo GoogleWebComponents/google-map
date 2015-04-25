@@ -31,6 +31,7 @@
     "polymer": "Polymer/polymer#0-8.preview"
   },
   "devDependencies": {
-    "web-component-tester": "*"
+    "web-component-tester": "*",
+    "iron-doc-viewer": "PolymerElements/iron-doc-viewer#^0.8.0",
   }
 }
