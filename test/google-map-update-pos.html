@@ -22,7 +22,7 @@ suite('markers', function() {
       assert.equal(map.latitude, 37.555);
       assert.equal(map.longitude, -122.555);
 
-      asyncPlatformFlush(function() {
+      flush(function() {
         assert.equal(map.latitude, map.map.getCenter().lat(),
                      'map lat was not updated');
         assert.equal(map.longitude, map.map.getCenter().lng(),
