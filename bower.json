@@ -28,7 +28,7 @@
   ],
   "dependencies": {
     "google-apis": "GoogleWebComponents/google-apis#0.8-preview",
-    "polymer": "Polymer/polymer#0.8-preview"
+    "polymer": "Polymer/polymer#v0.8.0-rc.7"
   },
   "devDependencies": {
     "web-component-tester": "*",
