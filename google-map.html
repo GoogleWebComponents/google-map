@@ -17,7 +17,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b> - add markers to the map and ensure they're in view:
 
-    <google-map latitude="37.77493" longitude="-122.41942" fitToMarkers>
+    <google-map latitude="37.77493" longitude="-122.41942" fit-to-markers>
       <google-map-marker latitude="37.779" longitude="-122.3892"
           draggable="true" title="Go Giants!"></google-map-marker>
       <google-map-marker latitude="37.777" longitude="-122.38911"></google-map-marker>
@@ -25,7 +25,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b>:
 
-    <google-map disableDefaultUI showCenterMarker zoom="15"></google-map>
+    <google-map disable-default-ui show-center-marker zoom="15"></google-map>
     <script>
       var map = document.querySelector('google-map');
       map.latitude = 37.77493;
@@ -39,88 +39,9 @@ The `google-map` element renders a Google Map.
 
     <google-map map="{{map}}"></google-map>
     <google-map-directions map="{{map}}"
-        startAddress="San Francisco" endAddress="Mountain View">
+        start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
 
-<b>Example</b> - not all map options are included as attributes out of the box.
-To add custom map options, you can extend this element:
-
-    <polymer-element name="my-google-map" extends="google-map">
-      <script>
-        Polymer({
-
-          getMapOptions: function() {
-            var mapOptions = this.super();
-            mapOptions["streetViewControl"] = false;
-            return mapOptions;
-          }
-
-        });
-      </script>
-    </polymer-element>
-
-@element google-map
-@homepage http://googlewebcomponents.github.io/google-map
--->
-<!--
-Fired when the Maps API has fully loaded.
-
-@event google-map-ready
--->
-<!--
-Fired when the when the user clicks on the map (but not when they click on a marker, infowindow, or
-other object). Requires the clickEvents attribute to be true.
-
-@event google-map-click
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<!--
-Fired when the user double-clicks on the map. Note that the google-map-click event will also fire,
-right before this one. Requires the clickEvents attribute to be true.
-
-@event google-map-dblclick
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<!--
-Fired repeatedly while the user drags the map. Requires the dragEvents attribute to be true.
-
-@event google-map-drag
--->
-<!--
-Fired when the user stops dragging the map. Requires the dragEvents attribute to be true.
-
-@event google-map-dragend
--->
-<!--
-Fired when the user starts dragging the map. Requires the dragEvents attribute to be true.
-
-@event google-map-dragstart
--->
-<!--
-Fired whenever the user's mouse moves over the map container. Requires the mouseEvents attribute to
-be true.
-
-@event google-map-mousemove
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<!--
-Fired when the user's mouse exits the map container. Requires the mouseEvents attribute to be true.
-
-@event google-map-mouseout
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<!--
-Fired when the user's mouse enters the map container. Requires the mouseEvents attribute to be true.
-
-@event google-map-mouseover
-@param {google.maps.MouseEvent} event The mouse event.
--->
-<!--
-Fired when the DOM `contextmenu` event is fired on the map container. Requires the clickEvents
-attribute to be true.
-
-@event google-map-rightclick
-@param {google.maps.MouseEvent} event The mouse event.
 -->
 
 <dom-module id="google-map">
@@ -149,7 +70,7 @@ attribute to be true.
       libraries="[[libraries]]"
       signed-in="[[signedIn]]"
       language="[[language]]"
-      on-api-load="mapApiLoaded"></google-maps-api>
+      on-api-load="_mapApiLoaded"></google-maps-api>
 
     <div id="map"></div>
 
@@ -164,30 +85,63 @@ attribute to be true.
 
     is: 'google-map',
 
+
+    /**
+    Fired when the Maps API has fully loaded.
+    @event google-map-ready
+
+    Fired when the when the user clicks on the map (but not when they click on a marker, infowindow, or
+    other object). Requires the clickEvents attribute to be true.
+
+    @event google-map-click
+    @param {google.maps.MouseEvent} event The mouse event.
+
+    Fired when the user double-clicks on the map. Note that the google-map-click event will also fire,
+    right before this one. Requires the clickEvents attribute to be true.
+    @event google-map-dblclick
+    @param {google.maps.MouseEvent} event The mouse event.
+
+    Fired repeatedly while the user drags the map. Requires the dragEvents attribute to be true.
+    @event google-map-drag
+
+    Fired when the user stops dragging the map. Requires the dragEvents attribute to be true.
+    @event google-map-dragend
+
+    Fired when the user starts dragging the map. Requires the dragEvents attribute to be true.
+    @event google-map-dragstart
+
+    Fired whenever the user's mouse moves over the map container. Requires the mouseEvents attribute to
+    be true.
+    @event google-map-mousemove
+    @param {google.maps.MouseEvent} event The mouse event.
+
+    Fired when the user's mouse exits the map container. Requires the mouseEvents attribute to be true.
+    @event google-map-mouseout
+    @param {google.maps.MouseEvent} event The mouse event.
+
+    Fired when the user's mouse enters the map container. Requires the mouseEvents attribute to be true.
+    @event google-map-mouseover
+    @param {google.maps.MouseEvent} event The mouse event.
+
+    Fired when the DOM `contextmenu` event is fired on the map container. Requires the clickEvents
+    attribute to be true.
+    @event google-map-rightclick
+    @param {google.maps.MouseEvent} event The mouse event.
+    */
     properties: {
       /**
        * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
-       *
-       * @property apiKey
-       * @type string
        */
       apiKey: String,
 
       /**
        * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see developers.google.com/maps/documentation/business/.
        * If set, a Client ID will take precedence over an API Key.
-       *
-       * @attribute clientId
-       * @type string
        */
       clientId: String,
 
       /**
        * A latitude to center the map on.
-       *
-       * @attribute latitude
-       * @type number
-       * @default 37.77493
        */
       latitude: {
         type: Number,
@@ -200,10 +154,6 @@ attribute to be true.
        * A comma separated list (e.g. "places,geometry") of libraries to load
        * with this map. Defaults to "places". For more information see
        * https://developers.google.com/maps/documentation/javascript/libraries.
-       *
-       * @attribute libraries
-       * @type string
-       * @default "places"
        */
       libraries: {
         type: String,
@@ -212,10 +162,6 @@ attribute to be true.
 
       /**
        * A longitude to center the map on.
-       *
-       * @attribute longitude
-       * @type number
-       * @default -122.41942
        */
       longitude: {
         type: Number,
@@ -226,23 +172,15 @@ attribute to be true.
 
       /**
        * A zoom level to set the map to.
-       *
-       * @attribute zoom
-       * @type number
-       * @default 10
        */
       zoom: {
         type: Number,
         value: 10,
-        observer: 'zoomChanged'
+        observer: '_zoomChanged'
       },
 
       /**
        * When set, prevents the map from tilting (when the zoom level and viewport supports it).
-       *
-       * @attribute noAutoTilt
-       * @type boolean
-       * @default false
        */
       noAutoTilt: {
         type: Boolean,
@@ -251,23 +189,15 @@ attribute to be true.
 
       /**
        * Map type to display. One of 'roadmap', 'satellite', 'hybrid', 'terrain'.
-       *
-       * @attribute mapType
-       * @type string
-       * @default 'roadmap'
        */
       mapType: {
         type: String,
         value: 'roadmap', // roadmap, satellite, hybrid, terrain,
-        observer: 'mapTypeChanged'
+        observer: '_mapTypeChanged'
       },
 
       /**
        * Version of the Google Maps API to use.
-       *
-       * @attribute version
-       * @type string
-       * @default 3.exp
        */
       version: {
         type: String,
@@ -276,50 +206,34 @@ attribute to be true.
 
       /**
        * If set, removes the map's default UI controls.
-       *
-       * @attribute disableDefaultUI
-       * @type boolean
-       * @default false
        */
       disableDefaultUI: {
         type: Boolean,
         value: false,
-        observer: 'disableDefaultUIChanged'
+        observer: '_disableDefaultUIChanged'
       },
 
       /**
        * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
-       *
-       * @attribute fitToMarkers
-       * @type boolean
-       * @default false
        */
       fitToMarkers: {
         type: Boolean,
         value: false,
-        observer: 'fitToMarkersChanged'
+        observer: '_fitToMarkersChanged'
       },
 
       /**
        * If false, prevent the user from zooming the map interactively.
-       *
-       * @attribute zoomable
-       * @type boolean
-       * @default true
        */
       zoomable: {
         type: Boolean,
         value: true,
-        observer: 'zoomableChanged'
+        observer: '_zoomableChanged'
       },
 
       /**
        * If set, custom styles can be applied to the map.
        * For style documentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
-       *
-       * @attribute styles
-       * @type JSON encoded array
-       * @default null
        */
       styles: {
         type: Object,
@@ -328,35 +242,23 @@ attribute to be true.
 
       /**
        * A maximum zoom level which will be displayed on the map.
-       *
-       * @attribute maxZoom
-       * @type number
-       * @default null
        */
       maxZoom: {
         type: Number,
-        observer: 'maxZoomChanged'
+        observer: '_maxZoomChanged'
       },
 
       /**
        * A minimum zoom level which will be displayed on the map.
-       *
-       * @attribute minZoom
-       * @type number
-       * @default null
        */
       minZoom: {
         type: Number,
-        observer: 'minZoomChanged'
+        observer: '_minZoomChanged'
       },
 
       /**
        * If true, sign-in is enabled.
        * See https://developers.google.com/maps/documentation/javascript/signedin#enable_sign_in
-       *
-       * @attribute signedIn
-       * @type boolean
-       * @default false
        */
       signedIn: {
         type: Boolean,
@@ -369,10 +271,6 @@ attribute to be true.
        *
        * Note: the Maps API defaults to the preffered language setting of the browser.
        * Use this parameter to override that behavior.
-       *
-       * @attribute language
-       * @type string
-       * @default null
        */
       language: {
         type: String
@@ -380,47 +278,46 @@ attribute to be true.
 
       /**
        * When true, map *click events are automatically registered.
-       *
-       * @attribute clickEvents
-       * @type boolean
-       * @default false
        */
       clickEvents: {
         type: Boolean,
         value: false,
-        observer: 'clickEventsChanged'
+        observer: '_clickEventsChanged'
       },
 
       /**
        * When true, map drag* events are automatically registered.
-       *
-       * @attribute dragEvents
-       * @type boolean
-       * @default false
        */
       dragEvents: {
         type: Boolean,
         value: false,
-        observer: 'dragEventsChanged'
+        observer: '_dragEventsChanged'
       },
 
       /**
        * When true, map mouse* events are automatically registered.
-       *
-       * @attribute mouseEvents
-       * @type boolean
-       * @default false
        */
       mouseEvents: {
         type: Boolean,
         value: false,
-        observer: 'mouseEventsChanged'
+        observer: '_mouseEventsChanged'
+      },
+
+      /**
+       * Additional map options for google.maps.Map constructor.
+       * Use to specify additional options we do not expose as
+       * properties.
+       * Ex: `<google-map additional-map-options='{"mapTypeId":"satellite"}'>`
+       */
+      additionalMapOptions: {
+        type: Object,
+        value: function() { return {}; }
       }
 
     },
 
     observers: [
-      'updateCenter(latitude longitude)'
+      '_updateCenter(latitude longitude)'
     ],
 
     created: function() {
@@ -437,25 +334,18 @@ attribute to be true.
       }
     },
 
-    mapApiLoaded: function() {
-      this.map = new google.maps.Map(this.$.map, this.getMapOptions());
+    _mapApiLoaded: function() {
+      this.map = new google.maps.Map(this.$.map, this._getMapOptions());
 
       this._listeners = {};
-      this.updateCenter();
-      this.updateMarkers();
-      this.addMapListeners();
+      this._updateCenter();
+      this._updateMarkers();
+      this._addMapListeners();
 
       this.fire('google-map-ready');
     },
 
-    /**
-     * Returns the an object with the current map configurations. Useful for
-     * overriding in a subclass.
-     *
-     * @method getMapOptions
-     * @return {object} Current map configuration.
-     */
-    getMapOptions: function() {
+    _getMapOptions: function() {
       var mapOptions = {
         zoom: this.zoom,
         tilt: this.noAutoTilt ? 0 : 45,
@@ -473,10 +363,13 @@ attribute to be true.
       if (this.getAttribute('draggable') != null) {
         mapOptions.draggable = this.draggable
       }
+      for (var p in this.additionalMapOptions)
+        mapOptions[p] = this.additionalMapOptions[p];
+
       return mapOptions;
     },
 
-    updateMarkers: function() {
+    _updateMarkers: function() {
       this.markers = Array.prototype.slice.call(
           Polymer.dom(this.$.markers).getDistributedNodes());
 
@@ -484,7 +377,7 @@ attribute to be true.
       if (this._mutationObserver) {
         this._mutationObserver.disconnect();
       }
-      this._mutationObserver = new MutationObserver( this.updateMarkers.bind(this));
+      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
       this._mutationObserver.observe(this, {
         childList: true,
         subtree: true
@@ -497,7 +390,7 @@ attribute to be true.
         }
 
         if (this.fitToMarkers) {
-          this.fitToMarkersChanged();
+          this._fitToMarkersChanged();
         }
       }
     },
@@ -522,11 +415,11 @@ attribute to be true.
     resize: function() {
       if (this.map) {
         google.maps.event.trigger(this.map, 'resize');
-        this.updateCenter();
+        this._updateCenter();
       }
     },
 
-    updateCenter: function() {
+    _updateCenter: function() {
       if (!this.map) {
         return;
       } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
@@ -552,13 +445,13 @@ attribute to be true.
       }
     },
 
-    zoomChanged: function() {
+    _zoomChanged: function() {
       if (this.map) {
         this.map.setZoom(Number(this.zoom));
       }
     },
 
-    clickEventsChanged: function() {
+    _clickEventsChanged: function() {
       if (this.map && this.marker) {
         if (this.clickEvents) {
           this._forwardEvent('click');
@@ -572,7 +465,7 @@ attribute to be true.
       }
     },
 
-    dragEventsChanged: function() {
+    _dragEventsChanged: function() {
       if (this.map) {
         if (this.dragEvents) {
           this._forwardEvent('drag');
@@ -586,7 +479,7 @@ attribute to be true.
       }
     },
 
-    mouseEventsChanged: function() {
+    _mouseEventsChanged: function() {
       if (this.map && this.marker) {
         if (this.mouseEvents) {
           this._forwardEvent('mousemove');
@@ -600,32 +493,32 @@ attribute to be true.
       }
     },
 
-    maxZoomChanged: function() {
+    _maxZoomChanged: function() {
       if (this.map) {
         this.map.setOptions({maxZoom: Number(this.maxZoom)});
       }
     },
 
-    minZoomChanged: function() {
+    _minZoomChanged: function() {
       if (this.map) {
         this.map.setOptions({minZoom: Number(this.minZoom)});
       }
     },
 
-    mapTypeChanged: function() {
+    _mapTypeChanged: function() {
       if (this.map) {
         this.map.setMapTypeId(this.mapType);
       }
     },
 
-    disableDefaultUIChanged: function() {
+    _disableDefaultUIChanged: function() {
       if (!this.map) {
         return;
       }
       this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
     },
 
-    zoomableChanged: function() {
+    _zoomableChanged: function() {
       if (!this.map) {
         return;
       }
@@ -647,7 +540,7 @@ attribute to be true.
       }
     },
 
-    fitToMarkersChanged: function() {
+    _fitToMarkersChanged: function() {
       // TODO(ericbidelman): respect user's zoom level.
 
       if (this.map && this.fitToMarkers) {
@@ -666,7 +559,7 @@ attribute to be true.
       }
     },
 
-    addMapListeners: function() {
+    _addMapListeners: function() {
       google.maps.event.addListener(this.map, 'center_changed', function() {
         var center = this.map.getCenter();
         this.latitude = center.lat();
@@ -677,9 +570,9 @@ attribute to be true.
         this.zoom = this.map.getZoom();
       }.bind(this));
 
-      this.clickEventsChanged();
-      this.dragEventsChanged();
-      this.mouseEventsChanged();
+      this._clickEventsChanged();
+      this._dragEventsChanged();
+      this._mouseEventsChanged();
     },
 
     _clearListener: function(name) {

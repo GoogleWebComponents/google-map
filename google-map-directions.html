@@ -12,26 +12,15 @@ information on the API.
 
 #### Example:
 
-    <template is="auto-binding">
+    <template is="dom-bind">
       <google-map-directions map="{{map}}"
-          startAddress="San Francisco"
-          endAddress="Mountain View"
-          travelMode="TRANSIT"></google-map-directions>
+          start-address="San Francisco"
+          end-address="Mountain View"
+          travel-mode="TRANSIT"></google-map-directions>
       <google-map map="{{map}}" latitude="37.779"
                   longitude="-122.3892"></google-map>
     </template>
 
-@element google-map-directions
-@status alpha
-@homepage https://googlewebcomponents.github.io/google-map
--->
-
-<!--
-Fired whenever the directions service returns a result.
-
-@event google-map-response
-@param {Object} detail
-  @param {object} detail.response The directions service response.
 -->
 
 <dom-module id="google-map-directions">
@@ -41,7 +30,7 @@ Fired whenever the directions service returns a result.
     }
   </style>
   <template>
-    <google-maps-api on-api-load="mapApiLoaded" libraries="{{libraries}}" language="{{language}}"></google-maps-api>
+    <google-maps-api on-api-load="_mapApiLoaded" libraries="{{libraries}}" language="{{language}}"></google-maps-api>
   </template>
 </dom-module>
 
@@ -50,24 +39,27 @@ Fired whenever the directions service returns a result.
 
     is: 'google-map-directions',
 
+/**
+Fired whenever the directions service returns a result.
+
+@event google-map-response
+@param {Object} detail
+@param {object} detail.response The directions service response.
+*/
     properties: {
       /**
        * The Google map object.
        *
-       * @attribute map
        * @type google.maps.Map
-       * @default null
        */
       map: {
         type: Object,
-        observer: 'mapChanged'
+        observer: '_mapChanged'
       },
       /**
        * Start address or latlng to get directions from.
        *
-       * @attribute startAddress
        * @type string|google.maps.LatLng
-       * @default null
        */
       startAddress: {
         type: String,
@@ -77,9 +69,7 @@ Fired whenever the directions service returns a result.
       /**
        * End address or latlng for directions to end.
        *
-       * @attribute endAddress
        * @type string|google.maps.LatLng
-       * @default null
        */
       endAddress: {
         type: String,
@@ -88,10 +78,6 @@ Fired whenever the directions service returns a result.
 
       /**
        * Travel mode to use.  One of 'DRIVING', 'WALKING', 'BICYCLING', 'TRANSIT'.
-       *
-       * @attribute travelMode
-       * @type string
-       * @default 'DRIVING'
        */
       travelMode: {
         type: String,
@@ -106,10 +92,6 @@ Fired whenever the directions service returns a result.
        * Note, this needs to be set to the same value as the one used on <google-map>.
        * If you're overriding that element's `libraries` property, this one also
        * needs to be set to the Maps API loads the library code.
-       *
-       * @attribute libraries
-       * @type string
-       * @default "places"
        */
       libraries: {
         type: String,
@@ -122,10 +104,6 @@ Fired whenever the directions service returns a result.
        *
        * Note: the Maps API defaults to the preffered language setting of the browser.
        * Use this parameter to override that behavior.
-       *
-       * @attribute language
-       * @type string
-       * @default null
        */
       language: {
         type: String,
@@ -135,41 +113,44 @@ Fired whenever the directions service returns a result.
       /**
        * The response from the directions service.
        *
-       * @attribute response
-       * @type object
        */
       response: {
         type: Object,
-        observer: 'responseChanged',
+        observer: '_responseChanged',
         notify: true
       }
     },
+
     observers: [
-      'route(startAddress endAddress travelMode)'
+      '_route(startAddress endAddress travelMode)'
     ],
-    mapApiLoaded: function() {
-      this.route();
+
+    _mapApiLoaded: function() {
+      this._route();
     },
-    responseChanged: function() {
+
+    _responseChanged: function() {
       if (this.directionsRenderer && this.response) {
         this.directionsRenderer.setDirections(this.response);
       }
     },
-    mapChanged: function() {
+
+    _mapChanged: function() {
       if (this.map && this.map instanceof google.maps.Map) {
         if (!this.directionsRenderer) {
           this.directionsRenderer = new google.maps.DirectionsRenderer();
         }
         this.directionsRenderer.setMap(this.map);
-        this.responseChanged();
+        this._responseChanged();
       } else {
         // If there is no more map, remove the directionsRenderer from the map and delete it.
         this.directionsRenderer.setMap(null);
         this.directionsRenderer = null;
       }
     },
-    route: function() {
-      // Abort attempts to route if the API is not available yet or the
+
+    _route: function() {
+      // Abort attempts to _route if the API is not available yet or the
       // required attributes are blank.
       if (typeof google == 'undefined' || typeof google.maps == 'undefined' ||
           !this.startAddress || !this.endAddress) {
