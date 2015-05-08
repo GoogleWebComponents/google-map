@@ -28,13 +28,13 @@ suite('markers', function() {
 
       var marker = map.markers[0];
       Polymer.dom((Polymer.dom(marker).parentNode)).removeChild(marker);
-
-      async.nextTick(function() {
+      Polymer.dom.flush();
+      async.nextTick(function() { // needed because map.updateMarkers has mutationObserver
         assert.equal(map.markers.length, 1);
         assert.isNull(
             marker.marker.map, 'removed marker is still visible on map');
         Polymer.dom(map).appendChild(marker);
-
+        Polymer.dom.flush();
         async.nextTick(function() {
           assert.isNotNull(
               marker.marker.map, 're-added marker is not visible.');
