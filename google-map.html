@@ -207,10 +207,10 @@ The `google-map` element renders a Google Map.
       /**
        * If set, removes the map's default UI controls.
        */
-      disableDefaultUI: {
+      disableDefaultUi: {
         type: Boolean,
         value: false,
-        observer: '_disableDefaultUIChanged'
+        observer: '_disableDefaultUiChanged'
       },
 
       /**
@@ -350,7 +350,7 @@ The `google-map` element renders a Google Map.
         zoom: this.zoom,
         tilt: this.noAutoTilt ? 0 : 45,
         mapTypeId: this.mapType,
-        disableDefaultUI: this.disableDefaultUI,
+        disableDefaultUI: this.disableDefaultUi,
         disableDoubleClickZoom: !this.zoomable,
         scrollwheel: this.zoomable,
         styles: this.styles,
@@ -511,11 +511,11 @@ The `google-map` element renders a Google Map.
       }
     },
 
-    _disableDefaultUIChanged: function() {
+    _disableDefaultUiChanged: function() {
       if (!this.map) {
         return;
       }
-      this.map.setOptions({disableDefaultUI: this.disableDefaultUI});
+      this.map.setOptions({disableDefaultUI: this.disableDefaultUi});
     },
 
     _zoomableChanged: function() {
