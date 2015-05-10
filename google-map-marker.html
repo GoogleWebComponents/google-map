@@ -90,19 +90,13 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
     properties: {
       /**
        * A Google Maps marker object.
-       *
-       * @property marker
        * @type google.maps.Marker
-       * @default null
        */
       marker: Object,
 
       /**
        * The Google map object.
-       *
-       * @property map
        * @type google.maps.Map
-       * @default null
        */
       map: {
         type: Object,
@@ -111,19 +105,14 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
 
       /**
        * A Google Map Infowindow object.
-       *
-       * @property info
-       * @type google.map.InfoWindow
-       * @default null
        */
-      info: Object,
+      info: {
+        type: Object,
+        value: null
+      },
 
       /**
        * When true, marker *click events are automatically registered.
-       *
-       * @attribute clickEvents
-       * @type boolean
-       * @default false
        */
       clickEvents: {
         type: Boolean,
@@ -133,22 +122,16 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
 
       /**
        * Image URL for the marker icon.
-       *
-       * @attribute icon
        * @type string|google.maps.Icon|google.maps.Symbol
-       * @default null
        */
       icon: {
         type: Object,
+        value: null,
         observer: '_iconChanged'
       },
 
       /**
        * When true, marker mouse* events are automatically registered.
-       *
-       * @attribute mouseEvents
-       * @type boolean
-       * @default false
        */
       mouseEvents: {
         type: Boolean,
@@ -158,10 +141,6 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
 
       /**
        * Z-index for the marker icon.
-       *
-       * @attribute zIndex
-       * @type number
-       * @default 0
        */
       zIndex: {
         type: Number,
@@ -171,10 +150,6 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
 
       /**
        * The marker's longitude coordinate.
-       *
-       * @attribute longitude
-       * @type number
-       * @default null
        */
       longitude: {
         type: Number,
@@ -183,10 +158,6 @@ Fired for a rightclick on the marker. Requires the clickEvents attribute to be t
       },
       /**
        * The marker's latitude coordinate.
-       *
-       * @attribute latitude
-       * @type number
-       * @default null
        */
       latitude: {
         type: Number,
