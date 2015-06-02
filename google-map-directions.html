@@ -111,6 +111,14 @@ Fired whenever the directions service returns a result.
       },
 
       /**
+       * Options for the display of results
+       */
+      rendererOptions: {
+        type: Object,
+        value: null
+      },
+
+      /**
        * The response from the directions service.
        *
        */
@@ -138,7 +146,7 @@ Fired whenever the directions service returns a result.
     _mapChanged: function() {
       if (this.map && this.map instanceof google.maps.Map) {
         if (!this.directionsRenderer) {
-          this.directionsRenderer = new google.maps.DirectionsRenderer();
+          this.directionsRenderer = new google.maps.DirectionsRenderer(this.rendererOptions);
         }
         this.directionsRenderer.setMap(this.map);
         this._responseChanged();
