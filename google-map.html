@@ -325,7 +325,7 @@ The `google-map` element renders a Google Map.
     },
 
     observers: [
-      '_updateCenter(latitude longitude)'
+      '_updateCenter(latitude, longitude)'
     ],
 
     created: function() {
@@ -430,9 +430,9 @@ The `google-map` element renders a Google Map.
     _updateCenter: function() {
       if (!this.map) {
         return;
-      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+      } else if (typeof this.latitude !== 'number' && isNaN(parseInt(this.latitude))) {
         throw new TypeError('latitude must be a number');
-      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+      } else if (typeof this.longitude !== 'number' && isNaN(parseInt(this.longitude))) {
         throw new TypeError('longitude must be a number');
       }
 
