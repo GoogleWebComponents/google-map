@@ -325,7 +325,7 @@ The `google-map` element renders a Google Map.
     },
 
     observers: [
-      '_updateCenter(latitude longitude)'
+      '_updateCenter(latitude, longitude)'
     ],
 
     created: function() {
@@ -428,27 +428,31 @@ The `google-map` element renders a Google Map.
     },
 
     _updateCenter: function() {
-      if (!this.map) {
-        return;
-      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
-        throw new TypeError('latitude must be a number');
-      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
-        throw new TypeError('longitude must be a number');
-      }
+      if (this.map) {
+        // allow for latitude and longitude to be String-typed, but still Number valued
+        var lati = Number(this.latitude);
+        if (isNaN(lati)) {
+          throw new TypeError('latitude must be a number');
+        }
+        var longi = Number(this.longitude);
+        if (isNaN(longi)) {
+          throw new TypeError('longitude must be a number');
+        }
 
-      var newCenter = new google.maps.LatLng(this.latitude, this.longitude);
-      var oldCenter = this.map.getCenter();
+        var newCenter = new google.maps.LatLng(lati, longi);
+        var oldCenter = this.map.getCenter();
 
-      if (!oldCenter) {
-        // If the map does not have a center, set it right away.
-        this.map.setCenter(newCenter);
-      } else {
-        // Using google.maps.LatLng returns corrected lat/lngs.
-        oldCenter = new google.maps.LatLng(oldCenter.lat(), oldCenter.lng());
+        if (!oldCenter) {
+          // If the map does not have a center, set it right away.
+          this.map.setCenter(newCenter);
+        } else {
+          // Using google.maps.LatLng returns corrected lat/lngs.
+          oldCenter = new google.maps.LatLng(oldCenter.lat(), oldCenter.lng());
 
-        // If the map currently has a center, slowly pan to the new one.
-        if (!oldCenter.equals(newCenter)) {
-          this.map.panTo(newCenter);
+          // If the map currently has a center, slowly pan to the new one.
+          if (!oldCenter.equals(newCenter)) {
+            this.map.panTo(newCenter);
+          }
         }
       }
     },
