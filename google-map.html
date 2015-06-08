@@ -231,11 +231,11 @@ The `google-map` element renders a Google Map.
       },
 
       /**
-       * If false, prevent the user from zooming the map interactively.
+       * If true, prevent the user from zooming the map interactively.
        */
-      zoomable: {
+      notZoomable: {
         type: Boolean,
-        value: true,
+        value: false,
         observer: '_zoomableChanged'
       },
 
@@ -359,8 +359,8 @@ The `google-map` element renders a Google Map.
         tilt: this.noAutoTilt ? 0 : 45,
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUi,
-        disableDoubleClickZoom: !this.zoomable,
-        scrollwheel: this.zoomable,
+        disableDoubleClickZoom: this.notZoomable,
+        scrollwheel: !this.notZoomable,
         styles: this.styles,
         maxZoom: Number(this.maxZoom),
         minZoom: Number(this.minZoom)
@@ -535,8 +535,8 @@ The `google-map` element renders a Google Map.
         return;
       }
       this.map.setOptions({
-        disableDoubleClickZoom: !this.zoomable,
-        scrollwheel: this.zoomable
+        disableDoubleClickZoom: this.notZoomable,
+        scrollwheel: !this.notZoomable
       });
     },
 
