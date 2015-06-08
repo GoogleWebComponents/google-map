@@ -39,8 +39,8 @@ suite('markers', function() {
     var markerEl = Polymer.dom(map).querySelector('google-map-marker');
     assert.isUndefined(markerEl.marker);
     assert.isUndefined(markerEl.map);
-    assert.isUndefined(markerEl.icon);
-    assert.isUndefined(markerEl.info);
+    assert.isNull(markerEl.icon);
+    assert.isNull(markerEl.info);
     assert.equal(markerEl.zIndex, 0);
     assert.equal(markerEl.latitude, 37.779);
     assert.equal(markerEl.longitude, -122.3892);
