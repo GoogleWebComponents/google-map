@@ -428,7 +428,7 @@ The `google-map` element renders a Google Map.
     },
 
     _updateCenter: function() {
-      if (this.map) {
+      if (this.map && this.latitude !== undefined && this.longitude !== undefined) {
         // allow for latitude and longitude to be String-typed, but still Number valued
         var lati = Number(this.latitude);
         if (isNaN(lati)) {
