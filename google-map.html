@@ -42,6 +42,7 @@ The `google-map` element renders a Google Map.
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
 
+@demo
 -->
 
 <dom-module id="google-map">
@@ -464,7 +465,7 @@ The `google-map` element renders a Google Map.
     },
 
     _clickEventsChanged: function() {
-      if (this.map && this.marker) {
+      if (this.map) {
         if (this.clickEvents) {
           this._forwardEvent('click');
           this._forwardEvent('dblclick');
@@ -492,7 +493,7 @@ The `google-map` element renders a Google Map.
     },
 
     _mouseEventsChanged: function() {
-      if (this.map && this.marker) {
+      if (this.map) {
         if (this.mouseEvents) {
           this._forwardEvent('mousemove');
           this._forwardEvent('mouseout');
