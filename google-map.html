@@ -383,7 +383,7 @@ The `google-map` element renders a Google Map.
 
       // do not recompute if markers have not been added or removed
       if (newMarkers.length === this.markers.length) {
-        var added = newMarkers.filter( function(m) {
+        var added = newMarkers.filter(function(m) {
             return this.markers && this.markers.indexOf(m) === -1;
           }.bind(this));
         if (added.length === 0) {
@@ -392,8 +392,6 @@ The `google-map` element renders a Google Map.
       }
 
       this.markers = newMarkers;
-      // this.markers = Array.prototype.slice.call(
-      //     Polymer.dom(this.$.markers).getDistributedNodes());
 
       // Watch for future updates.
       if (this._mutationObserver) {
