@@ -232,12 +232,12 @@ The `google-map` element renders a Google Map.
       },
 
       /**
-       * If false, prevent the user from zooming the map interactively.
+       * If true, prevent the user from zooming the map interactively.
        */
-      zoomable: {
+      disableZoom: {
         type: Boolean,
-        value: true,
-        observer: '_zoomableChanged'
+        value: false,
+        observer: '_disableZoomChanged'
       },
 
       /**
@@ -360,8 +360,8 @@ The `google-map` element renders a Google Map.
         tilt: this.noAutoTilt ? 0 : 45,
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUi,
-        disableDoubleClickZoom: !this.zoomable,
-        scrollwheel: this.zoomable,
+        disableDoubleClickZoom: this.disableZoom,
+        scrollwheel: !this.disableZoom,
         styles: this.styles,
         maxZoom: Number(this.maxZoom),
         minZoom: Number(this.minZoom)
@@ -545,13 +545,13 @@ The `google-map` element renders a Google Map.
       this.map.setOptions({disableDefaultUI: this.disableDefaultUi});
     },
 
-    _zoomableChanged: function() {
+    _disableZoomChanged: function() {
       if (!this.map) {
         return;
       }
       this.map.setOptions({
-        disableDoubleClickZoom: !this.zoomable,
-        scrollwheel: this.zoomable
+        disableDoubleClickZoom: this.disableZoom,
+        scrollwheel: !this.disableZoom
       });
     },
 
