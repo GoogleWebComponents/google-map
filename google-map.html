@@ -26,7 +26,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b>:
 
-    <google-map disable-default-ui show-center-marker zoom="15"></google-map>
+    <google-map disable-default-ui zoom="15"></google-map>
     <script>
       var map = document.querySelector('google-map');
       map.latitude = 37.77493;
@@ -335,7 +335,7 @@ The `google-map` element renders a Google Map.
     },
 
     observers: [
-      '_updateCenter(latitude, longitude)'
+      '_debounceUpdateCenter(latitude, longitude)'
     ],
 
     created: function() {
@@ -443,15 +443,30 @@ The `google-map` element renders a Google Map.
      */
     resize: function() {
       if (this.map) {
+
+        // saves and restores latitude/longitude because resize can move the center
+        var oldLatitude = this.latitude;
+        var oldLongitude = this.longitude;
         google.maps.event.trigger(this.map, 'resize');
-        this._updateCenter();
+        this.latitude = oldLatitude;  // restore because resize can move our center
+        this.longitude = oldLongitude;
+
         if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
           this._fitToMarkersChanged();
+        }
+        else {
+          this._updateCenter();
         }
       }
     },
 
+    _debounceUpdateCenter: function() {
+      this.debounce('updateCenter', this._updateCenter);
+    },
+
     _updateCenter: function() {
+      this.cancelDebouncer('updateCenter');
+
       if (this.map && this.latitude !== undefined && this.longitude !== undefined) {
         // allow for latitude and longitude to be String-typed, but still Number valued
         var lati = Number(this.latitude);
