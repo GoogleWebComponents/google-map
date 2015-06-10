@@ -151,14 +151,6 @@ The `google-map` element renders a Google Map.
       clientId: String,
 
       /**
-       * A Maps API object.
-       */
-      map: {
-        type: Object,
-        notify: true
-      },
-
-      /**
        * A latitude to center the map on.
        */
       latitude: {
@@ -166,6 +158,15 @@ The `google-map` element renders a Google Map.
         value: 37.77493,
         notify: true,
         reflectToAtrribute: true
+      },
+
+      /**
+       * A Maps API object.
+       */
+      map: {
+        type: Object,
+        notify: true,
+        value: null
       },
 
       /**
@@ -403,6 +404,8 @@ The `google-map` element renders a Google Map.
         var added = newMarkers.filter(function(m) {
             return this.markers && this.markers.indexOf(m) === -1;
           }.bind(this));
+
+//        debugger;
         if (added.length === 0) {
           return;
         }
