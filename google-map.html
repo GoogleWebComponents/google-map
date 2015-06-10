@@ -359,7 +359,6 @@ The `google-map` element renders a Google Map.
       this._updateCenter();
       this._updateMarkers();
       this._addMapListeners();
-
       this.fire('google-map-ready');
     },
 
@@ -453,9 +452,6 @@ The `google-map` element renders a Google Map.
 
         if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
           this._fitToMarkersChanged();
-        }
-        else {
-          this._updateCenter();
         }
       }
     },
