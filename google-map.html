@@ -386,6 +386,19 @@ The `google-map` element renders a Google Map.
       return mapOptions;
     },
 
+    // watch for future updates
+    _observeMarkers: function() {
+      // Watch for future updates.
+      if (this._mutationObserver) {
+        this._mutationObserver.disconnect();
+      }
+      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
+      this._mutationObserver.observe(this, {
+        childList: true,
+        subtree: true
+      });
+    },
+
     _updateMarkers: function() {
       var newMarkers = Array.prototype.slice.call(
           Polymer.dom(this.$.markers).getDistributedNodes());
@@ -396,21 +409,19 @@ The `google-map` element renders a Google Map.
             return this.markers && this.markers.indexOf(m) === -1;
           }.bind(this));
         if (added.length === 0) {
+          // set up observer first time around
+          if (!this._mutationObserver) {
+            this._observeMarkers();
+          }
           return;
         }
       }
 
+      this._observeMarkers();
+
       this.markers = newMarkers;
 
-      // Watch for future updates.
-      if (this._mutationObserver) {
-        this._mutationObserver.disconnect();
-      }
-      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this, {
-        childList: true,
-        subtree: true
-      });
+
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
