@@ -161,6 +161,15 @@ The `google-map` element renders a Google Map.
       },
 
       /**
+       * A Maps API object.
+       */
+      map: {
+        type: Object,
+        notify: true,
+        value: null
+      },
+
+      /**
        * A comma separated list (e.g. "places,geometry") of libraries to load
        * with this map. Defaults to "places". For more information see
        * https://developers.google.com/maps/documentation/javascript/libraries.
@@ -408,6 +417,8 @@ The `google-map` element renders a Google Map.
         var added = newMarkers.filter(function(m) {
             return this.markers && this.markers.indexOf(m) === -1;
           }.bind(this));
+
+//        debugger;
         if (added.length === 0) {
           // set up observer first time around
           if (!this._mutationObserver) {
