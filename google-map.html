@@ -2,6 +2,7 @@
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-maps-api.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="google-map-marker.html">
 <!--
 The `google-map` element renders a Google Map.
@@ -323,6 +324,14 @@ The `google-map` element renders a Google Map.
         value: function() { return {}; }
       }
 
+    },
+
+    behaviors: [
+      Polymer.IronResizableBehavior
+    ],
+
+    listeners: {
+      'iron-resize': 'resize'
     },
 
     observers: [
