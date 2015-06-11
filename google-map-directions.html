@@ -30,7 +30,11 @@ information on the API.
     }
   </style>
   <template>
-    <google-maps-api on-api-load="_mapApiLoaded" libraries="{{libraries}}" language="{{language}}"></google-maps-api>
+    <google-maps-api
+      api-key="[[apiKey]]"
+      libraries="[[libraries]]"
+      language="[[language]]"
+      on-api-load="_mapApiLoaded"></google-maps-api>
   </template>
 </dom-module>
 
@@ -47,6 +51,11 @@ Fired whenever the directions service returns a result.
 @param {object} detail.response The directions service response.
 */
     properties: {
+      /**
+       * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
+       */
+      apiKey: String,
+
       /**
        * The Google map object.
        *
