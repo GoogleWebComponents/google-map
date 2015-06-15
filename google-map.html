@@ -352,23 +352,37 @@ The `google-map` element renders a Google Map.
     },
 
     attached: function() {
-      this.resize();
+      this._initGMap();
     },
 
     detached: function() {
       if (this._mutationObserver) {
         this._mutationObserver.disconnect();
+        this._mutationObserver = null;
       }
     },
 
-    _mapApiLoaded: function() {
-      this.map = new google.maps.Map(this.$.map, this._getMapOptions());
+    _initGMap: function() {
+      if (this.map) {
+        return; // already initialized
+      }
+      if (!(window.google && window.google.maps)) {
+        return; // api not loaded
+      }
+      if (!this.isAttached) {
+        return; // not attached
+      }
 
+      this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
       this._updateCenter();
       this._updateMarkers();
       this._addMapListeners();
       this.fire('google-map-ready');
+    },
+
+    _mapApiLoaded: function() {
+      this._initGMap();
     },
 
     _getMapOptions: function() {
@@ -399,12 +413,11 @@ The `google-map` element renders a Google Map.
     _observeMarkers: function() {
       // Watch for future updates.
       if (this._mutationObserver) {
-        this._mutationObserver.disconnect();
+        return;
       }
       this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
       this._mutationObserver.observe(this, {
-        childList: true,
-        subtree: true
+        childList: true
       });
     },
 
@@ -429,8 +442,6 @@ The `google-map` element renders a Google Map.
       this._observeMarkers();
 
       this.markers = newMarkers;
-
-
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
