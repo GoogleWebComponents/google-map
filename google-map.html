@@ -366,7 +366,7 @@ The `google-map` element renders a Google Map.
       if (this.map) {
         return; // already initialized
       }
-      if (!(window.google &&window.google.maps)) {
+      if (!(window.google && window.google.maps)) {
         return; // api not loaded
       }
       if (!this.isAttached) {
