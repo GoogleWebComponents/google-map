@@ -358,19 +358,20 @@ The `google-map` element renders a Google Map.
     detached: function() {
       if (this._mutationObserver) {
         this._mutationObserver.disconnect();
+        this._mutationObserver = null;
       }
     },
 
     _initGMap: function() {
       if (this.map) {
         return; // already initialized
-      };
-      if (!('google' in window) || !('maps' in window.google)) {
+      }
+      if (!(window.google &&window.google.maps)) {
         return; // api not loaded
-      };
+      }
       if (!this.isAttached) {
         return; // not attached
-      };
+      }
 
       this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
@@ -412,17 +413,15 @@ The `google-map` element renders a Google Map.
     _observeMarkers: function() {
       // Watch for future updates.
       if (this._mutationObserver) {
-        this._mutationObserver.disconnect();
+        return;
       }
       this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
       this._mutationObserver.observe(this, {
-        childList: true,
-        subtree: true
+        childList: true
       });
     },
 
     _updateMarkers: function() {
-      console.log('updateMarkers');
       var newMarkers = Array.prototype.slice.call(
           Polymer.dom(this.$.markers).getDistributedNodes());
 
