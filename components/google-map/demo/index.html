@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Google Map demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../google-map.html">
+  <link rel="import" href="../google-map-marker.html">
+  <link rel="import" href="../google-map-directions.html">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
+    #controlsToggle {
+      position: absolute;
+      left: 10%;
+      bottom: 10%;
+    }
+  </style>
+</head>
+<body fullbleed>
+
+<google-map latitude="37.779" longitude="-122.3892" min-zoom="9" max-zoom="11" language="en">
+  <google-map-marker latitude="37.779" longitude="-122.3892"
+                     title="Go Giants!" draggable="true">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
+  </google-map-marker>
+</google-map>
+
+<google-map-directions start-address="Oakland" end-address="Mountain View" language=
+"en"></google-map-directions>
+
+<button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
+
+<script>
+  var gmap = document.querySelector('google-map');
+  gmap.addEventListener('api-load', function(e) {
+    document.querySelector('google-map-directions').map = this.map;
+  });
+
+  function toggleControls() {
+    gmap.disableDefaultUi = !gmap.disableDefaultUi;
+  }
+</script>
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-51314200-1', 'auto');
+ga('send', 'pageview');
+</script>
+</body>
+</html>
