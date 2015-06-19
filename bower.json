@@ -1,9 +1,14 @@
 {
   "name": "google-map",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Google Maps web components",
   "homepage": "https://googlewebcomponents.github.io/google-map",
-  "main": "google-map.html",
+  "main": [
+    "google-map.html",
+    "google-map-search.html",
+    "google-map-marker.html",
+    "google-map-directions.html"
+  ],
   "authors": [
     "Frankie Fu <ffu@google.com>",
     "Scott Miles <sjmiles@google.com>",
@@ -12,8 +17,7 @@
   "license": "Apache-2",
   "ignore": [
     "/.*",
-    "/test/",
-    "/demo/"
+    "/test/"
   ],
   "keywords": [
     "web-component",
