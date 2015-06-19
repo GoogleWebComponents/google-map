@@ -114,14 +114,17 @@ child of `google-map`.
      * @event google-map-marker-rightclick
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when an infowindow is opened.
      * @event google-map-marker-open
      */
+
     /**
      * Fired when the close button of the infowindow is pressed.
      * @event google-map-marker-close
-     */ 
+     */
+
     properties: {
       /**
        * A Google Maps marker object.
@@ -238,6 +241,8 @@ child of `google-map`.
       if (this.marker) {
         this.marker.setMap(this.map);
       }
+      if (this.open)
+        this.fire('google-map-marker-open');
     },
 
     _updatePosition: function() {
