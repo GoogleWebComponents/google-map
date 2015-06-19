@@ -92,6 +92,14 @@ child of `google-map`.
      * @event google-map-marker-rightclick
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+    /**
+     * Fired when an infowindow is opened.
+     * @event google-map-marker-open
+     */
+    /**
+     * Fired when the close button of the infowindow is pressed.
+     * @event google-map-marker-close
+     */ 
     properties: {
       /**
        * A Google Maps marker object.
@@ -168,6 +176,14 @@ child of `google-map`.
         type: Number,
         value: null,
         reflectToAttribute: true
+      },
+      /**
+       * Specifies whether the InfoWindow is open or not
+       */
+      open: {
+        type: Boolean,
+        value: false,
+        observer: '_openChanged'
       }
     },
 
@@ -188,6 +204,8 @@ child of `google-map`.
       if (this.marker) {
         this.marker.setMap(this.map);
       }
+      if (this.open)
+        this.fire('google-map-marker-open');
     },
 
     _updatePosition: function() {
@@ -270,16 +288,31 @@ child of `google-map`.
         if (!this.info) {
           // Create a new infowindow
           this.info = new google.maps.InfoWindow();
-          this.infoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
-            this.info.open(this.map, this.marker);
+          this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+            this.fire('google-map-marker-open');
+          }.bind(this));
+          
+          this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+            this.fire('google-map-marker-close');
           }.bind(this));
         }
         this.info.setContent(content);
       } else {
         if (this.info) {
           // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-          google.maps.event.removeListener(this.infoHandler_);
+          google.maps.event.removeListener(this.openInfoHandler_);
+          google.maps.event.removeListener(this.closeInfoHandler_);
           this.info = null;
+        }
+      }
+    },
+
+    _openChanged: function() {
+      if (this.info) {
+        if (this.open) {
+          this.info.open(this.map, this.marker);
+        } else {
+          this.info.close();
         }
       }
     },
@@ -299,6 +332,7 @@ child of `google-map`.
       this._clickEventsChanged();
       this._contentChanged();
       this._mouseEventsChanged();
+      this._openChanged();
       setupDragHandler_.bind(this)();
     },
 

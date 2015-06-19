@@ -3,6 +3,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-maps-api.html">
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="google-map-marker.html">
 <!--
 The `google-map` element renders a Google Map.
@@ -75,8 +76,9 @@ The `google-map` element renders a Google Map.
       on-api-load="_mapApiLoaded"></google-maps-api>
 
     <div id="map"></div>
-
-    <content id="markers" select="google-map-marker"></content>
+    <iron-selector id="selector" multi="[[!singleInfoWindow]]" selected-attribute="open" activate-event="google-map-marker-open" on-google-map-marker-close="_deselectMarker">
+      <content id="markers" select="google-map-marker"></content>
+    </iron-selector>
 
   </template>
 </dom-module>
@@ -331,6 +333,14 @@ The `google-map` element renders a Google Map.
       additionalMapOptions: {
         type: Object,
         value: function() { return {}; }
+      },
+
+      /**
+       * If set, all other info windows on markers are closed when opening a new one.
+       */
+      singleInfoWindow: {
+        type: Boolean,
+        value: false
       }
 
     },
@@ -664,7 +674,20 @@ The `google-map` element renders a Google Map.
       this._listeners[name] = google.maps.event.addListener(this.map, name, function(event) {
         this.fire('google-map-' + name, event);
       }.bind(this));
-    }
+    },
+
+   _deselectMarker: function(e) { 
+     // If singleInfoWindow is set, update core-selector's selected attribute to be null.
+     // Else remvoe the marker from core-selector's selected array.
+     var markerSelector = this.$.selector;
+     var markerIndex = markerSelector.items.indexOf(e.target);
+
+     if (this.singleInfoWindow) {
+      markerSelector.selected = null;
+     } else {
+      markerSelector.selectedValues = markerSelector.selectedValues.filter(function(i) {return i != markerIndex});
+     }
+   }
 
   });
 
