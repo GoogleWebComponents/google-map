@@ -195,7 +195,8 @@ The `google-map` element renders a Google Map.
       zoom: {
         type: Number,
         value: 10,
-        observer: '_zoomChanged'
+        observer: '_zoomChanged',
+        notify: true
       },
 
       /**
@@ -212,7 +213,8 @@ The `google-map` element renders a Google Map.
       mapType: {
         type: String,
         value: 'roadmap', // roadmap, satellite, hybrid, terrain,
-        observer: '_mapTypeChanged'
+        observer: '_mapTypeChanged',
+        notify: true
       },
 
       /**
@@ -646,6 +648,10 @@ The `google-map` element renders a Google Map.
 
       google.maps.event.addListener(this.map, 'zoom_changed', function() {
         this.zoom = this.map.getZoom();
+      }.bind(this));
+      
+      google.maps.event.addListener(this.map, 'maptypeid_changed', function() {
+        this.mapType = this.map.getMapTypeId();
       }.bind(this));
 
       this._clickEventsChanged();
