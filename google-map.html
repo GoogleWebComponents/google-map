@@ -77,6 +77,7 @@ The `google-map` element renders a Google Map.
     <div id="map"></div>
 
     <content id="markers" select="google-map-marker"></content>
+    <content id="objects" select="*"></content>
 
   </template>
 </dom-module>
@@ -351,6 +352,7 @@ The `google-map` element renders a Google Map.
 
     created: function() {
       this.markers = [];
+      this.objects = [];
     },
 
     attached: function() {
@@ -379,6 +381,7 @@ The `google-map` element renders a Google Map.
       this._listeners = {};
       this._updateCenter();
       this._updateMarkers();
+      this._updateObjects();
       this._addMapListeners();
       this.fire('google-map-ready');
     },
@@ -412,15 +415,46 @@ The `google-map` element renders a Google Map.
     },
 
     // watch for future updates
-    _observeMarkers: function() {
+    _observeObjects: function() {
       // Watch for future updates.
       if (this._mutationObserver) {
         return;
       }
-      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
+      this._mutationObserver = new MutationObserver( this._updateObjects.bind(this));
       this._mutationObserver.observe(this, {
         childList: true
       });
+    },
+    
+    _updateObjects: function() {
+      var newObjects = Array.prototype.slice.call(
+          Polymer.dom(this.$.objects).getDistributedNodes());
+
+      if (newObjects.length === this.objects.length) {
+        var added = newObjects.filter(function(o) {
+          return this.objects && this.objects.indexOf(o) === -1;
+        }.bind(this));
+        if (added.length === 0) {
+          // set up observer first time around
+          if (!this._mutationObserver) {
+            this._observeObjects();
+          }
+          return;
+        }
+      }
+      
+      this._observeObjects();
+
+      this.objects = newObjects;
+      
+      // Set the map on each non-marker object.
+      if (this.objects.length && this.map) {
+        for (var i = 0, o; o = this.objects[i]; ++i) {
+          o.map = this.map;
+        }
+      }
+
+      this._updateMarkers();
     },
 
     _updateMarkers: function() {
@@ -433,15 +467,9 @@ The `google-map` element renders a Google Map.
           return this.markers && this.markers.indexOf(m) === -1;
         }.bind(this));
         if (added.length === 0) {
-          // set up observer first time around
-          if (!this._mutationObserver) {
-            this._observeMarkers();
-          }
           return;
         }
       }
-
-      this._observeMarkers();
 
       this.markers = newMarkers;
 
@@ -527,7 +555,9 @@ The `google-map` element renders a Google Map.
 
     _zoomChanged: function() {
       if (this.map) {
-        this.map.setZoom(Number(this.zoom));
+        if (this.zoom != this.map.getZoom()) {
+          this.map.setZoom(Number(this.zoom));
+        }
       }
     },
 
