@@ -77,6 +77,7 @@ The `google-map` element renders a Google Map.
     <div id="map"></div>
 
     <content id="markers" select="google-map-marker"></content>
+    <content id="objects" select="*"></content>
 
   </template>
 </dom-module>
@@ -349,6 +350,7 @@ The `google-map` element renders a Google Map.
 
     created: function() {
       this.markers = [];
+      this.objects = [];
     },
 
     attached: function() {
@@ -376,7 +378,7 @@ The `google-map` element renders a Google Map.
       this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
       this._updateCenter();
-      this._updateMarkers();
+      this._updateChildren();
       this._addMapListeners();
       this.fire('google-map-ready');
     },
@@ -410,15 +412,20 @@ The `google-map` element renders a Google Map.
     },
 
     // watch for future updates
-    _observeMarkers: function() {
+    _observeChildren: function() {
       // Watch for future updates.
       if (this._mutationObserver) {
         return;
       }
-      this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
+      this._mutationObserver = new MutationObserver(this._updateChildren.bind(this));
       this._mutationObserver.observe(this, {
         childList: true
       });
+    },
+
+    _updateChildren: function() {
+      this._updateMarkers();
+      this._updateObjects();
     },
 
     _updateMarkers: function() {
@@ -433,13 +440,13 @@ The `google-map` element renders a Google Map.
         if (added.length === 0) {
           // set up observer first time around
           if (!this._mutationObserver) {
-            this._observeMarkers();
+            this._observeChildren();
           }
           return;
         }
       }
 
-      this._observeMarkers();
+      this._observeChildren();
 
       this.markers = newMarkers;
 
@@ -451,6 +458,34 @@ The `google-map` element renders a Google Map.
       }
       if (this.fitToMarkers) {
         this._fitToMarkersChanged();
+      }
+    },
+
+    _updateObjects: function() {
+      var newObjects = Array.prototype.slice.call(
+          Polymer.dom(this.$.objects).getDistributedNodes());
+
+      // Do not recompute if objects have not been added or removed.
+      if (newObjects.length === this.objects.length) {
+        var added = newObjects.filter(function(o) {
+          return this.objects.indexOf(o) === -1;
+        }.bind(this));
+        if (added.length === 0) {
+          // Set up observer first time around.
+          this._observeChildren();
+          return;
+        }
+      }
+
+      this._observeChildren();
+
+      this.objects = newObjects;
+
+      // Set the map on each (non-marker) object.
+      if (this.objects.length && this.map) {
+        for (var i = 0, o; o = this.objects[i]; ++i) {
+          o.map = this.map;
+        }
       }
     },
 
