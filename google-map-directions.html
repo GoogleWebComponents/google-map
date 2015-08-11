@@ -153,8 +153,10 @@ Fired whenever the directions service returns a result.
         this._responseChanged();
       } else {
         // If there is no more map, remove the directionsRenderer from the map and delete it.
-        this.directionsRenderer.setMap(null);
-        this.directionsRenderer = null;
+        if (this.directionsRenderer) {
+          this.directionsRenderer.setMap(null);
+          this.directionsRenderer = null;
+        }
       }
     },
 
