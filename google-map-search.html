@@ -85,11 +85,8 @@ Fired when the search element returns a result.
        * If `latitude` and `longitude` are not specified,
        * the center of the currently visible map area is used.
        *
-       * Ignored if `currentMapArea` is true.
-       *
-       * @attribute radius
-       * @type number
-       * @default null
+       * If not set, search will be restricted to the currently visible
+       * map area, unless `global` is set to true.
        */
       radius: {
         type: Number,
@@ -97,13 +94,14 @@ Fired when the search element returns a result.
       },
 
       /**
-       * Restrict the search only to the current map area.
+       * By default, search is restricted to the currently visible map area.
+       * Set this to true to search everywhere.
        *
-       * @attribute currentMapArea
+       * Ignored if `radius` is set.
        */
-      currentMapArea: {
+      global: {
         type: Boolean,
-        value: true
+        value: false
       },
 
       /**
@@ -123,7 +121,7 @@ Fired when the search element returns a result.
        */
       results: {
         type: Array,
-        value: null,
+        value: function() { return []; },
         notify: true
       }
     },
@@ -135,8 +133,6 @@ Fired when the search element returns a result.
 
     /**
      * Perform a search using for `query` for the search term.
-     *
-     * @method search
      */
     search: function() {
       if (this.query && this.map) {
@@ -146,7 +142,7 @@ Fired when the search element returns a result.
           var types = this.types.split(' ');
         }
 
-        if (this.currentMapArea) {
+        if (!this.global) {
           var bounds = this.map.getBounds();
         } else if (this.radius) {
           var radius = this.radius;
