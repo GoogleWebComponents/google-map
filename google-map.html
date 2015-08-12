@@ -331,6 +331,15 @@ The `google-map` element renders a Google Map.
       additionalMapOptions: {
         type: Object,
         value: function() { return {}; }
+      },
+
+      /**
+       * The markers on the map.
+       */
+      markers: {
+        type: Array,
+        value: function() { return []; },
+        readOnly: true
       }
 
     },
@@ -346,10 +355,6 @@ The `google-map` element renders a Google Map.
     observers: [
       '_debounceUpdateCenter(latitude, longitude)'
     ],
-
-    created: function() {
-      this.markers = [];
-    },
 
     attached: function() {
       this._initGMap();
@@ -441,7 +446,7 @@ The `google-map` element renders a Google Map.
 
       this._observeMarkers();
 
-      this.markers = newMarkers;
+      this.markers = this._setMarkers(newMarkers);
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
