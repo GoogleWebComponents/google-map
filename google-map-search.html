@@ -13,14 +13,18 @@ information on the API.
 #### Example:
 
     <template is="dom-bind">
-      <google-map-search map="{{map}}" query="Pizza"
-                         result="{{result}}"></google-map-search>
+      <google-map-search map="{{map}}" query="Pizza" currentMapArea
+                         results="{{results}}"></google-map-search>
       <google-map map="{{map}}" latitude="37.779"
-                  longitude="-122.3892"></google-map>
-      <div>Result:
-        <span>{{result.latitude}}</span>,
-        <span>{{result.longitude}}</span>
-      </div>
+                  longitude="-122.3892">
+        <template repeat="{{results}}">
+          <google-map-marker latitude="{{latitude}}"
+                             longitude="{{longitude}}">
+            <h2>{{name}}</h2>
+            {{formatted_address}}
+          </google-map-marker>
+        </template>
+      </google-map>
     </template>
     <script>
       document.querySelector('google-map-search').search();
@@ -34,13 +38,14 @@ information on the API.
 /**
 Fired when the search element returns a result.
 
-@event google-map-search-result
-@param {Object} detail
+@event google-map-search-results
+@param {Array} detail An array of search results
   @param {number} detail.latitude Latitude of the result.
   @param {number} detail.longitude Longitude of the result.
   @param {bool} detail.show Whether to show the result on the map.
 */
     properties: {
+
       /**
        * The Google map object.
        */
@@ -48,6 +53,7 @@ Fired when the search element returns a result.
         type: Object,
         value: null
       },
+
       /**
        * The search query.
        */
@@ -57,36 +63,124 @@ Fired when the search element returns a result.
       },
 
       /**
-       * The search result.
+       * Latitude of the center of the search area.
+       * Ignored if `currentMapArea` is true.
        */
-      result: {
-        type: Object,
-        value: null,
+      latitude: {
+        type: Number,
+        value: null
+      },
+
+      /**
+       * Longitude of the center of the search area.
+       * Ignored if `currentMapArea` is true.
+       */
+      longitude: {
+        type: Number,
+        value: null
+      },
+
+      /**
+       * Search radius, in meters.
+       * If `latitude` and `longitude` are not specified,
+       * the center of the currently visible map area is used.
+       *
+       * If not set, search will be restricted to the currently visible
+       * map area, unless `globalSearch` is set to true.
+       */
+      radius: {
+        type: Number,
+        value: null
+      },
+
+      /**
+       * By default, search is restricted to the currently visible map area.
+       * Set this to true to search everywhere.
+       *
+       * Ignored if `radius` is set.
+       */
+      globalSearch: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Space-separated list of result types.
+       * The search will only return results of the listed types.
+       * See https://developers.google.com/places/documentation/supported_types
+       * for a list of supported types.
+       * Leave empty or null to search for all result types.
+       */
+      types: {
+        type: String,
+        value: null
+      },
+
+      /**
+       * The search results.
+       */
+      results: {
+        type: Array,
+        value: function() { return []; },
         notify: true
       }
     },
 
     observers: [
-      'search(query,map)'
+      'search(query,map,location,radius,types,currentMapArea)',
+      '_updateLocation(latitude,longitude)'
     ],
 
     /**
-     * Performance a search using for `query` for the search term.
+     * Perform a search using for `query` for the search term.
      */
     search: function() {
       if (this.query && this.map) {
         var places = new google.maps.places.PlacesService(this.map);
-        places.textSearch({query: this.query}, this._gotResults.bind(this));
+
+        if (this.types && typeof this.types == 'string') {
+          var types = this.types.split(' ');
+        }
+
+        if (!this.globalSearch) {
+          var bounds = this.map.getBounds();
+        } else if (this.radius) {
+          var radius = this.radius;
+          var location = this.location ? this.location : this.map.getCenter();
+        }
+
+        places.textSearch({
+          query: this.query,
+          types: types,
+          bounds: bounds,
+          radius: radius,
+          location: location
+        }, this._gotResults.bind(this));
       }
     },
 
     _gotResults: function(results, status) {
-      this.result = {
-        latitude: results[0].geometry.location.lat(),
-        longitude: results[0].geometry.location.lng(),
-        show: true
+      this.results = results.map(function(result) {
+        // obtain lat/long from geometry
+        result.latitude  = result.geometry.location.lat();
+        result.longitude = result.geometry.location.lng();
+
+        return result;
+      });
+      this.fire('google-map-search-results', this.results);
+    },
+
+    _updateLocation: function() {
+      if (!this.map) {
+        return;
+      } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
+        throw new TypeError('latitude must be a number');
+      } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
+        throw new TypeError('longitude must be a number');
       }
-      this.fire('google-map-search-result', this.result);
+
+      // Update location. This will trigger a new search.
+      this.location = new google.maps.LatLng(this.latitude, this.longitude);
     }
   });
 </script>
