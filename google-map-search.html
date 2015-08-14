@@ -86,7 +86,7 @@ Fired when the search element returns a result.
        * the center of the currently visible map area is used.
        *
        * If not set, search will be restricted to the currently visible
-       * map area, unless `global` is set to true.
+       * map area, unless `globalSearch` is set to true.
        */
       radius: {
         type: Number,
@@ -99,7 +99,7 @@ Fired when the search element returns a result.
        *
        * Ignored if `radius` is set.
        */
-      global: {
+      globalSearch: {
         type: Boolean,
         value: false
       },
@@ -142,7 +142,7 @@ Fired when the search element returns a result.
           var types = this.types.split(' ');
         }
 
-        if (!this.global) {
+        if (!this.globalSearch) {
           var bounds = this.map.getBounds();
         } else if (this.radius) {
           var radius = this.radius;
