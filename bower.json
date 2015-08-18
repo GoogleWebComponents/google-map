@@ -1,6 +1,6 @@
 {
   "name": "google-map",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Google Maps web components",
   "homepage": "https://googlewebcomponents.github.io/google-map",
   "main": [
@@ -28,7 +28,7 @@
     "maps"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0",
+    "polymer": "Polymer/polymer#^1.1.0",
     "google-apis": "GoogleWebComponents/google-apis#^1.0.0",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.0"
   },
