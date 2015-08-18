@@ -65,7 +65,7 @@ The `google-map` element renders a Google Map.
 
   </style>
   <template>
-    <google-maps-api
+    <google-maps-api id="api"
       api-key="[[apiKey]]"
       client-id="[[clientId]]"
       version="[[version]]"
@@ -371,7 +371,7 @@ The `google-map` element renders a Google Map.
       if (this.map) {
         return; // already initialized
       }
-      if (!(window.google && window.google.maps)) {
+      if (this.$.api.libraryLoaded !== true) {
         return; // api not loaded
       }
       if (!this.isAttached) {
