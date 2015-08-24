@@ -190,6 +190,15 @@ The `google-map` element renders a Google Map.
       },
 
       /**
+       * A kml file to load.
+       */
+      kml: {
+        type: String,
+        value: null,
+        observer: '_loadKml'
+      },
+
+      /**
        * A zoom level to set the map to.
        */
       zoom: {
@@ -381,6 +390,7 @@ The `google-map` element renders a Google Map.
       this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
       this._updateCenter();
+      this._loadKml();
       this._updateMarkers();
       this._addMapListeners();
       this.fire('google-map-ready');
@@ -489,6 +499,15 @@ The `google-map` element renders a Google Map.
         if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
           this._fitToMarkersChanged();
         }
+      }
+    },
+
+    _loadKml: function() {
+      if (this.kml) {
+        var kmlfile = new google.maps.KmlLayer({
+          url: this.kml,
+          map: this.map
+        });
       }
     },
 
