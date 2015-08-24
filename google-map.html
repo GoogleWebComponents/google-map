@@ -194,7 +194,8 @@ The `google-map` element renders a Google Map.
        */
       kml: {
         type: String,
-        value: null
+        value: null,
+	observer: '_loadKml'
       },
 
       /**
