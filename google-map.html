@@ -395,12 +395,8 @@ The `google-map` element renders a Google Map.
       this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
       this._updateCenter();
-<<<<<<< HEAD
-      this._updateChildren();
-=======
       this._loadKml();
-      this._updateMarkers();
->>>>>>> master
+      this._updateChildren();
       this._addMapListeners();
       this.fire('google-map-ready');
     },
