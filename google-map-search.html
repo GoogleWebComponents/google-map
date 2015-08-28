@@ -13,7 +13,7 @@ information on the API.
 #### Example:
 
     <template is="dom-bind">
-      <google-map-search map="{{map}}" query="Pizza" currentMapArea
+      <google-map-search map="{{map}}" query="Pizza" global-search
                          results="{{results}}"></google-map-search>
       <google-map map="{{map}}" latitude="37.779"
                   longitude="-122.3892">
@@ -64,7 +64,7 @@ Fired when the search element returns a result.
 
       /**
        * Latitude of the center of the search area.
-       * Ignored if `currentMapArea` is true.
+       * Ignored if `globalSearch` is true.
        */
       latitude: {
         type: Number,
@@ -73,7 +73,7 @@ Fired when the search element returns a result.
 
       /**
        * Longitude of the center of the search area.
-       * Ignored if `currentMapArea` is true.
+       * Ignored if `globalSearch` is true.
        */
       longitude: {
         type: Number,
@@ -127,7 +127,7 @@ Fired when the search element returns a result.
     },
 
     observers: [
-      'search(query,map,location,radius,types,currentMapArea)',
+      'search(query,map,location,radius,types,globalSearch)',
       '_updateLocation(latitude,longitude)'
     ],
 
