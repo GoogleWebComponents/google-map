@@ -645,7 +645,7 @@ The `google-map` element renders a Google Map.
     _fitToMarkersChanged: function() {
       // TODO(ericbidelman): respect user's zoom level.
 
-      if (this.map && this.fitToMarkers) {
+      if (this.map && this.fitToMarkers && this.markers.length > 0) {
         var latLngBounds = new google.maps.LatLngBounds();
         for (var i = 0, m; m = this.markers[i]; ++i) {
           latLngBounds.extend(
