@@ -118,7 +118,7 @@ information on the API.
        */
       location: {
         type: Object,
-        value: function() { return {}; },
+        value: null,
         readyOnly: true
       }
     },
@@ -186,7 +186,7 @@ information on the API.
       }
 
       // Update location. This will trigger a new search.
-      this._setLocation(new google.maps.LatLng(this.latitude, this.longitude));
+      this._setLocation({lat: this.latitude, lng: this.longitude});
     }
   });
 </script>

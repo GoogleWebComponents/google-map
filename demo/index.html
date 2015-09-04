@@ -22,15 +22,18 @@
 </head>
 <body fullbleed>
 
-<google-map latitude="37.779" longitude="-122.3892" min-zoom="9" max-zoom="11" language="en">
+<!-- Note: places library needs to be loaded because we're using google-map-directions
+     which also loads the maps lib with the places library. -->
+<google-map latitude="37.779" longitude="-122.3892" min-zoom="9" max-zoom="11"
+            language="en" libraries="places">
   <google-map-marker latitude="37.779" longitude="-122.3892"
                      title="Go Giants!" draggable="true">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
   </google-map-marker>
 </google-map>
 
-<google-map-directions start-address="Oakland" end-address="Mountain View" language=
-"en"></google-map-directions>
+<google-map-directions start-address="Oakland" end-address="Mountain View"
+            language="en"></google-map-directions>
 
 <button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
 

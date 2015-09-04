@@ -288,7 +288,7 @@ child of `google-map`.
       this._listeners = {};
       this.marker = new google.maps.Marker({
         map: this.map,
-        position: new google.maps.LatLng(this.latitude, this.longitude),
+        position: {lat: this.latitude, lng: this.longitude},
         title: this.title,
         draggable: this.draggable,
         visible: !this.hidden,
