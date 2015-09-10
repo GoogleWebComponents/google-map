@@ -39,7 +39,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b> - with Google directions, using data-binding inside another Polymer element
 
-    <google-map map="{{map}}"></google-map>
+    <google-map map="{{map}}" libraries="places"></google-map>
     <google-map-directions map="{{map}}"
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
@@ -66,7 +66,7 @@ The `google-map` element renders a Google Map.
 
   </style>
   <template>
-    <google-maps-api
+    <google-maps-api id="api"
       api-key="[[apiKey]]"
       client-id="[[clientId]]"
       version="[[version]]"
@@ -173,12 +173,12 @@ The `google-map` element renders a Google Map.
 
       /**
        * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "places". For more information see
+       * with this map. Defaults to "". For more information see
        * https://developers.google.com/maps/documentation/javascript/libraries.
        */
       libraries: {
         type: String,
-        value: 'places'
+        value: ''
       },
 
       /**
@@ -189,6 +189,15 @@ The `google-map` element renders a Google Map.
         value: -122.41942,
         notify: true,
         reflectToAttribute: true
+      },
+
+      /**
+       * A kml file to load.
+       */
+      kml: {
+        type: String,
+        value: null,
+        observer: '_loadKml'
       },
 
       /**
@@ -336,6 +345,15 @@ The `google-map` element renders a Google Map.
       },
 
       /**
+       * The markers on the map.
+       */
+      markers: {
+        type: Array,
+        value: function() { return []; },
+        readOnly: true
+      },
+
+      /**
        * If set, all other info windows on markers are closed when opening a new one.
        */
       singleInfoWindow: {
@@ -357,10 +375,6 @@ The `google-map` element renders a Google Map.
       '_debounceUpdateCenter(latitude, longitude)'
     ],
 
-    created: function() {
-      this.markers = [];
-    },
-
     attached: function() {
       this._initGMap();
     },
@@ -376,7 +390,7 @@ The `google-map` element renders a Google Map.
       if (this.map) {
         return; // already initialized
       }
-      if (!(window.google && window.google.maps)) {
+      if (this.$.api.libraryLoaded !== true) {
         return; // api not loaded
       }
       if (!this.isAttached) {
@@ -386,6 +400,7 @@ The `google-map` element renders a Google Map.
       this.map = new google.maps.Map(this.$.map, this._getMapOptions());
       this._listeners = {};
       this._updateCenter();
+      this._loadKml();
       this._updateMarkers();
       this._addMapListeners();
       this.fire('google-map-ready');
@@ -451,7 +466,7 @@ The `google-map` element renders a Google Map.
 
       this._observeMarkers();
 
-      this.markers = newMarkers;
+      this.markers = this._setMarkers(newMarkers);
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
       if (this.markers.length && this.map) {
@@ -494,6 +509,15 @@ The `google-map` element renders a Google Map.
         if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
           this._fitToMarkersChanged();
         }
+      }
+    },
+
+    _loadKml: function() {
+      if (this.kml) {
+        var kmlfile = new google.maps.KmlLayer({
+          url: this.kml,
+          map: this.map
+        });
       }
     },
 

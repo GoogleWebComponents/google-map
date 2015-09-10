@@ -16,7 +16,8 @@ information on the API.
       <google-map-directions map="{{map}}"
           start-address="San Francisco"
           end-address="Mountain View"
-          travel-mode="TRANSIT"></google-map-directions>
+          travel-mode="TRANSIT"
+          waypoints="[{location: 'Palo Alto'}, {location: 'San Mateo'}]"></google-map-directions>
       <google-map map="{{map}}" latitude="37.779"
                   longitude="-122.3892"></google-map>
     </template>
@@ -94,6 +95,21 @@ Fired whenever the directions service returns a result.
       },
 
       /**
+       * Array of intermediate waypoints. Directions will be calculated
+       * from the origin to the destination by way of each waypoint in this array.
+       * The maximum allowed waypoints is 8, plus the origin, and destination.
+       * Maps API for Business customers are allowed 23 waypoints,
+       * plus the origin, and destination.
+       * Waypoints are not supported for transit directions. Optional.
+       *
+       * @type google.maps.DirectionsWaypoint
+       */
+       waypoints: {
+         type: Array,
+         value: function() { return []; }
+       },
+
+      /**
        * A comma separated list (e.g. "places,geometry") of libraries to load
        * with this map. Defaults to "places". For more information see
        * https://developers.google.com/maps/documentation/javascript/libraries.
@@ -131,7 +147,7 @@ Fired whenever the directions service returns a result.
     },
 
     observers: [
-      '_route(startAddress, endAddress, travelMode)'
+      '_route(startAddress, endAddress, travelMode, waypoints)'
     ],
 
     _mapApiLoaded: function() {
@@ -153,8 +169,10 @@ Fired whenever the directions service returns a result.
         this._responseChanged();
       } else {
         // If there is no more map, remove the directionsRenderer from the map and delete it.
-        this.directionsRenderer.setMap(null);
-        this.directionsRenderer = null;
+        if (this.directionsRenderer) {
+          this.directionsRenderer.setMap(null);
+          this.directionsRenderer = null;
+        }
       }
     },
 
@@ -175,7 +193,8 @@ Fired whenever the directions service returns a result.
       var request = {
         origin: this.startAddress,
         destination: this.endAddress,
-        travelMode: this.travelMode
+        travelMode: this.travelMode,
+        waypoints: this.waypoints
       };
       this.directionsService.route(request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
