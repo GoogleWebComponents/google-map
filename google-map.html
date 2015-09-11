@@ -714,7 +714,7 @@ The `google-map` element renders a Google Map.
      if (this.singleInfoWindow) {
       markerSelector.selected = null;
      } else {
-      markerSelector.selectedValues = markerSelector.selectedValues.filter(function(i) {return i != markerIndex});
+      markerSelector.selectedValues = markerSelector.selectedValues.filter(function(i) {return i !== markerIndex});
      }
    }
 
