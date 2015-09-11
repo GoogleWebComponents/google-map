@@ -431,7 +431,7 @@ The `google-map` element renders a Google Map.
         return;
       }
       this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this, {
+      this._mutationObserver.observe(this.$.selector, {
         childList: true
       });
     },

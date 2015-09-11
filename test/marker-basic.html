@@ -44,6 +44,7 @@ suite('markers', function() {
     assert.equal(markerEl.zIndex, 0);
     assert.equal(markerEl.latitude, 37.779);
     assert.equal(markerEl.longitude, -122.3892);
+    assert.isFalse(markerEl.open);
     assert.isNull(markerEl.offsetParent,
                   'google-map-marker should be display: none');
   });
