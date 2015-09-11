@@ -12,7 +12,7 @@
 
   <google-map id="map1"></google-map>
   <google-map id="map2" latitude="37.555" longitude="-122.555"></google-map>
-  <google-map id="map3" disable-zoom zoom="11" min-zoom="10" max-zoom="11" no-auto-tilt fit-to-markers></google-map>
+  <google-map id="map3" disable-zoom zoom="11" min-zoom="10" max-zoom="11" no-auto-tilt fit-to-markers single-info-window></google-map>
 
   <div id='newmap'>
   </div>
@@ -65,6 +65,7 @@ suite('google-map', function() {
     assert.isUndefined(map.maxZoom);
     assert.isUndefined(map.minZoom);
     assert.isFalse(map.disableZoom);
+    assert.isFalse(map.singleInfoWindow);
     assert.equal(map.latitude, 37.77493);
     assert.equal(map.longitude, -122.41942);
     assert.equal(map.mapType, 'roadmap');
@@ -78,6 +79,7 @@ suite('google-map', function() {
       assert.equal(map3.maxZoom, map3.map.maxZoom);
       assert.equal(map3.minZoom, map3.map.minZoom);
       assert.isTrue(map3.disableZoom);
+      assert.isTrue(map3.singleInfoWindow);
 
       done();
     });
