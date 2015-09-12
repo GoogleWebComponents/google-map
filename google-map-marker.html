@@ -241,8 +241,6 @@ child of `google-map`.
       if (this.marker) {
         this.marker.setMap(this.map);
       }
-      if (this.open)
-        this.fire('google-map-marker-open');
     },
 
     _updatePosition: function() {
@@ -332,11 +330,11 @@ child of `google-map`.
           // Create a new infowindow
           this.info = new google.maps.InfoWindow();
           this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
-            this.fire('google-map-marker-open');
+            this.open = true;
           }.bind(this));
           
           this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
-            this.fire('google-map-marker-close');
+            this.open = false;
           }.bind(this));
         }
         this.info.setContent(content);
@@ -354,8 +352,10 @@ child of `google-map`.
       if (this.info) {
         if (this.open) {
           this.info.open(this.map, this.marker);
+          this.fire('google-map-marker-open');
         } else {
           this.info.close();
+          this.fire('google-map-marker-close');
         }
       }
     },

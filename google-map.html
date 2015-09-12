@@ -705,16 +705,15 @@ The `google-map` element renders a Google Map.
       }.bind(this));
     },
 
-   _deselectMarker: function(e) { 
-     // If singleInfoWindow is set, update core-selector's selected attribute to be null.
-     // Else remove the marker from core-selector's selected array.
-     var markerSelector = this.$.selector;
-     var markerIndex = markerSelector.items.indexOf(e.target);
+   _deselectMarker: function(e, detail) { 
+     // If singleInfoWindow is set, update iron-selector's selected attribute to be null.
+     // Else remove the marker from iron-selector's selected array.
+     var markerIndex = this.$.selector.indexOf(e.target);
 
      if (this.singleInfoWindow) {
-      markerSelector.selected = null;
+      this.$.selector.selected = null;
      } else {
-      markerSelector.selectedValues = markerSelector.selectedValues.filter(function(i) {return i !== markerIndex});
+      this.$.selector.selectedValues = this.$.selector.selectedValues.filter(function(i) {return i !== markerIndex});
      }
    }
 
