@@ -288,7 +288,10 @@ child of `google-map`.
       this._listeners = {};
       this.marker = new google.maps.Marker({
         map: this.map,
-        position: {lat: this.latitude, lng: this.longitude},
+        position: {
+          lat: parseFloat(this.latitude),
+          lng: parseFloat(this.longitude)
+        },
         title: this.title,
         draggable: this.draggable,
         visible: !this.hidden,
