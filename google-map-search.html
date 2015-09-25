@@ -180,10 +180,15 @@ information on the API.
      */
     getDetails: function(placeId) {
       var places = new google.maps.places.PlacesService(this.map);
+
       return new Promise(function(resolve, reject) {
         places.getDetails({placeId: placeId}, function(place, status) {
-          resolve(place);
-          this.fire('google-map-search-place-detail', place);
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            resolve(place);
+            this.fire('google-map-search-place-detail', place);
+          } else {
+            reject(status);
+          }
         }.bind(this));
       }.bind(this));
     },
