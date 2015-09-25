@@ -42,8 +42,23 @@ child of `google-map`.
 </dom-module>
 
 <script>
-
 (function() {
+
+  function setupDragHandler_() {
+    if (this.draggable) {
+      this.dragHandler_ = google.maps.event.addListener(
+          this.marker, 'dragend', onDragEnd_.bind(this));
+    } else {
+      google.maps.event.removeListener(this.dragHandler_);
+      this.dragHandler_ = null;
+    }
+  }
+
+  function onDragEnd_(e, details, sender) {
+    this.latitude = e.latLng.lat();
+    this.longitude = e.latLng.lng();
+  }
+
   Polymer({
 
     is: 'google-map-marker',
@@ -53,45 +68,53 @@ child of `google-map`.
      * @param {google.maps.MouseEvent} event The mouse event.
      * @event google-map-marker-click
      */
+
     /**
      * Fired when the marker icon was double clicked. Requires the clickEvents attribute to be true.
      * @param {google.maps.MouseEvent} event The mouse event.
      * @event google-map-marker-dblclick
      */
+
     /**
      * Fired for a mousedown on the marker. Requires the mouseEvents attribute to be true.
      * @event google-map-marker-mousedown
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the DOM `mousemove` event is fired on the marker. Requires the mouseEvents
      * attribute to be true.
      * @event google-map-marker-mousemove
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the mouse leaves the area of the marker icon. Requires the mouseEvents attribute to be
      * true.
      * @event google-map-marker-mouseout
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired when the mouse enters the area of the marker icon. Requires the mouseEvents attribute to be
      * true.
      * @event google-map-marker-mouseover
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired for a mouseup on the marker. Requires the mouseEvents attribute to be true.
      *
      * @event google-map-marker-mouseup
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     /**
      * Fired for a rightclick on the marker. Requires the clickEvents attribute to be true.
      * @event google-map-marker-rightclick
      * @param {google.maps.MouseEvent} event The mouse event.
      */
+
     properties: {
       /**
        * A Google Maps marker object.
@@ -161,6 +184,7 @@ child of `google-map`.
         value: null,
         reflectToAttribute: true
       },
+
       /**
        * The marker's latitude coordinate.
        */
@@ -168,6 +192,16 @@ child of `google-map`.
         type: Number,
         value: null,
         reflectToAttribute: true
+      },
+
+      /**
+       * A animation for the marker. "DROP" or "BOUNCE". See
+       * https://developers.google.com/maps/documentation/javascript/examples/marker-animations.
+       */
+      animation: {
+        type: String,
+        value: null,
+        observer: '_animationChanged'
       }
     },
 
@@ -228,6 +262,12 @@ child of `google-map`.
           this._clearListener('mouseover');
           this._clearListener('mouseup');
         }
+      }
+    },
+
+    _animationChanged: function() {
+      if (this.marker) {
+        this.marker.setAnimation(google.maps.Animation[this.animation]);
       }
     },
 
@@ -293,6 +333,7 @@ child of `google-map`.
           lng: parseFloat(this.longitude)
         },
         title: this.title,
+        animation: google.maps.Animation[this.animation],
         draggable: this.draggable,
         visible: !this.hidden,
         icon: this.icon,
@@ -339,19 +380,5 @@ child of `google-map`.
     }
   });
 
-  function setupDragHandler_() {
-    if (this.draggable) {
-      this.dragHandler_ = google.maps.event.addListener(
-          this.marker, 'dragend', onDragEnd_.bind(this));
-    } else {
-      google.maps.event.removeListener(this.dragHandler_);
-      this.dragHandler_ = null;
-    }
-  }
-
-  function onDragEnd_(e, details, sender) {
-    this.latitude = e.latLng.lat();
-    this.longitude = e.latLng.lng();
-  }
 })();
 </script>
