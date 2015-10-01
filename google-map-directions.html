@@ -33,7 +33,6 @@ information on the API.
   <template>
     <google-maps-api
       api-key="[[apiKey]]"
-      libraries="[[libraries]]"
       language="[[language]]"
       on-api-load="_mapApiLoaded"></google-maps-api>
   </template>
@@ -108,20 +107,6 @@ Fired whenever the directions service returns a result.
          type: Array,
          value: function() { return []; }
        },
-
-      /**
-       * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "places". For more information see
-       * https://developers.google.com/maps/documentation/javascript/libraries.
-       *
-       * Note, this needs to be set to the same value as the one used on <google-map>.
-       * If you're overriding that element's `libraries` property, this one also
-       * needs to be set to the Maps API loads the library code.
-       */
-      libraries: {
-        type: String,
-        value: 'places'
-      },
 
       /**
        * The localized language to load the Maps API with. For more information
