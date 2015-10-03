@@ -38,7 +38,7 @@ The `google-map` element renders a Google Map.
 
 <b>Example</b> - with Google directions, using data-binding inside another Polymer element
 
-    <google-map map="{{map}}" libraries="places"></google-map>
+    <google-map map="{{map}}"></google-map>
     <google-map-directions map="{{map}}"
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
@@ -69,7 +69,6 @@ The `google-map` element renders a Google Map.
       api-key="[[apiKey]]"
       client-id="[[clientId]]"
       version="[[version]]"
-      libraries="[[libraries]]"
       signed-in="[[signedIn]]"
       language="[[language]]"
       on-api-load="_mapApiLoaded"></google-maps-api>
@@ -167,16 +166,6 @@ The `google-map` element renders a Google Map.
         type: Object,
         notify: true,
         value: null
-      },
-
-      /**
-       * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "". For more information see
-       * https://developers.google.com/maps/documentation/javascript/libraries.
-       */
-      libraries: {
-        type: String,
-        value: ''
       },
 
       /**
