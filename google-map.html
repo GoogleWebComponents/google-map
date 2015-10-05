@@ -3,6 +3,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-apis/google-maps-api.html">
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="google-map-marker.html">
 <!--
 The `google-map` element renders a Google Map.
@@ -74,8 +75,9 @@ The `google-map` element renders a Google Map.
       on-api-load="_mapApiLoaded"></google-maps-api>
 
     <div id="map"></div>
-
-    <content id="markers" select="google-map-marker"></content>
+    <iron-selector id="selector" multi="[[!singleInfoWindow]]" selected-attribute="open" activate-event="google-map-marker-open" on-google-map-marker-close="_deselectMarker">
+      <content id="markers" select="google-map-marker"></content>
+    </iron-selector>
 
   </template>
 </dom-module>
@@ -340,8 +342,15 @@ The `google-map` element renders a Google Map.
         type: Array,
         value: function() { return []; },
         readOnly: true
-      }
+      },
 
+      /**
+       * If set, all other info windows on markers are closed when opening a new one.
+       */
+      singleInfoWindow: {
+        type: Boolean,
+        value: false
+      }
     },
 
     behaviors: [
@@ -422,7 +431,7 @@ The `google-map` element renders a Google Map.
         return;
       }
       this._mutationObserver = new MutationObserver( this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this, {
+      this._mutationObserver.observe(this.$.selector, {
         childList: true
       });
     },
@@ -683,7 +692,19 @@ The `google-map` element renders a Google Map.
       this._listeners[name] = google.maps.event.addListener(this.map, name, function(event) {
         this.fire('google-map-' + name, event);
       }.bind(this));
-    }
+    },
+
+   _deselectMarker: function(e, detail) { 
+     // If singleInfoWindow is set, update iron-selector's selected attribute to be null.
+     // Else remove the marker from iron-selector's selected array.
+     var markerIndex = this.$.selector.indexOf(e.target);
+
+     if (this.singleInfoWindow) {
+      this.$.selector.selected = null;
+     } else if (this.$.selector.selectedValues) {
+      this.$.selector.selectedValues = this.$.selector.selectedValues.filter(function(i) {return i !== markerIndex});
+     }
+   }
 
   });
 
