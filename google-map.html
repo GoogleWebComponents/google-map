@@ -701,7 +701,7 @@ The `google-map` element renders a Google Map.
 
      if (this.singleInfoWindow) {
       this.$.selector.selected = null;
-     } else {
+     } else if (this.$.selector.selectedValues) {
       this.$.selector.selectedValues = this.$.selector.selectedValues.filter(function(i) {return i !== markerIndex});
      }
    }
