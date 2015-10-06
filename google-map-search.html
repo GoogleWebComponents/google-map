@@ -11,8 +11,8 @@ information on the API.
 #### Example:
 
     <template is="dom-bind">
-      <google-map-search map="[[map]]" query="Pizza"
-                         results="{{results}}"></google-map-search>
+      <google-map-search map="[[map]]" query="Pizza" results="{{results}}">
+      </google-map-search>
       <google-map map="{{map}}" latitude="37.779"
                   longitude="-122.3892">
         <template is="dom-repeat" items="{{results}}" as="marker">
@@ -119,7 +119,7 @@ information on the API.
       location: {
         type: Object,
         value: null,
-        readyOnly: true
+        readOnly: true
       }
     },
 
@@ -127,6 +127,13 @@ information on the API.
       'search(query,map,location,radius,types,globalSearch)',
       '_updateLocation(latitude,longitude)'
     ],
+
+    /**
+     * Fired when the details of a place are returned.
+     *
+     * @event google-map-search-place-detail
+     *   @param {google.maps.MarkerPlace} detail The place details.
+     */
 
     /**
      * Fired when the search element returns a result.
@@ -164,6 +171,26 @@ information on the API.
           location: location
         }, this._gotResults.bind(this));
       }
+    },
+
+    /**
+     * Fetches details for a given place.
+     * @param {String} placeId The place id.
+     * @return {Promise} place The place information.
+     */
+    getDetails: function(placeId) {
+      var places = new google.maps.places.PlacesService(this.map);
+
+      return new Promise(function(resolve, reject) {
+        places.getDetails({placeId: placeId}, function(place, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            resolve(place);
+            this.fire('google-map-search-place-detail', place);
+          } else {
+            reject(status);
+          }
+        }.bind(this));
+      }.bind(this));
     },
 
     _gotResults: function(results, status) {
