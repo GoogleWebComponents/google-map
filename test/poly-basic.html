@@ -1,0 +1,171 @@
+<!doctype html>
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+  <link rel="import" href="../google-map-poly.html">
+</head>
+<body>
+
+  <google-map id="map" latitude="37.77493" longitude="-122.41942">
+    <google-map-poly id="poly">
+      <google-map-point id="point1" latitude="37.774" longitude="-121.38"></google-map-point>
+      <google-map-point id="point2" latitude="38.774" longitude="-122.38"></google-map-point>
+      <google-map-point id="point3" latitude="37.774" longitude="-123.38"></google-map-point>
+      <google-map-point id="point4" latitude="36.774" longitude="-122.38"></google-map-point>
+    </google-map-poly>
+  </google-map>
+
+<script>
+suite('poly-basic', function(done) {
+  var map = document.querySelector('#map');
+  var poly = document.querySelector('#poly');
+  var point1 = document.querySelector('#point1');
+  var point2 = document.querySelector('#point2');
+  var point3 = document.querySelector('#point3');
+  var point4 = document.querySelector('#point4');
+
+  test('before map is ready', function() {
+    assert.isUndefined(poly.map);
+    assert.isUndefined(poly.path);
+    assert.isUndefined(poly.poly);
+    assert.isFalse(poly.editing);
+    assert.isNull(poly.offsetParent, 'google-map-poly should be display: none');
+  });
+
+  test('after poly is initialized', function(done) {
+    map.addEventListener('google-map-ready', function(e) {
+      assert.isNotNull(poly.map);
+      //done();
+    });
+
+    var listener;
+    poly.addEventListener('google-map-poly-path-built', listener = function(e) {
+      poly.removeEventListener('google-map-poly-path-built', listener);
+
+      assert.isNotNull(poly.path);
+      assert.isNotNull(poly.poly);
+      flush(function() {
+        assert.equal(poly.path.getLength(), 4);
+        assert.equal(poly.path.getAt(0).lat(), point1.latitude);
+        assert.equal(poly.path.getAt(0).lng(), point1.longitude);
+        assert.equal(poly.path.getAt(1).lat(), point2.latitude);
+        assert.equal(poly.path.getAt(1).lng(), point2.longitude);
+        assert.equal(poly.path.getAt(2).lat(), point3.latitude);
+        assert.equal(poly.path.getAt(2).lng(), point3.longitude);
+        assert.equal(poly.path.getAt(3).lat(), point4.latitude);
+        assert.equal(poly.path.getAt(3).lng(), point4.longitude);
+
+        assert.instanceOf(poly.poly, google.maps.Polyline);
+
+        assert.isFalse(poly.poly.get('clickable'));
+        assert.isFalse(poly.poly.getDraggable());
+        assert.isFalse(poly.poly.getEditable());
+        assert.isUndefined(poly.poly.get('fillColor'));
+        assert.isUndefined(poly.poly.get('fillOpacity'));
+        assert.isFalse(poly.poly.get('geodesic'));
+        assert.isNull(poly.poly.get('icons'));
+        assert.equal(poly.poly.get('strokeColor'), 'black');
+        assert.equal(poly.poly.get('strokeOpacity'), 1);
+        assert.equal(poly.poly.get('strokePosition'), 0); // Value for 'center'.
+        assert.equal(poly.poly.get('strokeWeight'), 3);
+        assert.isTrue(poly.poly.getVisible());
+        assert.equal(poly.poly.get('zIndex'), 0);
+
+        done();
+      });
+    });
+  });
+
+  test('when styling is changed', function(done) {
+    poly.clickable = true;
+    poly.draggable = true;
+    poly.editable = true;
+    poly.geodesic = true;
+    poly.hidden = true;
+    poly.strokeColor = 'white';
+    poly.strokeOpacity = .5;
+    poly.strokeWeight = 2;
+    poly.zIndex = 1;
+
+    flush(function() {
+      assert.isTrue(poly.poly.get('clickable'));
+      assert.isTrue(poly.poly.getDraggable());
+      assert.isTrue(poly.poly.getEditable());
+      assert.isTrue(poly.poly.get('geodesic'));
+      assert.equal(poly.poly.get('strokeColor'), 'white');
+      assert.equal(poly.poly.get('strokeOpacity'), .5);
+      assert.equal(poly.poly.get('strokeWeight'), 2);
+      assert.isFalse(poly.poly.getVisible());
+      assert.equal(poly.poly.get('zIndex'), 1);
+
+      done();
+    });
+  });
+
+  test('when stroke position is inside', function(done) {
+    poly.strokePosition = 'inside';
+
+    flush(function() {
+      assert.equal(poly.poly.get('strokePosition'), 1);
+
+      done();
+    });
+  });
+
+  test('when stroke position is outside', function(done) {
+    poly.strokePosition = 'outside';
+
+    flush(function() {
+      assert.equal(poly.poly.get('strokePosition'), 2);
+
+      done();
+    });
+  });
+
+  test('when poly is closed', function(done) {
+    poly.closed = true;
+    poly.fillColor = 'white';
+    poly.fillOpacity = 1;
+
+    flush(function() {
+      assert.instanceOf(poly.poly, google.maps.Polygon);
+
+      assert.equal(poly.poly.get('fillColor'), 'white');
+      assert.equal(poly.poly.get('fillOpacity'), 1);
+      assert.isUndefined(poly.poly.get('icons'));
+
+      done();
+    });
+  });
+
+  test('when points are mutated', function(done) {
+    point1.latitude = point3.latitude;
+    point1.longitude = point3.longitude;
+    Polymer.dom(poly).removeChild(point3);
+
+    var listener;
+    poly.addEventListener('google-map-poly-path-built', listener = function(e) {
+      poly.removeEventListener('google-map-poly-path-built', listener);
+      flush(function() {
+        assert.equal(poly.path.getLength(), 3);
+        assert.equal(poly.path.getAt(0).lat(), point3.latitude);
+        assert.equal(poly.path.getAt(0).lng(), point3.longitude);
+        assert.equal(poly.path.getAt(1).lat(), point2.latitude);
+        assert.equal(poly.path.getAt(1).lng(), point2.longitude);
+        assert.equal(poly.path.getAt(2).lat(), point4.latitude);
+        assert.equal(poly.path.getAt(2).lng(), point4.longitude);
+
+        done();
+      });
+    });
+  });
+});
+
+</script>
+</body>
+</html>
