@@ -312,7 +312,7 @@ child of `google-map` and will contain at least two `google-map-point` child ele
         this._pointsObserver.disconnect();
         this._pointsObserver = null;
       }
-      for (name in this._listeners) {
+      for (var name in this._listeners) {
         this._clearListener(name);
       }
     },
