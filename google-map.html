@@ -346,6 +346,15 @@ The `google-map` element renders a Google Map.
       },
 
       /**
+       * The non-marker objects on the map.
+       */
+      objects: {
+        type: Array,
+        value: function() { return []; },
+        readOnly: true
+      },
+
+      /**
        * If set, all other info windows on markers are closed when opening a new one.
        */
       singleInfoWindow: {
@@ -365,10 +374,6 @@ The `google-map` element renders a Google Map.
     observers: [
       '_debounceUpdateCenter(latitude, longitude)'
     ],
-
-    created: function() {
-      this.objects = [];
-    },
 
     attached: function() {
       this._initGMap();
@@ -434,6 +439,14 @@ The `google-map` element renders a Google Map.
       return mapOptions;
     },
 
+    _attachChildrenToMap: function(children) {
+      if (this.map) {
+        for (var i = 0, child; child = children[i]; ++i) {
+          child.map = this.map;
+        }
+      }
+    },
+
     // watch for future updates to marker objects
     _observeMarkers: function() {
       // Watch for future updates.
@@ -469,11 +482,7 @@ The `google-map` element renders a Google Map.
       this.markers = this._setMarkers(newMarkers);
 
       // Set the map on each marker and zoom viewport to ensure they're in view.
-      if (this.markers.length && this.map) {
-        for (var i = 0, m; m = this.markers[i]; ++i) {
-          m.map = this.map;
-        }
-      }
+      this._attachChildrenToMap(this.markers);
       if (this.fitToMarkers) {
         this._fitToMarkersChanged();
       }
@@ -507,15 +516,8 @@ The `google-map` element renders a Google Map.
       }
 
       this._observeObjects();
-
-      this.objects = newObjects;
-
-      // Set the map property on each object.
-      if (this.objects.length && this.map) {
-        for (var i = 0, o; o = this.objects[i]; ++i) {
-          o.map = this.map;
-        }
-      }
+      this._setObjects(newObjects);
+      this._attachChildrenToMap(this.objects);
     },
 
     /**

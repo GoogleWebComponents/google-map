@@ -7,21 +7,21 @@
 The `google-map-point` element represents a point on a map. It's used as a child of other
 google-map-* elements.
 
-<b>Example</b>:
+<b>Example</b>—points defining a semi-translucent blue triangle:
 
-    <google-map-point latitude="37.77493" longitude="-122.41942"></google-map-point>
+<google-map latitude="37.77493" longitude="-122.41942">
+  <google-map-poly closed fill-color="blue" fill-opacity=".5">
+    <google-map-point latitude="36.77493" longitude="-121.41942"></google-map-point>
+    <google-map-point latitude="38.77493" longitude="-122.41942"></google-map-point>
+    <google-map-point latitude="36.77493" longitude="-123.41942"></google-map-point>
+  </google-map-poly>
+</google-map>
 -->
-<dom-module id="google-map-point">
-  <style>
-    :host {
-      display: none;
-    }
-  </style>
-</dom-module>
-
 <script>
   Polymer({
     is: 'google-map-point',
+
+    hostAttributes: {hidden: true},
 
     properties: {
       /**
@@ -29,9 +29,7 @@ google-map-* elements.
        */
        longitude: {
          type: Number,
-         value: null,
-         notify: true,
-         reflectToAttribute: true
+         value: null
        },
 
       /**
@@ -39,16 +37,13 @@ google-map-* elements.
        */
        latitude: {
          type: Number,
-         value: null,
-         notify: true,
-         reflectToAttribute: true
+         value: null
        }
     },
 
     /**
      * Returns the point as a Google Maps LatLng object.
      *
-     * @method getPosition
      * @return {google.maps.LatLnt} The LatLng object.
      */
     getPosition: function() {
