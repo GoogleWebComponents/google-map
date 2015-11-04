@@ -172,6 +172,66 @@ child of `google-map`.
       },
 
       /**
+       * Circle object attached and centered on the marker.
+       * @type google.maps.Circle
+       */
+      circle: {
+        type: Object,
+        value: null,
+        observer: '_circleChanged'
+      },
+
+      /**
+       * Circle radius in meters
+       * @type Number
+       */
+      accuracy: {
+        type: Number,
+        value: 0,
+        observer: '_circleChanged'
+      },
+
+      /**
+       * Circle radius fill color
+       * @type String
+       */
+      circleFillColor: {
+        type: String,
+        value: null,
+        observer: '_circleChanged'
+      },
+
+      /**
+       * Circle radius fill opacity. Must be between 0.0 and 1.0
+       * @type Number
+       */
+      circleFillOpacity: {
+        type: Number, // Number between 0 and 1.0
+        value: 0,
+        observer: '_circleChanged'
+      },
+
+      /**
+       * Circle radius stroke color.
+       * @type String
+       */
+      circleStrokeColor: {
+        type: String,
+        value: null,
+        observer: '_circleChanged'
+      },
+
+      /**
+       * Circle radius opacity. Must be between 0.0 and 1.0
+       * @type Number
+       */
+      circleStrokeOpacity: {
+        type: Number,
+        value: 0,
+        observer: '_circleChanged'
+      },
+
+      /**
        * When true, marker mouse* events are automatically registered.
        */
       mouseEvents: {
@@ -299,6 +359,24 @@ child of `google-map`.
       }
     },
 
+    _circleChanged: function() {
+      // Unset the map, this effectively removes the circle
+      if (this.circle) {
+        this.circle.setMap(null);
+      }
+
+      if (this.marker && this.accuracy > 0) {
+        // Create the circle
+        var circle = new google.maps.Circle({
+          map: this.map,
+          radius: this.accuracy, //in meters, per google maps API
+        });
+
+        // Attach the circle to our marker and center it around the marker's position
+        circle.bindTo('center', this.marker, 'position');
+      }
+    },
+
     _zIndexChanged: function() {
       if (this.marker) {
         this.marker.setZIndex(this.zIndex);
@@ -383,6 +461,7 @@ child of `google-map`.
       this._contentChanged();
       this._mouseEventsChanged();
       this._openChanged();
+      this._circleChanged();
       setupDragHandler_.bind(this)();
     },
 
