@@ -369,6 +369,10 @@ child of `google-map`.
         // Create the circle
         var circle = new google.maps.Circle({
           map: this.map,
+          fillColor: this.circleFillColor,
+          strokeColor: this.circleStrokeColor,
+          fillOpacity: this.circleFillOpacity,
+          strokeOpacity: this.circleStrokeOpacity,
           radius: this.accuracy, //in meters, per google maps API
         });
 
