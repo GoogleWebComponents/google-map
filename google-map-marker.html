@@ -175,11 +175,7 @@ child of `google-map`.
        * Circle object attached and centered on the marker.
        * @type google.maps.Circle
        */
-      circle: {
-        type: Object,
-        value: null,
-        observer: '_circleChanged'
-      },
+      circle: Object,
 
       /**
        * Circle radius in meters
@@ -363,6 +359,7 @@ child of `google-map`.
       // Unset the map, this effectively removes the circle
       if (this.circle) {
         this.circle.setMap(null);
+        this.circle = null;
       }
 
       if (this.marker && this.accuracy > 0) {
@@ -378,6 +375,8 @@ child of `google-map`.
 
         // Attach the circle to our marker and center it around the marker's position
         circle.bindTo('center', this.marker, 'position');
+        
+        this.circle = circle;
       }
     },
 
