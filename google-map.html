@@ -44,7 +44,9 @@ The `google-map` element renders a Google Map.
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
 
-@demo
+@demo demo/index.html
+@demo demo/polys.html
+@demo demo/kml.html
 -->
 
 <dom-module id="google-map">
@@ -559,7 +561,7 @@ The `google-map` element renders a Google Map.
     },
 
     _loadKml: function() {
-      if (this.kml) {
+      if (this.map && this.kml) {
         var kmlfile = new google.maps.KmlLayer({
           url: this.kml,
           map: this.map
