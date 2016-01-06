@@ -55,19 +55,19 @@ suite('poly-basic', function(done) {
         assert.isTrue(poly.poly.getVisible());
         assert.equal(poly.poly.get('zIndex'), 5);
 
-        assert.isNotNull(poly._listeners['mousedown']);
-        assert.isNotNull(poly._listeners['mousemove']);
-        assert.isNotNull(poly._listeners['mouseout']);
-        assert.isNotNull(poly._listeners['mouseover']);
-        assert.isNotNull(poly._listeners['mouseup']);
+        assert.ok(poly._listeners['mousedown']);
+        assert.ok(poly._listeners['mousemove']);
+        assert.ok(poly._listeners['mouseout']);
+        assert.ok(poly._listeners['mouseover']);
+        assert.ok(poly._listeners['mouseup']);
 
-        assert.isNotNull(poly._listeners['drag']);
-        assert.isNotNull(poly._listeners['dragend']);
-        assert.isNotNull(poly._listeners['dragstart']);
+        assert.ok(poly._listeners['drag']);
+        assert.ok(poly._listeners['dragend']);
+        assert.ok(poly._listeners['dragstart']);
 
-        assert.isNotNull(poly._listeners['click']);
-        assert.isNotNull(poly._listeners['dbclick']);
-        assert.isNotNull(poly._listeners['rightclick']);
+        assert.ok(poly._listeners['click']);
+        assert.ok(poly._listeners['dblclick']);
+        assert.ok(poly._listeners['rightclick']); 
 
 
         done();
