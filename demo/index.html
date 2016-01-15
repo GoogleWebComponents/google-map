@@ -26,7 +26,7 @@
 <google-map latitude="37.779" longitude="-122.3892" min-zoom="9" max-zoom="11"
             language="en">
   <google-map-marker latitude="37.779" longitude="-122.3892"
-                     title="Go Giants!" draggable="true">
+                     title="Go Giants!" draggable="true" drag-events>
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/San_Francisco_Giants_Cap_Insignia.svg/200px-San_Francisco_Giants_Cap_Insignia.svg.png" />
   </google-map-marker>
   <google-map-poly closed fill-color="red" fill-opacity=".25" stroke-weight="1">
@@ -50,6 +50,18 @@
   function toggleControls() {
     gmap.disableDefaultUi = !gmap.disableDefaultUi;
   }
+
+  var marker = document.querySelector('google-map-marker');
+  var poly = document.querySelector('google-map-poly');
+  var point = document.querySelector('google-map-point');
+
+  marker.addEventListener('google-map-marker-dragend', function(e) {
+    var latLng = e.detail.latLng;
+    console.log('pin dropped', latLng.lat(), latLng.lng());
+    point.latitude = latLng.lat();
+    point.longitude = latLng.lng();
+    poly._buildPathFromPoints();
+  });
 </script>
 </body>
 </html>
