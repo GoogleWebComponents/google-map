@@ -76,6 +76,21 @@ child of `google-map`.
      */
 
     /**
+     * Fired repeatedly while the user drags the marker. Requires the dragEvents attribute to be true.
+     * @event google-map-marker-drag
+     */
+
+    /**
+     * Fired when the user stops dragging the marker. Requires the dragEvents attribute to be true.
+     * @event google-map-marker-dragend
+     */
+
+    /**
+     * Fired when the user starts dragging the marker. Requires the dragEvents attribute to be true.
+     * @event google-map-marker-dragstart
+     */
+
+    /**
      * Fired for a mousedown on the marker. Requires the mouseEvents attribute to be true.
      * @event google-map-marker-mousedown
      * @param {google.maps.MouseEvent} event The mouse event.
@@ -159,6 +174,15 @@ child of `google-map`.
         type: Boolean,
         value: false,
         observer: '_clickEventsChanged'
+      },
+
+      /**
+       * When true, marker drag* events are automatically registered.
+       */
+      dragEvents: {
+        type: Boolean,
+        value: false,
+        observer: '_dragEventsChanged'
       },
 
       /**
@@ -267,6 +291,20 @@ child of `google-map`.
           this._clearListener('click');
           this._clearListener('dblclick');
           this._clearListener('rightclick');
+        }
+      }
+    },
+
+    _dragEventsChanged: function() {
+      if (this.map) {
+        if (this.dragEvents) {
+          this._forwardEvent('drag');
+          this._forwardEvent('dragend');
+          this._forwardEvent('dragstart');
+        } else {
+          this._clearListener('drag');
+          this._clearListener('dragend');
+          this._clearListener('dragstart');
         }
       }
     },
@@ -382,7 +420,7 @@ child of `google-map`.
       });
       this._contentChanged();
       this._clickEventsChanged();
-      this._contentChanged();
+      this._dragEventsChanged();
       this._mouseEventsChanged();
       this._openChanged();
       setupDragHandler_.bind(this)();
