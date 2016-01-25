@@ -517,6 +517,9 @@ child of `google-map` and will contain at least two `google-map-point` child ele
       }
 
       this._listeners = {};
+      this._clickEventsChanged();
+      this._mouseEventsChanged();
+      this._dragEventsChanged();
     },
 
     _forwardEvent: function(name) {

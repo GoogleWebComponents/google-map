@@ -1,0 +1,81 @@
+<!doctype html>
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+  <link rel="import" href="../google-map-poly.html">
+</head>
+<body>
+
+  <google-map id="map" latitude="37.77493" longitude="-122.41942">
+    <google-map-poly id="poly" closed clickable click-events draggable="true" drag-events mouse-events editable geodesic fill-color="red" stroke-color="blue" stroke-weight="5" z-index="5" fill-opacity="0.5">
+      <google-map-point id="point1" latitude="37.774" longitude="-121.38"></google-map-point>
+      <google-map-point id="point2" latitude="38.774" longitude="-122.38"></google-map-point>
+      <google-map-point id="point3" latitude="37.774" longitude="-123.38"></google-map-point>
+      <google-map-point id="point4" latitude="36.774" longitude="-122.38"></google-map-point>
+    </google-map-poly>
+  </google-map>
+
+<script>
+suite('poly-basic', function(done) {
+  var map = document.querySelector('#map');
+  var poly = document.querySelector('#poly');
+
+
+  test('after poly is initialized', function(done) {
+    map.addEventListener('google-map-ready', function(e) {
+      assert.isNotNull(poly.map);
+      //done();
+    });
+
+    var listener;
+    poly.addEventListener('google-map-poly-path-built', listener = function(e) {
+      poly.removeEventListener('google-map-poly-path-built', listener);
+
+      assert.isNotNull(poly.path);
+      assert.isNotNull(poly.poly);
+      flush(function() {
+
+
+        assert.isTrue(poly.poly.get('clickable'));
+        assert.isTrue(poly.poly.getDraggable());
+        assert.isTrue(poly.poly.getEditable());
+        assert.equal(poly.poly.get('fillColor'), 'red');
+        assert.equal(poly.poly.get('fillOpacity'), 0.5);
+        assert.isTrue(poly.poly.get('geodesic'));
+        assert.isUndefined(poly.poly.get('icons'));
+        assert.equal(poly.poly.get('strokeColor'), 'blue');
+        assert.equal(poly.poly.get('strokeOpacity'), 1);
+        assert.equal(poly.poly.get('strokePosition'), 0); // Value for 'center'.
+        assert.equal(poly.poly.get('strokeWeight'), 5);
+        assert.isTrue(poly.poly.getVisible());
+        assert.equal(poly.poly.get('zIndex'), 5);
+
+        assert.ok(poly._listeners['mousedown']);
+        assert.ok(poly._listeners['mousemove']);
+        assert.ok(poly._listeners['mouseout']);
+        assert.ok(poly._listeners['mouseover']);
+        assert.ok(poly._listeners['mouseup']);
+
+        assert.ok(poly._listeners['drag']);
+        assert.ok(poly._listeners['dragend']);
+        assert.ok(poly._listeners['dragstart']);
+
+        assert.ok(poly._listeners['click']);
+        assert.ok(poly._listeners['dblclick']);
+        assert.ok(poly._listeners['rightclick']); 
+
+
+        done();
+      });
+    });
+  });
+});
+
+</script>
+</body>
+</html>
