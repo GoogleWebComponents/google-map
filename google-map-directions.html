@@ -47,8 +47,12 @@ information on the API.
 Fired whenever the directions service returns a result.
 
 @event google-map-response
-@param {{response: Object}}} detail
+@param {{response: Object}} detail
 */
+
+    /**
+     * Polymer properties for the google-map-directions custom element.
+     */
     properties: {
       /**
        * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
@@ -100,7 +104,7 @@ Fired whenever the directions service returns a result.
        * plus the origin, and destination.
        * Waypoints are not supported for transit directions. Optional.
        *
-       * @type google.maps.DirectionsWaypoint
+       * @type Array<google.maps.DirectionsWaypoint>
        */
        waypoints: {
          type: Array,
