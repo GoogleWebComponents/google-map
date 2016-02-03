@@ -41,6 +41,7 @@ child of `google-map` and will contain at least two `google-map-point` child ele
 </dom-module>
 
 <script>
+(function() {
   Polymer({
     is: 'google-map-poly',
 
@@ -116,10 +117,14 @@ child of `google-map` and will contain at least two `google-map-point` child ele
      * @event google-map-poly-rightclick
      * @param {google.maps.PolyMouseEvent} event The poly event.
      */
+
+    /**
+     * Polymer properties for the google-map-poly element.
+     */
     properties: {
       /**
        * A Google Maps polyline or polygon object (depending on value of "closed" attribute).
-       * @type google.maps.Polyline|google.maps.Polygon
+       * @type {google.maps.Polyline|google.maps.Polygon}
        */
       poly: {
         type: Object,
@@ -324,7 +329,7 @@ child of `google-map` and will contain at least two `google-map-point` child ele
 
     // Attribute/property change watchers.
 
-    attributeChanged: function(attrName, oldVal, newVal) {
+    attributeChanged: function(attrName) {
       if (!this.poly) {
         return;
       }
@@ -558,4 +563,5 @@ child of `google-map` and will contain at least two `google-map-point` child ele
       this._points[index].longitude = vertex.lng();
     }
   });
+})();
 </script>
