@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+</head>
+<body>
+
+  <google-map id="map1" latitude="37.77493" longitude="-122.41942">
+    <div id="object1"></div>
+    <div id="object2"></div>
+  </google-map>
+
+<script>
+var map = document.querySelector('#map1');
+
+suite(`objects${Polymer.Settings.useShadow ? ':shadow' : ''}`, function() {
+
+  test('objects are defined, added, removed', function(done) {
+    map.addEventListener('google-map-ready', function(e) {
+      // Check if object children were setup and can be added/removed.
+      assert.equal(map.objects.length, 2);
+
+      var object = map.objects[0];
+      Polymer.dom(Polymer.dom(object).parentNode).removeChild(object);
+      Polymer.dom.flush();
+      async.nextTick(function() { // needed because map.updateObjects has mutationObserver
+        assert.equal(map.objects.length, 1);
+        object.map = null;
+        Polymer.dom(map).appendChild(object);
+        Polymer.dom.flush();
+        async.nextTick(function() {
+          assert.isNotNull(
+              object.map, 're-added object is not visible.');
+          done();
+        });
+      });
+    });
+  });
+
+});
+
+</script>
+</body>
+</html>
