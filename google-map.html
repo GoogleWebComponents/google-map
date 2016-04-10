@@ -248,6 +248,15 @@ The `google-map` element renders a Google Map.
       },
 
       /**
+       * If set, removes the map's 'map type' UI controls.
+       */
+      disableMapTypeControl: {
+        type: Boolean,
+        value: false,
+        observer: '_disableMapTypeControlChanged'
+      },
+
+      /**
        * If set, the zoom level is set such that all markers (google-map-marker children) are brought into view.
        */
       fitToMarkers: {
@@ -438,6 +447,7 @@ The `google-map` element renders a Google Map.
         tilt: this.noAutoTilt ? 0 : 45,
         mapTypeId: this.mapType,
         disableDefaultUI: this.disableDefaultUi,
+        mapTypeControl: !this.disableDefaultUi && !this.disableMapTypeControl,
         disableDoubleClickZoom: this.disableZoom,
         scrollwheel: !this.disableZoom,
         styles: this.styles,
@@ -694,6 +704,13 @@ The `google-map` element renders a Google Map.
         return;
       }
       this.map.setOptions({disableDefaultUI: this.disableDefaultUi});
+    },
+
+    _disableMapTypeControlChanged: function() {
+      if (!this.map) {
+        return;
+      }
+      this.map.setOptions({disableMapTypeControl: this.disableMapTypeControl});
     },
 
     _disableZoomChanged: function() {
