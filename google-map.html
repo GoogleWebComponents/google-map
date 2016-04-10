@@ -243,6 +243,9 @@ The `google-map` element renders a Google Map.
         observer: '_disableDefaultUiChanged'
       },
 
+      /**
+       * If set, removes the map's 'map type' UI controls.
+       */
       disableMapTypeControl: {
           type: Boolean,
           value: false,
@@ -691,10 +694,10 @@ The `google-map` element renders a Google Map.
     },
 
     _disableMapTypeControlChanged: function() {
-        if (!this.map) {
-          return;
-        }
-        this.map.setOptions({disableMapTypeControl: this.disableMapTypeControl});
+      if (!this.map) {
+        return;
+      }
+      this.map.setOptions({disableMapTypeControl: this.disableMapTypeControl});
     },
 
     _disableZoomChanged: function() {
