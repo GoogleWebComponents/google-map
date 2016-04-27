@@ -38,7 +38,7 @@ child of `google-map`.
       display: none;
     }
   </style>
-  <template><content></content></template>
+  <template><div><content></content></div></template>
 </dom-module>
 
 <script>
@@ -366,7 +366,7 @@ child of `google-map`.
         subtree: true
       });
 
-      var content = this.innerHTML.trim();
+      var content = this.children[0];
       if (content) {
         if (!this.info) {
           // Create a new infowindow
