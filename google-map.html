@@ -407,11 +407,11 @@ The `google-map` element renders a Google Map.
 
     detached: function() {
       if (this._mutationObserver) {
-        this._mutationObserver.disconnect();
+        Polymer.dom(this.$.selector).unobserveNodes(this._mutationObserver);
         this._mutationObserver = null;
       }
       if (this._objectsMutationObserver) {
-        this._objectsMutationObserver.disconnect();
+        Polymer.dom(this.$.objects).unobserveNodes(this._objectsMutationObserver);
         this._objectsMutationObserver = null;
       }
     },
@@ -480,10 +480,7 @@ The `google-map` element renders a Google Map.
       if (this._mutationObserver) {
         return;
       }
-      this._mutationObserver = new MutationObserver(this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this.$.selector, {
-        childList: true
-      });
+      this._mutationObserver = Polymer.dom(this.$.selector).observeNodes(this._updateMarkers.bind(this));
     },
 
     _updateMarkers: function() {
@@ -520,10 +517,7 @@ The `google-map` element renders a Google Map.
       if (this._objectsMutationObserver) {
         return;
       }
-      this._objectsMutationObserver = new MutationObserver(this._updateObjects.bind(this));
-      this._objectsMutationObserver.observe(this, {
-        childList: true
-      });
+      this._objectsMutationObserver = Polymer.dom(this.$.objects).observeNodes(this._updateObjects.bind(this));
     },
 
     _updateObjects: function() {
