@@ -1,0 +1,117 @@
+<link rel="import" href="google-map-point.html">
+<!--
+The `google-map-encoded-points` element represents a set of points on a map. It's used as a child of the
+google-map-poly element. The encoding scheme is described here: https://developers.google.com/maps/documentation/utilities/polylinealgorithm
+<b>Example</b> points defining a blue path in Colorado, USA:
+    <google-map latitude="38.8" longitude="-104.89" zoom="13">
+      <google-map-poly fill-color="blue" >
+        <google-map-encoded-points id="enc1" encoded-polyline="gc}kFtke_SBc@QmE}@oHd@}C|AcBzAcAt@q@j@q@fAsERcDhA{CrCaDVOv@YrFmAtQaFjIcClI{B`DaArCo@bB[bEf@vBi@bFqCbA]r@IzBL`DLt@E|CiAtCy@fFG`Be@bB_Aj@K|BP|@n@|@z@lCU`A{@l@eArB_@^aA~A^^v@d@pBKvDyBbFMjCRxE?`BoAxCcBp@_ARgCr@_Bj@}Bd@qBbCSv@RzD\n@`@l@nCpB@fBfBhDfBzCvB~@r@@bC`AXv@`BbEfApBd@nBQjCKbDp@vAzAzAt@l@dA~AN~@@l@s@hCyCrCuBfAy@~B^rDbArBnCk@nAy@rA_CfCs@lAd@z@tAp@nAnAn@`ATpBvCAtCSzAs@pBGbDZhCCrBe@~B"></google-map-encoded-points>
+      </google-map-poly>
+    </google-map>
+-->
+
+<dom-module id="google-map-encoded-points">
+  <script>
+    Polymer({
+      is: 'google-map-encoded-points',
+      properties: {
+        encodedPolyline: {
+          type: String,
+          readOnly: false,
+          value: '',
+          observer: '_encodedPolylineChanged'
+        },
+        points: {
+          type: Object
+        }
+      },
+      escape: function (str) {
+        return str
+        .replace(/[\/]/g, '\\/')
+        .replace(/[\b]/g, '\\b')
+        .replace(/[\f]/g, '\\f')
+        .replace(/[\n]/g, '\\n')
+        .replace(/[\r]/g, '\\r')
+        .replace(/[\t]/g, '\\t');
+      },
+      _encodedPolylineChanged: function() {
+        if (this.encodedPolyline.length > 4) {
+          this.addToMap();
+        }
+      },
+      addToMap: function() {
+        this.points = this.decode(this.escape(this.encodedPolyline));
+        var poly = Polymer.dom(this).parentNode;
+        var map = Polymer.dom(poly).parentNode;
+        if(poly.nodeName === 'GOOGLE-MAP-POLY') {
+          //TODO: this would be improved is removeChild would update the distributed nodes
+          var _points = Polymer.dom(poly).node._nodes[0]._distributedNodes;
+          for (var i=0; i<_points.length; i++) {
+            Polymer.dom(poly)._removeNode(_points[i]);
+          }
+          for (var i=0; i<this.points.length; i++) {
+            if (this.points[i].hasOwnProperty('lat')) {
+              var dynamicEl = document.createElement("google-map-point");
+              dynamicEl.setAttribute("latitude" , this.points[i].lat);
+              dynamicEl.setAttribute("longitude" , this.points[i].lng);
+              dynamicEl.removeAttribute("hidden");
+              dynamicEl.className = poly.className;
+              //TODO: this would be improved is appendChild would update the distributed nodes
+              Polymer.dom(poly)._addNode(dynamicEl,null);
+            }
+          }
+          Polymer.dom.flush();
+        }
+      },
+      /**
+     * Returns an array of points.
+     *
+     * @return {lat, lng}
+     */
+      decode: function(encoded, precision) {
+            var index = 0,
+            lat = 0,
+            lng = 0,
+            coordinates = [],
+            shift = 0,
+            result = 0,
+            byte = null,
+            latitude_change,
+            longitude_change,
+            factor = Math.pow(10, precision || 5);
+
+        while (index < encoded.length) {
+
+            byte = null;
+            shift = 0;
+            result = 0;
+
+            do {
+                byte = encoded.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
+
+            latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+            shift = result = 0;
+
+            do {
+                byte = encoded.charCodeAt(index++) - 63;
+                result |= (byte & 0x1f) << shift;
+                shift += 5;
+            } while (byte >= 0x20);
+
+            longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+            lat += latitude_change;
+            lng += longitude_change;
+
+            coordinates.push({lat: lat / factor, lng: lng / factor});
+          }
+
+          return coordinates;
+        },
+    });
+  </script>
+</dom-module>
