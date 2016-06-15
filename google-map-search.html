@@ -94,8 +94,6 @@ information on the API.
       },
 
       /**
-       * @deprecated
-       *
        * Warning: The implementation for types in text search requests is changing. The types parameter is deprecated
        * as of February 16, 2016, replaced by a new type parameter which only supports one type per search request.
        * Additionally, the establishment, place_of_worship, food, health, general_contractor and finance types will
@@ -109,6 +107,8 @@ information on the API.
        * See https://developers.google.com/places/documentation/supported_types
        * for a list of supported types.
        * Leave empty or null to search for all result types.
+       *
+       * @deprecated
        */
       types: {
         type: String,
