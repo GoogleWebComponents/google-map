@@ -144,7 +144,7 @@ The `google-map` element renders a Google Map.
      * @event google-map-rightclick
      * @param {google.maps.MouseEvent} event The mouse event.
      */
-    /** 
+    /**
      * Fired when the map becomes idle after panning or zooming.
      * @event google-map-idle
     */
@@ -407,8 +407,9 @@ The `google-map` element renders a Google Map.
 
     detached: function() {
       if (this._mutationObserver) {
-        this._mutationObserver.disconnect();
+        this.unlisten(this.$.selector, 'items-changed', '_updateMarkers');
         this._mutationObserver = null;
+
       }
       if (this._objectsMutationObserver) {
         this._objectsMutationObserver.disconnect();
@@ -480,10 +481,7 @@ The `google-map` element renders a Google Map.
       if (this._mutationObserver) {
         return;
       }
-      this._mutationObserver = new MutationObserver(this._updateMarkers.bind(this));
-      this._mutationObserver.observe(this.$.selector, {
-        childList: true
-      });
+      this._mutationObserver = this.listen(this.$.selector, 'items-changed', '_updateMarkers');
     },
 
     _updateMarkers: function() {
@@ -630,7 +628,7 @@ The `google-map` element renders a Google Map.
         this.map.setZoom(Number(this.zoom));
       }
     },
-    
+
     _idleEvent: function() {
       if (this.map) {
         this._forwardEvent('idle');
