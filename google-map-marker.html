@@ -410,7 +410,7 @@ child of `google-map`.
           lat: parseFloat(this.latitude),
           lng: parseFloat(this.longitude)
         },
-        title: this.title,
+        label: this.label,
         animation: google.maps.Animation[this.animation],
         draggable: this.draggable,
         visible: !this.hidden,
@@ -452,8 +452,8 @@ child of `google-map`.
           this.marker.setDraggable(this.draggable);
           setupDragHandler_.bind(this)();
           break;
-        case 'title':
-          this.marker.setTitle(this.title);
+        case 'label':
+          this.marker.setLabel(this.label);
           break;
       }
     }
