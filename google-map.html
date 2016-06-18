@@ -406,9 +406,9 @@ The `google-map` element renders a Google Map.
     },
 
     detached: function() {
-      if (this._mutationObserver) {
+      if (this._markersChildrenListener) {
         this.unlisten(this.$.selector, 'items-changed', '_updateMarkers');
-        this._mutationObserver = null;
+        this._markersChildrenListener = null;
       }
       if (this._objectsMutationObserver) {
         this._objectsMutationObserver.disconnect();
@@ -477,10 +477,10 @@ The `google-map` element renders a Google Map.
     // watch for future updates to marker objects
     _observeMarkers: function() {
       // Watch for future updates.
-      if (this._mutationObserver) {
+      if (this._markersChildrenListener) {
         return;
       }
-      this._mutationObserver = this.listen(this.$.selector, 'items-changed', '_updateMarkers');
+      this._markersChildrenListener = this.listen(this.$.selector, 'items-changed', '_updateMarkers');
     },
 
     _updateMarkers: function() {
@@ -494,7 +494,7 @@ The `google-map` element renders a Google Map.
         }.bind(this));
         if (added.length === 0) {
           // set up observer first time around
-          if (!this._mutationObserver) {
+          if (!this._markersChildrenListener) {
             this._observeMarkers();
           }
           return;

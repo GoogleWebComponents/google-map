@@ -18,7 +18,7 @@
 <script>
 var map = document.querySelector('#map1');
 
-suite('markers', function() {
+suite(`markers${Polymer.Settings.useShadow ? ' (shadow dom)' : ' (shady dom)'}`, function() {
 
   test('markers are defined, added, removed', function(done) {
     map.addEventListener('google-map-ready', function(e) {
