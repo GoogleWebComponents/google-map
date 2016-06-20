@@ -366,8 +366,10 @@ child of `google-map`.
         subtree: true
       });
 
+      // Use this element's content DOM node for the info window content.
+      // Note that this will move the contents, not copy them.
       var content = this.children[0];
-      if (content) {
+      if (content && content.innerHTML.trim()) {
         if (!this.info) {
           // Create a new infowindow
           this.info = new google.maps.InfoWindow();
@@ -396,6 +398,8 @@ child of `google-map`.
           this.info.open(this.map, this.marker);
           this.fire('google-map-marker-open');
         } else {
+          // When closing the info window, make sure the content is still available under this.content.
+          // This is necessary because we allow the info window to take the DOM node
           this.content = this.info.getContent();
           this.info.close();
           this.fire('google-map-marker-close');
