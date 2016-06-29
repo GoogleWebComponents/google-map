@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+</head>
+
+<body>
+  <dom-module id="marker-tester-element">
+    <template>
+      <google-map id="map1" map="{{map}}" latitude="37.77493" longitude="-122.41942"></google-map>
+
+      <template is="dom-repeat" items="{{markers}}" id="markerRepeat">
+        <google-map-marker map="{{map}}" id="marker1" latitude="37.777" longitude="-122.38911" >
+          <h1>{{item.name}}</h1>
+        </google-map-marker>
+      </template>
+    </template>
+    <script>
+      (function() {
+        'use strict';
+
+        Polymer({
+          is: 'marker-tester-element',
+
+          properties: {
+            markers: {
+              type: Array,
+              value: [ { name: "Something "} ]
+            }
+          },
+
+          attached: function() {
+            // Run tests
+            this.test();
+          },
+
+          test: function() {
+            var that = this;
+            var map = this.$.map1;
+
+            suite('markers', function() {
+
+              test('defaults', function(done) {
+                var markerEl = that.$$('google-map-marker');
+                that.name = "Nothing";
+
+                // Get rid of markers and then add them back to trigger
+                // dom-repeat re-use cycle
+                that.markers = [];
+
+                map.addEventListener('google-map-ready', function(e) {
+                  that.markers = [ { name: "Something" } ];
+
+                  flush(function() {
+                    var markerEl = that.$$('google-map-marker');
+
+                    // Verify basic stuff still works
+                    assert.isDefined(markerEl.marker);
+                    assert.isDefined(markerEl.info);
+                    assert.equal(markerEl.latitude, 37.777);
+                    assert.equal(markerEl.longitude, -122.38911);
+
+                    // Verify that InfoWindow content is up-to-date
+                    assert.include(markerEl.info.content, "Something");
+
+                    done();
+                  });
+                });
+              });
+            });
+          }
+        });
+      })();
+      </script>
+  </dom-module>
+  <marker-tester-element></marker-tester-element>
+</body>
+
+</html>
