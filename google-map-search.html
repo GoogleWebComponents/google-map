@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 
 <!--
 `google-map-search` provides Google Maps Places API functionality.
@@ -156,10 +156,10 @@ information on the API.
         if (this.radius) {
           var radius = this.radius;
           var location = this.location ? this.location : this.map.getCenter();
-        }else if (!this.globalSearch) {
+        } else if (!this.globalSearch) {
           var bounds = this.map.getBounds();
         }
-     //   console.log(this.map.getBounds())
+        
         places.textSearch({
           query: this.query,
           types: types,
