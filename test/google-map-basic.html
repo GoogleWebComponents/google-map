@@ -12,10 +12,10 @@
 
   <google-map id="map1"></google-map>
   <google-map id="map2" latitude="37.555" longitude="-122.555"></google-map>
-  <google-map id="map3" disable-zoom zoom="11" min-zoom="10" max-zoom="11" no-auto-tilt fit-to-markers single-info-window></google-map>
+  <google-map id="map3" disable-zoom zoom="11" min-zoom="10" max-zoom="11"
+              no-auto-tilt fit-to-markers single-info-window></google-map>
 
-  <div id='newmap'>
-  </div>
+  <div id="newmap"></div>
 <script>
 var map = document.querySelector('#map1');
 var map2 = document.querySelector('#map2');
@@ -85,11 +85,6 @@ suite('google-map', function() {
     });
   });
 
-  test('declarative map creation', function(done) {
-    var map = document.createElement('google-map');
-    document.querySelector('#newmap').appendChild(map);
-    done();
-  });
 });
 
 </script>

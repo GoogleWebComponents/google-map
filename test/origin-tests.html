@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- Copyright (c) 2016 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+</head>
+<body>
+  <google-map id="map" maps-url="http://maps.google.cn/maps/api/js?callback=%%callback%%"></google-map>
+<script>
+suite('google-map origins', function() {
+
+  test('loads from another origin', function(done) {
+
+    let map = document.querySelector('#map');
+    map.addEventListener('google-map-ready', function(e) {
+      let resources = performance.getEntriesByType('resource');
+      let dotComResults = resources.filter(item => {
+        return item.name.includes('?callback') && item.name.includes('.com');
+      }).map(item => item.name);
+      assert.equal(dotComResults.length, 0, 'Maps loaded from the wrong origin');
+      done();
+    });
+  });
+});
+
+</script>
+</body>
+</html>
