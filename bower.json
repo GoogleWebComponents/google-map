@@ -1,6 +1,6 @@
 {
   "name": "google-map",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "Google Maps web components",
   "homepage": "https://elements.polymer-project.org/elements/google-map",
   "main": [
