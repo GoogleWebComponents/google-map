@@ -15,7 +15,7 @@ The `google-map` element renders a Google Map.
         height: 600px;
       }
     </style>
-    <google-map latitude="37.77493" longitude="-122.41942"></google-map>
+    <google-map latitude="37.77493" longitude="-122.41942" api-key="1234"></google-map>
 
 <b>Example</b> - add markers to the map and ensure they're in view:
 
@@ -40,11 +40,19 @@ The `google-map` element renders a Google Map.
 <b>Example</b> - with Google directions, using data-binding inside another Polymer element
 
     <google-map map="{{map}}"></google-map>
-    <google-map-directions map="{{map}}"
+    <google-map-directions map="[[map]]"
         start-address="San Francisco" end-address="Mountain View">
     </google-map-directions>
 
-<b>Note</b> You can disable dragging by adding `draggable="false"` on the `google-map` element.
+Disable dragging by adding `draggable="false"` on the `google-map` element.
+
+<b>Example</b> - loading the Maps API from another origin (China)
+
+    <google-map maps-url="http://maps.google.cn/maps/api/js?callback=%%callback%%">
+
+###  Tips
+
+If you're seeing the message "You have included the Google Maps API multiple times on this page. This may cause unexpected errors." it probably means you're loading other maps elements on the page (`<google-maps-directions>`). Each maps element must include the same set of configuration options (`apiKey`, `clientId`, `language`, `version`, etc.) so the Maps API is loaded from the same URL.
 
 @demo demo/index.html
 @demo demo/polys.html
@@ -70,13 +78,15 @@ The `google-map` element renders a Google Map.
 
   </style>
   <template>
+
     <google-maps-api id="api"
       api-key="[[apiKey]]"
       client-id="[[clientId]]"
       version="[[version]]"
       signed-in="[[signedIn]]"
       language="[[language]]"
-      on-api-load="_mapApiLoaded"></google-maps-api>
+      on-api-load="_mapApiLoaded"
+      maps-url="[[mapsUrl]]"></google-maps-api>
 
     <div id="map"></div>
 
@@ -154,12 +164,20 @@ The `google-map` element renders a Google Map.
      */
     properties: {
       /**
-       * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
+       * A Maps API key. To obtain an API key, see https://developers.google.com/maps/documentation/javascript/tutorial#api_key.
        */
       apiKey: String,
 
       /**
-       * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see developers.google.com/maps/documentation/business/.
+       * Overrides the origin the Maps API is loaded from. Defaults to `https://maps.googleapis.com`.
+       */
+      mapsUrl: {
+        type: String
+        // Initial value set in google-maps-api.
+      },
+
+      /**
+       * A Maps API for Business Client ID. To obtain a Maps API for Business Client ID, see https://developers.google.com/maps/documentation/business/.
        * If set, a Client ID will take precedence over an API Key.
        */
       clientId: String,
@@ -276,7 +294,7 @@ The `google-map` element renders a Google Map.
 
       /**
        * If set, custom styles can be applied to the map.
-       * For style documentation see developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
+       * For style documentation see https://developers.google.com/maps/documentation/javascript/reference#MapTypeStyle
        */
       styles: {
         type: Object,

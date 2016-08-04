@@ -34,7 +34,8 @@ information on the API.
     <google-maps-api
       api-key="[[apiKey]]"
       language="[[language]]"
-      on-api-load="_mapApiLoaded"></google-maps-api>
+      on-api-load="_mapApiLoaded"
+      maps-url="[[mapsUrl]]"></google-maps-api>
   </template>
 </dom-module>
 
@@ -58,6 +59,14 @@ Fired whenever the directions service returns a result.
        * A Maps API key. To obtain an API key, see developers.google.com/maps/documentation/javascript/tutorial#api_key.
        */
       apiKey: String,
+
+      /**
+       * Overrides the origin the Maps API is loaded from. Defaults to `https://maps.googleapis.com`.
+       */
+      mapsUrl: {
+        type: String
+        // Initial value set in google-maps-api.
+      },
 
       /**
        * The Google map object.
