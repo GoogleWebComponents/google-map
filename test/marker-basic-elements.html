@@ -1,0 +1,23 @@
+<dom-module id="x-content">
+  <template>
+    <google-map id="map2" latitude="37.77493" longitude="-122.41942">
+      <template is="dom-repeat" items="[[stadiums]]" as="stadium">
+        <google-map-marker latitude="[[stadium.lat]]"
+                           longitude="[[stadium.lng]]"
+                           title="[[stadium.title]]">
+        </google-map-marker>
+      </template>
+    </google-map>
+  </template>
+  <script>
+   Polymer({
+     is: 'x-content',
+     properties: {
+       stadiums: {
+         type: Array,
+         notify: true
+       }
+     }
+   });
+  </script>
+</dom-module>
