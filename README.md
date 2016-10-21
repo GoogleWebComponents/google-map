@@ -7,9 +7,9 @@ google-map
 ```
 <custom-element-demo>
   <template>
-    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="google-map.html">
-    <style is="custom-style">
+    <style>
       google-map {
         height: 300px;
       }
