@@ -360,12 +360,18 @@ child of `google-map`.
       if (this._contentObserver)
         this._contentObserver.disconnect();
       // Watch for future updates.
-      this._contentObserver = new MutationObserver( this._contentChanged.bind(this));
+      this._contentObserver = new MutationObserver( this._updateContent.bind(this));
       this._contentObserver.observe( this, {
         childList: true,
-        subtree: true
+        subtree: true,
+        characterData: true,
+        attributes: true
       });
 
+      this._updateContent();
+    },
+
+    _updateContent: function() {
       var content = this.innerHTML.trim();
       if (content) {
         if (!this.info) {

@@ -7,6 +7,7 @@
   <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../google-map.html">
+  <link rel="import" href="marker-basic-elements.html">
 </head>
 <body>
 
@@ -14,6 +15,8 @@
     <google-map-marker latitude="37.779" longitude="-122.3892"></google-map-marker>
     <google-map-marker id="marker2" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
+
+  <x-content stadiums='[{"title": "AT&T Park", "lat": 37.778611, "lng": -122.38916999999998}]'></x-content>
 
 <script>
 var map = document.querySelector('#map1');
@@ -75,16 +78,39 @@ suite('markers', function() {
     });
   });
 
+  test('update content', function(done) {
+    var origLat = 37.778611,
+        origLng = -122.38916999999998,
+        origTitle = "AT&T Park";
+    var contentEl = document.querySelector('x-content');
+    var map2 = document.querySelector('x-content > google-map');
+    var template = Polymer.dom(map2).querySelector('template');
+    var markerEl = Polymer.dom(map2).querySelector('google-map-marker');
+    assert.equal(markerEl.marker.getPosition().lat(), origLat);
+    assert.equal(markerEl.marker.getPosition().lng(), origLng);
+    assert.equal(markerEl.marker.title, origTitle);
+
+    var newLat = 32.7073,
+        newLng = -117.15660000000003,
+        newTitle = "Petco Park";
+    contentEl.setAttribute('stadiums','[{"title": "Petco Park", "lat": 32.7073, "lng": -117.1566}]');
+    template.render();
+    assert.equal(markerEl.marker.getPosition().lat(), newLat);
+    assert.equal(markerEl.marker.getPosition().lng(), newLng);
+    assert.equal(markerEl.marker.title, newTitle);
+    done();
+  });
+
   test('dragEvents', function() {
 
     var markerEl = Polymer.dom(map).querySelector('#marker2');
 
     assert.equal(markerEl.dragEvents, true);
-    
+
     flush(function() {
       assert.instanceOf(markerEl._listeners.drag, google.maps.MapsEventListener);
       assert.instanceOf(markerEl._listeners.dragstart, google.maps.MapsEventListener);
-      assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener); 
+      assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener);
       done();
     });
 
