@@ -49,6 +49,11 @@ if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') 
   t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
 }
 
+function toggleControls() {
+  var gmap = document.querySelector('google-map');
+  gmap.disableDefaultUi = !gmap.disableDefaultUi;
+}
+
 document.addEventListener('dom-change', function(e) {
   var gmap = document.querySelector('google-map');
   var directions = document.querySelector('google-map-directions');
@@ -56,10 +61,6 @@ document.addEventListener('dom-change', function(e) {
   gmap.addEventListener('api-load', function(e) {
     document.querySelector('google-map-directions').map = this.map;
   });
-
-  function toggleControls() {
-    gmap.disableDefaultUi = !gmap.disableDefaultUi;
-  }
 
   var marker = document.querySelector('google-map-marker');
   var poly = document.querySelector('google-map-poly');
