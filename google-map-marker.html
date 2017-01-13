@@ -271,6 +271,7 @@ child of `google-map`.
       if (this.marker) {
         this.marker.setMap(this.map);
       }
+      this._contentChanged();
     },
 
     _updatePosition: function() {
