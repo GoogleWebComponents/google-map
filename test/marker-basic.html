@@ -13,13 +13,18 @@
   <google-map id="map1" latitude="37.77493" longitude="-122.41942">
     <google-map-marker latitude="37.779" longitude="-122.3892"></google-map-marker>
     <google-map-marker id="marker2" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
+    <google-map-marker id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
 
 <script>
 var map = document.querySelector('#map1');
 
 suite('markers', function() {
+  test('labeled marker should have a label', function() {
+    var markerEl = document.querySelector('#labeled-marker');
 
+    assert.equal(markerEl.label, "GG");
+  });
   // TODO: add test for info window content, including empty & whitespace-only.
   test('infowindow', function() {
   });
@@ -80,11 +85,11 @@ suite('markers', function() {
     var markerEl = Polymer.dom(map).querySelector('#marker2');
 
     assert.equal(markerEl.dragEvents, true);
-    
+
     flush(function() {
       assert.instanceOf(markerEl._listeners.drag, google.maps.MapsEventListener);
       assert.instanceOf(markerEl._listeners.dragstart, google.maps.MapsEventListener);
-      assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener); 
+      assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener);
       done();
     });
 
