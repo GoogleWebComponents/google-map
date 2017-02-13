@@ -249,6 +249,15 @@ child of `google-map`.
           },
 
           /**
+           * The marker's label.
+           */
+          label: {
+            type: String,
+            value: null,
+            observer: '_labelChanged'
+          },
+
+          /**
            * A animation for the marker. "DROP" or "BOUNCE". See
            * https://developers.google.com/maps/documentation/javascript/examples/marker-animations.
            */
@@ -348,6 +357,12 @@ child of `google-map`.
           }
         },
 
+        _labelChanged: function() {
+          if (this.marker) {
+            this.marker.setLabel(this.label);
+          }
+        },
+
         _iconChanged: function() {
           if (this.marker) {
             this.marker.setIcon(this.icon);
@@ -431,6 +446,7 @@ child of `google-map`.
             draggable: this.draggable,
             visible: !this.hidden,
             icon: this.icon,
+            label: this.label,
             zIndex: this.zIndex
           });
           this._contentChanged();
