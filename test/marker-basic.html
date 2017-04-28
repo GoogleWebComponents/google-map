@@ -4,16 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../google-map.html">
 </head>
 <body>
 
   <google-map id="map1" latitude="37.77493" longitude="-122.41942">
-    <google-map-marker latitude="37.779" longitude="-122.3892"></google-map-marker>
-    <google-map-marker id="marker2" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
-    <google-map-marker id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
+    <google-map-marker slot="markers" latitude="37.779" longitude="-122.3892"></google-map-marker>
+    <google-map-marker slot="markers" id="marker2" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
+    <google-map-marker slot="markers" id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
 
 <script>
