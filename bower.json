@@ -46,7 +46,7 @@
         "iron-selector": "PolymerElements/iron-selector#^1.5.2"
       },
       "devDependencies": {
-        "web-component-tester": "*",
+        "web-component-tester": "^4.0.0",
         "iron-component-page": "PolymerElements/iron-component-page#^1.1.7"
       }
     }
