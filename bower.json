@@ -36,5 +36,19 @@
   "devDependencies": {
     "web-component-tester": "^6.0.0-prerelease.6",
     "iron-component-page": "PolymerElements/iron-component-page#2.0-preview"
+  },
+  "variants": {
+    "1.x": {
+      "dependencies": {
+        "polymer": "Polymer/polymer#^1.8.0",
+        "google-apis": "GoogleWebComponents/google-apis#^1.1.7",
+        "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.5",
+        "iron-selector": "PolymerElements/iron-selector#^1.5.2"
+      },
+      "devDependencies": {
+        "web-component-tester": "*",
+        "iron-component-page": "PolymerElements/iron-component-page#^1.1.7"
+      }
+    }
   }
 }
