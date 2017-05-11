@@ -24,3 +24,6 @@ google-map
   <google-map-marker latitude="37.78" longitude="-122.4" draggable="true"></google-map-marker>
 </google-map>
 ```
+
+Breaking changes:
+ * Markers added to `<google-map>` must now specify `slot="markers"` to be added correctly.

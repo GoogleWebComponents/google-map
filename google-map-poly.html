@@ -37,7 +37,7 @@ child of `google-map` and will contain at least two `google-map-point` child ele
       }
     </style>
 
-    <content id="points" select="google-map-point"></content>
+    <slot id="points"></slot>
   </template>
   <script>
     (function() {
@@ -487,7 +487,8 @@ child of `google-map` and will contain at least two `google-map-point` child ele
           this._building = true;
           this.path.clear();
           for (var i = 0, point; point = this._points[i]; ++i) {
-            this.path.push(point.getPosition());
+            if (point.tagName == 'google-map-point')
+              this.path.push(point.getPosition());
           }
           this._building = false;
 
