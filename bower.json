@@ -28,14 +28,14 @@
     "maps"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0-rc.7",
+    "polymer": "Polymer/polymer#1.9 - 2",
     "google-apis": "GoogleWebComponents/google-apis#2.0-preview",
-    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#2.0-preview",
-    "iron-selector": "PolymerElements/iron-selector#2.0-preview"
+    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#1 - 2",
+    "iron-selector": "PolymerElements/iron-selector#1 - 2"
   },
   "devDependencies": {
-    "web-component-tester": "^6.0.0-prerelease.6",
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview"
+    "web-component-tester": "^6.0.0",
+    "iron-component-page": "PolymerElements/iron-component-page#^1 - 2"
   },
   "variants": {
     "1.x": {
