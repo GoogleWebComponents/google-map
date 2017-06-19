@@ -104,6 +104,20 @@ information on the API.
       },
 
       /**
+       * Whether or not the search is in progress.
+       * This is set to true when the search begins and it is set to false when it completes.
+       * This will be updated to false before `google-map-search-results` is fired.
+       *
+       * When this is false, `results` has been set and is available.
+       */
+      loading: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        readOnly: true
+      },
+
+      /**
        * The search results.
        */
       results: {
@@ -157,6 +171,7 @@ information on the API.
         } else if (!this.globalSearch) {
           var bounds = this.map.getBounds();
         }
+        this._setLoading( true );
         places.textSearch({
           query: this.query,
           types: types,
@@ -195,6 +210,7 @@ information on the API.
         result.longitude = result.geometry.location.lng();
         return result;
       });
+      this._setLoading( false );
       this.fire('google-map-search-results', this.results);
     },
 
