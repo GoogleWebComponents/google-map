@@ -323,6 +323,15 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           value: false,
           observer: '_disableZoomChanged'
         },
+          
+        /**
+         * If true, prevent the user from zooming the map by mouse scroll wheel.
+         */
+        disableScrollWheelZoom:{
+          type: Boolean,
+          value: false,
+          observer: '_disableZoomChanged'
+        },
 
         /**
          * If set, custom styles can be applied to the map.
@@ -500,7 +509,7 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           mapTypeControl: !this.disableDefaultUi && !this.disableMapTypeControl,
           streetViewControl: !this.disableDefaultUi && !this.disableStreetViewControl,
           disableDoubleClickZoom: this.disableZoom,
-          scrollwheel: !this.disableZoom,
+          scrollwheel: !this.disableScrollWheelZoom,
           styles: this.styles,
           maxZoom: Number(this.maxZoom),
           minZoom: Number(this.minZoom)
