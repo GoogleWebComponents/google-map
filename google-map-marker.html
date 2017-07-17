@@ -394,7 +394,8 @@ child of `google-map`.
           this._contentObserver = new MutationObserver( this._contentChanged.bind(this));
           this._contentObserver.observe( this, {
             childList: true,
-            subtree: true
+            subtree: true,
+            characterData: true
           });
 
           var content = this.innerHTML.trim();
@@ -458,9 +459,11 @@ child of `google-map`.
         },
 
         _clearListener: function(name) {
-          if (this._listeners[name]) {
-            google.maps.event.removeListener(this._listeners[name]);
-            this._listeners[name] = null;
+          if (typeof this._listeners != 'undefined'){
+              if (this._listeners[name]) {
+                google.maps.event.removeListener(this._listeners[name]);
+                this._listeners[name] = null;
+              }
           }
         },
 
