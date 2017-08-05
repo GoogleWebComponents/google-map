@@ -20,7 +20,7 @@ google-map
 ```
 -->
 ```html
-<google-map fit-to-marker api-key="AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc">
+<google-map fit-to-markers api-key="AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc">
   <google-map-marker latitude="37.78" longitude="-122.4" draggable="true"></google-map-marker>
 </google-map>
 ```
