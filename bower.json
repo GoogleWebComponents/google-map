@@ -4,10 +4,7 @@
   "description": "Google Maps web components",
   "homepage": "https://elements.polymer-project.org/elements/google-map",
   "main": [
-    "google-map.html",
-    "google-map-search.html",
-    "google-map-marker.html",
-    "google-map-directions.html"
+    "google-map-elements.html"
   ],
   "authors": [
     "Frankie Fu <ffu@google.com>",
