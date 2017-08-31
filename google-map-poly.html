@@ -487,8 +487,15 @@ child of `google-map` and will contain at least two `google-map-point` child ele
           this._building = true;
           this.path.clear();
           for (var i = 0, point; point = this._points[i]; ++i) {
-            if (point.tagName == 'google-map-point')
-              this.path.push(point.getPosition());
+            var tagName = point.tagName;
+
+            if (tagName) {
+              tagName = tagName.toLowerCase();
+
+              if (tagName == 'google-map-point') {
+                this.path.push(point.getPosition());
+              }
+            }
           }
           this._building = false;
 
