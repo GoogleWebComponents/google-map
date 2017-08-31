@@ -1,6 +1,10 @@
 google-map
 ==========
 
+If you are seeking a smaller, simplified version of `google-map`, we recommend using
+[`good-map`](https://www.webcomponents.org/element/keanulee/good-map)
+
+
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/GoogleWebComponents/google-map)
 
 <!---
