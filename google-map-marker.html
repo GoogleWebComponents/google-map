@@ -306,7 +306,7 @@ child of `google-map`.
         },
 
         _clickEventsChanged: function() {
-          if (this.map) {
+          if (this._mapSet()) {
             if (this.clickEvents) {
               this._forwardEvent('click');
               this._forwardEvent('dblclick');
@@ -320,7 +320,7 @@ child of `google-map`.
         },
 
         _dragEventsChanged: function() {
-          if (this.map) {
+          if (this._mapSet()) {
             if (this.dragEvents) {
               this._forwardEvent('drag');
               this._forwardEvent('dragend');
@@ -334,7 +334,7 @@ child of `google-map`.
         },
 
         _mouseEventsChanged: function() {
-          if (this.map) {
+          if (this._mapSet()) {
             if (this.mouseEvents) {
               this._forwardEvent('mousedown');
               this._forwardEvent('mousemove');
@@ -372,6 +372,17 @@ child of `google-map`.
         _zIndexChanged: function() {
           if (this.marker) {
             this.marker.setZIndex(this.zIndex);
+          }
+        },
+
+        _mapSet: function() {
+          if (this.map) {
+            if (!this._listeners) {
+              this._mapChanged();
+            }
+            return true;
+          } else {
+            return false;
           }
         },
 
