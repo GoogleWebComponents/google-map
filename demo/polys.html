@@ -21,16 +21,18 @@
 </head>
 <body class="fullbleed">
 
-<template is="dom-bind">
-  <google-map latitude="37.779" longitude="-122.3892" min-zoom="9"
-              max-zoom="11" language="en" api-key="[[apiKey]]">
-    <google-map-poly closed fill-color="red" fill-opacity=".25" stroke-weight="1">
-      <google-map-point latitude="37.779" longitude="-122.3892"></google-map-point>
-      <google-map-point latitude="37.804" longitude="-122.2711"></google-map-point>
-      <google-map-point latitude="37.386" longitude="-122.0837"></google-map-point>
-    </google-map-poly>
-  </google-map>
-</template>
+<dom-bind>
+  <template is="dom-bind">
+    <google-map latitude="37.779" longitude="-122.3892" min-zoom="9"
+                max-zoom="11" language="en" api-key="[[apiKey]]">
+      <google-map-poly closed fill-color="red" fill-opacity=".25" stroke-weight="1">
+        <google-map-point latitude="37.779" longitude="-122.3892"></google-map-point>
+        <google-map-point latitude="37.804" longitude="-122.2711"></google-map-point>
+        <google-map-point latitude="37.386" longitude="-122.0837"></google-map-point>
+      </google-map-poly>
+    </google-map>
+  </template>
+</dom-bind>
 
 <button id="toggleEdit" onclick="toggleEdit()">Enable editing</button>
 
