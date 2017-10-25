@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Google Map Circle demo</title>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../google-map.html">
+  <link rel="import" href="../google-map-circle.html">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
+    #toggleEdit {
+      position: absolute;
+      top: 10px;
+      left: 120px;
+    }
+  </style>
+</head>
+<body class="fullbleed">
+
+<dom-bind>
+  <template is="dom-bind">
+    <google-map latitude="37.779" longitude="-122.3892" min-zoom="9"
+                max-zoom="11" language="en" api-key="[[apiKey]]">
+      <google-map-circle closed fill-color="red" fill-opacity=".25" stroke-weight="1" latitude="37.77493" longitude="-122.41942" radius="20000"></google-map-circle>
+    </google-map>
+  </template>
+</dom-bind>
+
+<button id="toggleEdit" onclick="toggleEdit()">Enable editing</button>
+
+<script>
+  var circle = document.querySelector('google-map-circle');
+  var button = document.querySelector('#toggleEdit');
+
+  function toggleEdit() {
+    circle.editable = !circle.editable;
+    button.innerText = circle.editable ? 'Disable editing' : 'Enable editing';
+  }
+
+  if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') {
+    var t = document.querySelector('template');
+    t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
+  }
+</script>
+</body>
+</html>
