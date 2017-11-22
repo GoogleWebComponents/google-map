@@ -394,7 +394,8 @@ child of `google-map`.
           this._contentObserver = new MutationObserver( this._contentChanged.bind(this));
           this._contentObserver.observe( this, {
             childList: true,
-            subtree: true
+            subtree: true,
+            characterData: true
           });
 
           var content = this.innerHTML.trim();
