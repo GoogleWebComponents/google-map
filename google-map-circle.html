@@ -30,6 +30,7 @@ child of `google-map`.
     <google-map-circle latitude="37.77493" longitude="-122.41942"
         hidden></google-map-circle>
 
+@demo demo/circle.html
 -->
 
 <dom-module id="google-map-circle">
@@ -350,7 +351,6 @@ child of `google-map`.
               lng: parseFloat(this.longitude)
             },
             title: this.title,
-//            animation: google.maps.Animation[this.animation],
             draggable: this.draggable,
             visible: !this.hidden,
             zIndex: this.zIndex,
