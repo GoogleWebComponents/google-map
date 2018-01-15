@@ -235,6 +235,15 @@ If you're seeing the message "You have included the Google Maps API multiple tim
         },
 
         /**
+         * Bounds of the map
+         */
+        bounds: {
+          type: Object,
+          notify: true,
+          value: null
+        },
+
+          /**
          * A kml file to load.
          */
         kml: {
@@ -304,6 +313,15 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           type: Boolean,
           value: false,
           observer: '_disableStreetViewControlChanged'
+        },
+
+        /**
+         * If set, removes the map's 'fullscreen' UI controls.
+         */
+        disableFullscreenControl: {
+          type: Boolean,
+          value: false,
+          observer: '_disableFullscreenControlChanged'
         },
 
         /**
@@ -499,6 +517,7 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           disableDefaultUI: this.disableDefaultUi,
           mapTypeControl: !this.disableDefaultUi && !this.disableMapTypeControl,
           streetViewControl: !this.disableDefaultUi && !this.disableStreetViewControl,
+          fullscreenControl: !this.disableDefaultUi && !this.disableFullscreenControl,
           disableDoubleClickZoom: this.disableZoom,
           scrollwheel: !this.disableZoom,
           styles: this.styles,
@@ -625,8 +644,29 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
             this._fitToMarkersChanged();
           }
+
+          this.calcBounds();
         }
       },
+
+      calcBounds: function() {
+        var bounds = this.map.getBounds();
+        if (bounds) {
+          var ne = bounds.getNorthEast();
+          var sw = bounds.getSouthWest();
+          this.bounds = {
+            ne: {
+              lat: ne.lat(),
+              lng: ne.lng()
+            },
+            sw: {
+              lat: sw.lat(),
+              lng: sw.lng()
+            }
+          }
+        }
+      },
+
 
       _loadKml: function() {
         if (this.map && this.kml) {
@@ -670,12 +710,14 @@ If you're seeing the message "You have included the Google Maps API multiple tim
               this.map.panTo(newCenter);
             }
           }
+          this.calcBounds();
         }
       },
 
       _zoomChanged: function() {
         if (this.map) {
           this.map.setZoom(Number(this.zoom));
+          this.calcBounds();
         }
       },
 
@@ -768,6 +810,13 @@ If you're seeing the message "You have included the Google Maps API multiple tim
         this.map.setOptions({streetViewControl: !this.disableStreetViewControl});
       },
 
+      _disableFullscreenControlChanged: function() {
+        if (!this.map) {
+          return;
+        }
+        this.map.setOptions({fullscreenControl: !this.disableFullscreenControl});
+      },
+
       _disableZoomChanged: function() {
         if (!this.map) {
           return;
@@ -806,6 +855,7 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           }
 
           this.map.setCenter(latLngBounds.getCenter());
+          this.calcBounds();
         }
       },
 
@@ -814,10 +864,12 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           var center = this.map.getCenter();
           this.latitude = center.lat();
           this.longitude = center.lng();
+          this.calcBounds();
         }.bind(this));
 
         google.maps.event.addListener(this.map, 'zoom_changed', function() {
           this.zoom = this.map.getZoom();
+          this.calcBounds();
         }.bind(this));
 
         google.maps.event.addListener(this.map, 'maptypeid_changed', function() {
