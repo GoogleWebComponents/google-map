@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../google-map.html">
+  <link rel="import" href="../google-map-search.html">
+</head>
+<body>
+
+  <google-map id="map" api-key="YOUR_KEY_HERE"></google-map>
+  <google-map-search id="search"></google-map-search>
+
+<script>
+var map = document.querySelector('#map');
+var search = document.querySelector('#search');
+
+suite('google-map-search', function() {
+  // Ensure that the defaults are as expected.
+  test('defaults', function() {
+    assert.isFalse(search.globalSearch);
+    assert.isNull(search.latitude);
+    assert.isFalse(search.loading);
+    assert.isNull(search.location);
+    assert.isNull(search.longitude);
+    assert.isNull(search.query);
+    assert.isNull(search.radius);
+    assert.equal(search.results.length, 0);
+    assert.isNull(search.types);
+  });
+
+  // Ensure that the search action behaves properly.
+  test('search', function(done) {
+    // This is the number of times that the `loading` property changed.
+    var loadingChanges = 0;
+    // This is called when the `loading` property changes.
+    // We'll use this to increment `loadingChanges`.
+    search.addEventListener('loading-changed', function(e) {
+      loadingChanges++;
+    });
+    // This is called when the search query completes.
+    // This will conclude our test.
+    search.addEventListener('google-map-search-results', function(e) {
+      // When this event fires, `loading` should be false.
+      assert.isFalse(search.loading);
+      // Loading changes:
+      // 1. false -> true
+      // 2. true -> false
+      assert.equals(loadingChanges,2);
+
+      done();
+    });
+
+    // This is called when the `google-map` is ready.
+    // We are going to start a search by updating the `query` property.
+    map.addEventListener('google-map-ready', function(e) {
+      // Set the `map` property on the `google-map-search`.
+      search.map = map.map;
+      // Begin a search.
+      search.query = "221B Baker Street";
+    });
+  });
+
+});
+
+</script>
+</body>
+</html>
