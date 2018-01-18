@@ -201,6 +201,9 @@ information on the API.
     _updateLocation: function() {
       if (!this.map) {
         return;
+      } else if (this.latitude === null && this.longitude === null) {
+        this._setLocation(null);
+        return;
       } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
         throw new TypeError('latitude must be a number');
       } else if (typeof this.longitude !== 'number' || isNaN(this.longitude)) {
