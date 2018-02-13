@@ -1,12 +1,13 @@
 {
   "name": "@polymer/google-map",
   "flat": true,
-  "version": "3.0.0",
+  "version": "3.0.0-pre.1",
   "description": "Google Maps web components",
   "contributors": [
     "Frankie Fu <ffu@google.com>",
     "Scott Miles <sjmiles@google.com>",
-    "Eric Bidelman <ebidel@gmail.com>"
+    "Eric Bidelman <ebidel@gmail.com>",
+    "Ed Medvedev <edward.medvedev@gmail.com>"
   ],
   "keywords": [
     "web-component",
@@ -23,5 +24,7 @@
     "@polymer/iron-resizable-behavior": "^3.0.0-pre.1",
     "@polymer/iron-selector": "^3.0.0-pre.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^1.0.0"
+  }
 }
