@@ -1,3 +1,4 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
 /* Copyright (c) 2015 Google Inc. All rights reserved. */
 /*
 `google-map-search` provides Google Maps Places API functionality.
@@ -33,7 +34,7 @@ Polymer({
      */
     map: {
       type: Object,
-      value: null
+      value: null,
     },
 
     /**
@@ -41,7 +42,7 @@ Polymer({
      */
     query: {
       type: String,
-      value: null
+      value: null,
     },
 
     /**
@@ -50,7 +51,7 @@ Polymer({
      */
     latitude: {
       type: Number,
-      value: null
+      value: null,
     },
 
     /**
@@ -59,7 +60,7 @@ Polymer({
      */
     longitude: {
       type: Number,
-      value: null
+      value: null,
     },
 
     /**
@@ -72,7 +73,7 @@ Polymer({
      */
     radius: {
       type: Number,
-      value: null
+      value: null,
     },
 
     /**
@@ -83,7 +84,7 @@ Polymer({
      */
     globalSearch: {
       type: Boolean,
-      value: false
+      value: false,
     },
 
     /**
@@ -95,7 +96,7 @@ Polymer({
      */
     types: {
       type: String,
-      value: null
+      value: null,
     },
 
     /**
@@ -103,8 +104,8 @@ Polymer({
      */
     results: {
       type: Array,
-      value: function() { return []; },
-      notify: true
+      value() { return []; },
+      notify: true,
     },
 
     /**
@@ -113,13 +114,13 @@ Polymer({
     location: {
       type: Object,
       value: null,
-      readOnly: true
-    }
+      readOnly: true,
+    },
   },
 
   observers: [
     'search(query,map,location,radius,types,globalSearch)',
-    '_updateLocation(latitude,longitude)'
+    '_updateLocation(latitude,longitude)',
   ],
 
   /**
@@ -139,11 +140,11 @@ Polymer({
   /**
    * Perform a search using for `query` for the search term.
    */
-  search: function() {
+  search() {
     if (this.query && this.map) {
-      var places = new google.maps.places.PlacesService(this.map);
+      const places = new google.maps.places.PlacesService(this.map);
 
-      if (this.types && typeof this.types == 'string') {
+      if (this.types && typeof this.types === 'string') {
         var types = this.types.split(' ');
       }
       if (this.radius) {
@@ -154,10 +155,10 @@ Polymer({
       }
       places.textSearch({
         query: this.query,
-        types: types,
-        bounds: bounds,
-        radius: radius,
-        location: location
+        types,
+        bounds,
+        radius,
+        location,
       }, this._gotResults.bind(this));
     }
   },
@@ -168,32 +169,32 @@ Polymer({
    * @param {String} placeId The place id.
    * @return {Promise} place The place information.
    */
-  getDetails: function(placeId) {
-    var places = new google.maps.places.PlacesService(this.map);
+  getDetails(placeId) {
+    const places = new google.maps.places.PlacesService(this.map);
 
-    return new Promise(function(resolve, reject) {
-      places.getDetails({placeId: placeId}, function(place, status) {
+    return new Promise(((resolve, reject) => {
+      places.getDetails({ placeId }, (place, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           resolve(place);
           this.fire('google-map-search-place-detail', place);
         } else {
           reject(status);
         }
-      }.bind(this));
-    }.bind(this));
+      });
+    }));
   },
 
-  _gotResults: function(results, status) {
-    this.results = results.map(function(result) {
+  _gotResults(results, status) {
+    this.results = results.map((result) => {
       // obtain lat/long from geometry
-      result.latitude  = result.geometry.location.lat();
+      result.latitude = result.geometry.location.lat();
       result.longitude = result.geometry.location.lng();
       return result;
     });
     this.fire('google-map-search-results', this.results);
   },
 
-  _updateLocation: function() {
+  _updateLocation() {
     if (!this.map) {
       return;
     } else if (typeof this.latitude !== 'number' || isNaN(this.latitude)) {
@@ -203,6 +204,6 @@ Polymer({
     }
 
     // Update location. This will trigger a new search.
-    this._setLocation({lat: this.latitude, lng: this.longitude});
-  }
+    this._setLocation({ lat: this.latitude, lng: this.longitude });
+  },
 });

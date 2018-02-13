@@ -1,7 +1,8 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
+
 function setupDragHandler_() {
   if (this.draggable) {
-    this.dragHandler_ = google.maps.event.addListener(
-        this.marker, 'dragend', onDragEnd_.bind(this));
+    this.dragHandler_ = google.maps.event.addListener(this.marker, 'dragend', onDragEnd_.bind(this));
   } else {
     google.maps.event.removeListener(this.dragHandler_);
     this.dragHandler_ = null;
@@ -123,7 +124,7 @@ Polymer({
      */
     marker: {
       type: Object,
-      notify: true
+      notify: true,
     },
 
     /**
@@ -133,7 +134,7 @@ Polymer({
      */
     map: {
       type: Object,
-      observer: '_mapChanged'
+      observer: '_mapChanged',
     },
 
     /**
@@ -143,7 +144,7 @@ Polymer({
      */
     info: {
       type: Object,
-      value: null
+      value: null,
     },
 
     /**
@@ -152,7 +153,7 @@ Polymer({
     clickEvents: {
       type: Boolean,
       value: false,
-      observer: '_clickEventsChanged'
+      observer: '_clickEventsChanged',
     },
 
     /**
@@ -161,7 +162,7 @@ Polymer({
     dragEvents: {
       type: Boolean,
       value: false,
-      observer: '_dragEventsChanged'
+      observer: '_dragEventsChanged',
     },
 
     /**
@@ -172,7 +173,7 @@ Polymer({
     icon: {
       type: Object,
       value: null,
-      observer: '_iconChanged'
+      observer: '_iconChanged',
     },
 
     /**
@@ -181,7 +182,7 @@ Polymer({
     mouseEvents: {
       type: Boolean,
       value: false,
-      observer: '_mouseEventsChanged'
+      observer: '_mouseEventsChanged',
     },
 
     /**
@@ -190,7 +191,7 @@ Polymer({
     zIndex: {
       type: Number,
       value: 0,
-      observer: '_zIndexChanged'
+      observer: '_zIndexChanged',
     },
 
     /**
@@ -199,7 +200,7 @@ Polymer({
     longitude: {
       type: Number,
       value: null,
-      notify: true
+      notify: true,
     },
 
     /**
@@ -208,7 +209,7 @@ Polymer({
     latitude: {
       type: Number,
       value: null,
-      notify: true
+      notify: true,
     },
 
     /**
@@ -217,7 +218,7 @@ Polymer({
     label: {
       type: String,
       value: null,
-      observer: '_labelChanged'
+      observer: '_labelChanged',
     },
 
     /**
@@ -227,7 +228,7 @@ Polymer({
     animation: {
       type: String,
       value: null,
-      observer: '_animationChanged'
+      observer: '_animationChanged',
     },
 
     /**
@@ -236,39 +237,37 @@ Polymer({
     open: {
       type: Boolean,
       value: false,
-      observer: '_openChanged'
-    }
+      observer: '_openChanged',
+    },
   },
 
   observers: [
-    '_updatePosition(latitude, longitude)'
+    '_updatePosition(latitude, longitude)',
   ],
 
-  detached: function() {
+  detached() {
     if (this.marker) {
       google.maps.event.clearInstanceListeners(this.marker);
       this._listeners = {};
       this.marker.setMap(null);
     }
-    if (this._contentObserver)
-      this._contentObserver.disconnect();
+    if (this._contentObserver) { this._contentObserver.disconnect(); }
   },
 
-  attached: function() {
+  attached() {
     // If element is added back to DOM, put it back on the map.
     if (this.marker) {
       this.marker.setMap(this.map);
     }
   },
 
-  _updatePosition: function() {
+  _updatePosition() {
     if (this.marker && this.latitude != null && this.longitude != null) {
-      this.marker.setPosition(new google.maps.LatLng(
-        parseFloat(this.latitude), parseFloat(this.longitude)));
+      this.marker.setPosition(new google.maps.LatLng(parseFloat(this.latitude), parseFloat(this.longitude)));
     }
   },
 
-  _clickEventsChanged: function() {
+  _clickEventsChanged() {
     if (this.map) {
       if (this.clickEvents) {
         this._forwardEvent('click');
@@ -282,7 +281,7 @@ Polymer({
     }
   },
 
-  _dragEventsChanged: function() {
+  _dragEventsChanged() {
     if (this.map) {
       if (this.dragEvents) {
         this._forwardEvent('drag');
@@ -296,7 +295,7 @@ Polymer({
     }
   },
 
-  _mouseEventsChanged: function() {
+  _mouseEventsChanged() {
     if (this.map) {
       if (this.mouseEvents) {
         this._forwardEvent('mousedown');
@@ -314,31 +313,31 @@ Polymer({
     }
   },
 
-  _animationChanged: function() {
+  _animationChanged() {
     if (this.marker) {
       this.marker.setAnimation(google.maps.Animation[this.animation]);
     }
   },
 
-  _labelChanged: function() {
+  _labelChanged() {
     if (this.marker) {
       this.marker.setLabel(this.label);
     }
   },
 
-  _iconChanged: function() {
+  _iconChanged() {
     if (this.marker) {
       this.marker.setIcon(this.icon);
     }
   },
 
-  _zIndexChanged: function() {
+  _zIndexChanged() {
     if (this.marker) {
       this.marker.setZIndex(this.zIndex);
     }
   },
 
-  _mapChanged: function() {
+  _mapChanged() {
     // Marker will be rebuilt, so disconnect existing one from old map and listeners.
     if (this.marker) {
       this.marker.setMap(null);
@@ -350,41 +349,38 @@ Polymer({
     }
   },
 
-  _contentChanged: function() {
-    if (this._contentObserver)
-      this._contentObserver.disconnect();
+  _contentChanged() {
+    if (this._contentObserver) { this._contentObserver.disconnect(); }
     // Watch for future updates.
-    this._contentObserver = new MutationObserver( this._contentChanged.bind(this));
-    this._contentObserver.observe( this, {
+    this._contentObserver = new MutationObserver(this._contentChanged.bind(this));
+    this._contentObserver.observe(this, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
-    var content = this.innerHTML.trim();
+    const content = this.innerHTML.trim();
     if (content) {
       if (!this.info) {
         // Create a new infowindow
         this.info = new google.maps.InfoWindow();
-        this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+        this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', () => {
           this.open = true;
-        }.bind(this));
+        });
 
-        this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+        this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', () => {
           this.open = false;
-        }.bind(this));
+        });
       }
       this.info.setContent(content);
-    } else {
-      if (this.info) {
-        // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
-        google.maps.event.removeListener(this.openInfoHandler_);
-        google.maps.event.removeListener(this.closeInfoHandler_);
-        this.info = null;
-      }
+    } else if (this.info) {
+      // Destroy the existing infowindow.  It doesn't make sense to have an empty one.
+      google.maps.event.removeListener(this.openInfoHandler_);
+      google.maps.event.removeListener(this.closeInfoHandler_);
+      this.info = null;
     }
   },
 
-  _openChanged: function() {
+  _openChanged() {
     if (this.info) {
       if (this.open) {
         this.info.open(this.map, this.marker);
@@ -396,13 +392,13 @@ Polymer({
     }
   },
 
-  _mapReady: function() {
+  _mapReady() {
     this._listeners = {};
     this.marker = new google.maps.Marker({
       map: this.map,
       position: {
         lat: parseFloat(this.latitude),
-        lng: parseFloat(this.longitude)
+        lng: parseFloat(this.longitude),
       },
       title: this.title,
       animation: google.maps.Animation[this.animation],
@@ -410,7 +406,7 @@ Polymer({
       visible: !this.hidden,
       icon: this.icon,
       label: this.label,
-      zIndex: this.zIndex
+      zIndex: this.zIndex,
     });
     this._contentChanged();
     this._clickEventsChanged();
@@ -420,20 +416,20 @@ Polymer({
     setupDragHandler_.bind(this)();
   },
 
-  _clearListener: function(name) {
+  _clearListener(name) {
     if (this._listeners[name]) {
       google.maps.event.removeListener(this._listeners[name]);
       this._listeners[name] = null;
     }
   },
 
-  _forwardEvent: function(name) {
-    this._listeners[name] = google.maps.event.addListener(this.marker, name, function(event) {
-      this.fire('google-map-marker-' + name, event);
-    }.bind(this));
+  _forwardEvent(name) {
+    this._listeners[name] = google.maps.event.addListener(this.marker, name, (event) => {
+      this.fire(`google-map-marker-${name}`, event);
+    });
   },
 
-  attributeChanged: function(attrName) {
+  attributeChanged(attrName) {
     if (!this.marker) {
       return;
     }
@@ -451,5 +447,5 @@ Polymer({
         this.marker.setTitle(this.title);
         break;
     }
-  }
+  },
 });

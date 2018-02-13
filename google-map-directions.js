@@ -1,3 +1,4 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
 /* Copyright (c) 2015 Google Inc. All rights reserved. */
 /*
 Provides the Google Maps API Directions Service to provide directions
@@ -53,7 +54,7 @@ Polymer({
      * Overrides the origin the Maps API is loaded from. Defaults to `https://maps.googleapis.com`.
      */
     mapsUrl: {
-      type: String
+      type: String,
       // Initial value set in google-maps-api.
     },
 
@@ -64,7 +65,7 @@ Polymer({
      */
     map: {
       type: Object,
-      observer: '_mapChanged'
+      observer: '_mapChanged',
     },
 
     /**
@@ -74,7 +75,7 @@ Polymer({
      */
     startAddress: {
       type: String,
-      value: null
+      value: null,
     },
 
     /**
@@ -84,7 +85,7 @@ Polymer({
      */
     endAddress: {
       type: String,
-      value: null
+      value: null,
     },
 
     /**
@@ -92,7 +93,7 @@ Polymer({
      */
     travelMode: {
       type: String,
-      value: 'DRIVING'
+      value: 'DRIVING',
     },
 
     /**
@@ -105,10 +106,10 @@ Polymer({
      *
      * @type Array<google.maps.DirectionsWaypoint>
      */
-     waypoints: {
-       type: Array,
-       value: function() { return []; }
-     },
+    waypoints: {
+      type: Array,
+      value: [],
+    },
 
     /**
      * The localized language to load the Maps API with. For more information
@@ -119,7 +120,7 @@ Polymer({
      */
     language: {
       type: String,
-      value: null
+      value: null,
     },
 
     /**
@@ -127,7 +128,7 @@ Polymer({
      */
     rendererOptions: {
       type: Object,
-      value: function() { return {}; }
+      value: {},
     },
 
     /**
@@ -137,25 +138,25 @@ Polymer({
     response: {
       type: Object,
       observer: '_responseChanged',
-      notify: true
-    }
+      notify: true,
+    },
   },
 
   observers: [
-    '_route(startAddress, endAddress, travelMode, waypoints.*)'
+    '_route(startAddress, endAddress, travelMode, waypoints.*)',
   ],
 
-  _mapApiLoaded: function() {
+  _mapApiLoaded() {
     this._route();
   },
 
-  _responseChanged: function() {
+  _responseChanged() {
     if (this.directionsRenderer && this.response) {
       this.directionsRenderer.setDirections(this.response);
     }
   },
 
-  _mapChanged: function() {
+  _mapChanged() {
     if (this.map && this.map instanceof google.maps.Map) {
       if (!this.directionsRenderer) {
         this.directionsRenderer = new google.maps.DirectionsRenderer(this.rendererOptions);
@@ -171,10 +172,10 @@ Polymer({
     }
   },
 
-  _route: function() {
+  _route() {
     // Abort attempts to _route if the API is not available yet or the
     // required attributes are blank.
-    if (typeof google == 'undefined' || typeof google.maps == 'undefined' ||
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined' ||
         !this.startAddress || !this.endAddress) {
       return;
     }
@@ -185,17 +186,17 @@ Polymer({
       this.directionsService = new google.maps.DirectionsService();
     }
 
-    var request = {
+    const request = {
       origin: this.startAddress,
       destination: this.endAddress,
       travelMode: this.travelMode,
-      waypoints: this.waypoints
+      waypoints: this.waypoints,
     };
-    this.directionsService.route(request, function(response, status) {
+    this.directionsService.route(request, (response, status) => {
       if (status == google.maps.DirectionsStatus.OK) {
         this.response = response;
-        this.fire('google-map-response', {response: response});
+        this.fire('google-map-response', { response });
       }
-    }.bind(this));
-  }
+    });
+  },
 });

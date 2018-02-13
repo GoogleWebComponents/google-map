@@ -1,3 +1,4 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
 /* Copyright (c) 2015 Google Inc. All rights reserved. */
 /*
 The `google-map-point` element represents a point on a map. It's used as a child of other
@@ -16,7 +17,7 @@ google-map-* elements.
 Polymer({
   is: 'google-map-point',
 
-  hostAttributes: {hidden: true},
+  hostAttributes: { hidden: true },
 
   properties: {
     /**
@@ -24,7 +25,9 @@ Polymer({
      */
     longitude: {
       type: Number,
-      value: null
+      value: null,
+      notify: true,
+      reflectToAttribute: true,
     },
 
     /**
@@ -32,8 +35,10 @@ Polymer({
      */
     latitude: {
       type: Number,
-      value: null
-    }
+      value: null,
+      notify: true,
+      reflectToAttribute: true,
+    },
   },
 
   /**
@@ -41,7 +46,7 @@ Polymer({
    *
    * @return {google.maps.LatLng} The LatLng object.
    */
-  getPosition: function() {
+  getPosition() {
     return new google.maps.LatLng(this.latitude, this.longitude);
-  }
+  },
 });

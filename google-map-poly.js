@@ -1,4 +1,6 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
 import './google-map-point.js';
+
 Polymer({
   _template: `
     <style>
@@ -121,7 +123,7 @@ Polymer({
      */
     poly: {
       type: Object,
-      readOnly: true
+      readOnly: true,
     },
 
     /**
@@ -131,7 +133,7 @@ Polymer({
      */
     path: {
       type: Object,
-      readOnly: true
+      readOnly: true,
     },
 
     /**
@@ -141,7 +143,7 @@ Polymer({
      */
     map: {
       type: Object,
-      observer: '_mapChanged'
+      observer: '_mapChanged',
     },
 
     /**
@@ -150,17 +152,17 @@ Polymer({
     clickable: {
       type: Boolean,
       value: false,
-      observer: '_clickableChanged'
+      observer: '_clickableChanged',
     },
 
     /**
      * When true, the google-map-poly-*click events will be automatically registered.
      */
-     clickEvents: {
-       type: Boolean,
-       value: false,
-       observer: '_clickEventsChanged'
-     },
+    clickEvents: {
+      type: Boolean,
+      value: false,
+      observer: '_clickEventsChanged',
+    },
 
     /**
      * When true, the path will be closed by connecting the last point to the first one and
@@ -169,7 +171,7 @@ Polymer({
     closed: {
       type: Boolean,
       value: false,
-      observer: '_closedChanged'
+      observer: '_closedChanged',
     },
 
     /**
@@ -186,7 +188,7 @@ Polymer({
     dragEvents: {
       type: Boolean,
       value: false,
-      observer: '_dragEventsChanged'
+      observer: '_dragEventsChanged',
     },
 
     /**
@@ -195,7 +197,7 @@ Polymer({
     editable: {
       type: Boolean,
       value: false,
-      observer: '_editableChanged'
+      observer: '_editableChanged',
     },
 
     /**
@@ -205,7 +207,7 @@ Polymer({
       type: Boolean,
       value: false,
       notify: true,
-      readOnly: true
+      readOnly: true,
     },
 
     /**
@@ -215,7 +217,7 @@ Polymer({
     fillColor: {
       type: String,
       value: '',
-      observer: '_fillColorChanged'
+      observer: '_fillColorChanged',
     },
 
     /**
@@ -224,7 +226,7 @@ Polymer({
     fillOpacity: {
       type: Number,
       value: 0,
-      observer: '_fillOpacityChanged'
+      observer: '_fillOpacityChanged',
     },
 
     /**
@@ -236,7 +238,7 @@ Polymer({
     geodesic: {
       type: Boolean,
       value: false,
-      observer: '_geodesicChanged'
+      observer: '_geodesicChanged',
     },
 
     /**
@@ -245,17 +247,17 @@ Polymer({
     icons: {
       type: Array,
       value: null,
-      observer: '_iconsChanged'
+      observer: '_iconsChanged',
     },
 
     /**
      * When true, the google-map-poly-mouse* events will be automatically registered.
      */
-     mouseEvents: {
-       type: Boolean,
-       value: false,
-       observer: '_mouseEventsChanged'
-     },
+    mouseEvents: {
+      type: Boolean,
+      value: false,
+      observer: '_mouseEventsChanged',
+    },
 
     /**
      * The color to draw the poly's stroke with. All CSS3 colors are supported except for extended
@@ -264,7 +266,7 @@ Polymer({
     strokeColor: {
       type: String,
       value: 'black',
-      observer: '_strokeColorChanged'
+      observer: '_strokeColorChanged',
     },
 
     /**
@@ -273,7 +275,7 @@ Polymer({
     strokeOpacity: {
       type: Number,
       value: 1,
-      observer: '_strokeOpacityChanged'
+      observer: '_strokeOpacityChanged',
     },
 
     /**
@@ -282,7 +284,7 @@ Polymer({
     strokePosition: {
       type: String,
       value: 'center',
-      observer: '_strokePositionChanged'
+      observer: '_strokePositionChanged',
     },
 
     /**
@@ -291,7 +293,7 @@ Polymer({
     strokeWeight: {
       type: Number,
       value: 3,
-      observer: '_strokeWeightChanged'
+      observer: '_strokeWeightChanged',
     },
 
     /**
@@ -300,31 +302,31 @@ Polymer({
     zIndex: {
       type: Number,
       value: 0,
-      observer: '_zIndexChanged'
-    }
+      observer: '_zIndexChanged',
+    },
   },
 
   // Lifecycle event handlers.
 
-  detached: function() {
+  detached() {
     this.poly.setMap(null);
     if (this._pointsObserver) {
       this._pointsObserver.disconnect();
       this._pointsObserver = null;
     }
-    for (var name in this._listeners) {
+    for (const name in this._listeners) {
       this._clearListener(name);
     }
   },
 
-  attached: function() {
+  attached() {
     // If element is added back to DOM, put it back on the map.
     this.poly && this.poly.setMap(this.map);
   },
 
   // Attribute/property change watchers.
 
-  attributeChanged: function(attrName) {
+  attributeChanged(attrName) {
     if (!this.poly) {
       return;
     }
@@ -340,11 +342,11 @@ Polymer({
     }
   },
 
-  _clickableChanged: function() {
+  _clickableChanged() {
     this.poly && this.poly.set('clickable', this.clickable);
   },
 
-  _clickEventsChanged: function() {
+  _clickEventsChanged() {
     if (this.poly) {
       if (this.clickEvents) {
         this._forwardEvent('click');
@@ -358,11 +360,11 @@ Polymer({
     }
   },
 
-  _closedChanged: function() {
+  _closedChanged() {
     this._mapChanged();
   },
 
-  _dragEventsChanged: function() {
+  _dragEventsChanged() {
     if (this.poly) {
       if (this.clickEvents) {
         this._forwardEvent('drag');
@@ -376,27 +378,27 @@ Polymer({
     }
   },
 
-  _editableChanged: function() {
+  _editableChanged() {
     this.poly && this.poly.setEditable(this.editable);
   },
 
-  _fillColorChanged: function() {
+  _fillColorChanged() {
     this.poly && this.poly.set('fillColor', this.fillColor);
   },
 
-  _fillOpacityChanged: function() {
+  _fillOpacityChanged() {
     this.poly && this.poly.set('fillOpacity', this.fillOpacity);
   },
 
-  _geodesicChanged: function() {
+  _geodesicChanged() {
     this.poly && this.poly.set('geodesic', this.geodesic);
   },
 
-  _iconsChanged: function() {
+  _iconsChanged() {
     this.poly && this.poly.set('icons', this.icons);
   },
 
-  _mapChanged: function() {
+  _mapChanged() {
     // Poly will be rebuilt, so disconnect existing one from old map and listeners.
     if (this.poly) {
       this.poly.setMap(null);
@@ -408,7 +410,7 @@ Polymer({
     }
   },
 
-  _mouseEventsChanged: function() {
+  _mouseEventsChanged() {
     if (this.poly) {
       if (this.mouseEvents) {
         this._forwardEvent('mousedown');
@@ -426,36 +428,37 @@ Polymer({
     }
   },
 
-  _strokeColorChanged: function() {
+  _strokeColorChanged() {
     this.poly && this.poly.set('strokeColor', this.strokeColor);
   },
 
-  _strokeOpacityChanged: function() {
+  _strokeOpacityChanged() {
     this.poly && this.poly.set('strokeOpacity', this.strokeOpacity);
   },
 
-  _strokePositionChanged: function() {
+  _strokePositionChanged() {
     this.poly && this.poly.set('strokePosition', this._convertStrokePosition());
   },
 
-  _strokeWeightChanged: function() {
+  _strokeWeightChanged() {
     this.poly && this.poly.set('strokeWeight', this.strokeWeight);
   },
 
-  _zIndexChanged: function() {
+  _zIndexChanged() {
     this.poly && this.poly.set('zIndex', this.zIndex);
   },
 
   // Helper logic.
 
-  _buildPathFromPoints: function() {
-    this._points = Array.prototype.slice.call(Polymer.dom(this.$.points).getDistributedNodes());
+  _buildPathFromPoints() {
+    this._points = Array.prototype.slice.call(this.$.points.assignedNodes({ flatten: true }))
+      .filter(n => n.nodeName !== '#text');
 
     // Build path from current points (ignoring vertex insertions while doing so).
     this._building = true;
     this.path.clear();
     for (var i = 0, point; point = this._points[i]; ++i) {
-      var tagName = point.tagName;
+      let tagName = point.tagName;
 
       if (tagName) {
         tagName = tagName.toLowerCase();
@@ -475,23 +478,24 @@ Polymer({
     }
     this._pointsObserver = new MutationObserver(this._buildPathFromPoints.bind(this));
     this._pointsObserver.observe(this, {
-      childList: true
+      subtree: true,
+      attributes: true,
     });
   },
 
-  _clearListener: function(name) {
+  _clearListener(name) {
     if (this._listeners[name]) {
       google.maps.event.removeListener(this._listeners[name]);
       this._listeners[name] = null;
     }
   },
 
-  _convertStrokePosition: function() {
+  _convertStrokePosition() {
     return google.maps.StrokePosition && this.strokePosition ?
-        google.maps.StrokePosition[this.strokePosition.toUpperCase()] : 0;
+      google.maps.StrokePosition[this.strokePosition.toUpperCase()] : 0;
   },
 
-  _createPoly: function() {
+  _createPoly() {
     // Build poly's path and register mutation listeners on first creation.
     if (!this.path) {
       this._setPath(new google.maps.MVCArray());
@@ -500,8 +504,8 @@ Polymer({
       this._buildPathFromPoints();
     }
 
-    var options = {
-      clickable: this.clickable || this.draggable,  // draggable must be clickable to work.
+    const options = {
+      clickable: this.clickable || this.draggable, // draggable must be clickable to work.
       draggable: this.draggable,
       editable: this.editable,
       geodesic: this.geodesic,
@@ -512,7 +516,7 @@ Polymer({
       strokePosition: this._convertStrokePosition(),
       strokeWeight: this.strokeWeight,
       visible: !this.hidden,
-      zIndex: this.zIndex
+      zIndex: this.zIndex,
     };
 
     if (this.closed) {
@@ -530,13 +534,13 @@ Polymer({
     this._dragEventsChanged();
   },
 
-  _forwardEvent: function(name) {
-    this._listeners[name] = google.maps.event.addListener(this.poly, name, function(event) {
-      this.fire('google-map-poly-' + name, event);
-    }.bind(this));
+  _forwardEvent(name) {
+    this._listeners[name] = google.maps.event.addListener(this.poly, name, (event) => {
+      this.fire(`google-map-poly-${name}`, event);
+    });
   },
 
-  _startEditing: function(index) {
+  _startEditing(index) {
     if (this._building) {
       // Ignore changes while building path.
       return;
@@ -548,14 +552,14 @@ Polymer({
       // The poly path and google-map-point elements lose sync once the user starts adding points,
       // so invalidate the _points array.
       this._points = null;
-      google.maps.event.addListenerOnce(this.map, 'click', function() {
+      google.maps.event.addListenerOnce(this.map, 'click', () => {
         this._setEditing(false);
         this.fire('google-map-poly-path-updated', this.path);
-      }.bind(this));
+      });
     }
   },
 
-  _updatePoint: function(index, vertex) {
+  _updatePoint(index, vertex) {
     // Ignore changes if path is out of sync with google-map-point elements.
     if (!this._points) {
       return;
@@ -564,5 +568,5 @@ Polymer({
     // Update existing point so bound properties are updated. too.
     this._points[index].latitude = vertex.lat();
     this._points[index].longitude = vertex.lng();
-  }
+  },
 });

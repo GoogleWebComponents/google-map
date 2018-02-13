@@ -1,4 +1,7 @@
+import { Polymer } from '../polymer/lib/legacy/polymer-fn.js';
 import './google-map-marker.js';
+import './../google-apis/google-maps-api.js';
+
 /* Copyright (c) 2015 Google Inc. All rights reserved. */
 /**
 The `google-map` element renders a Google Map.
@@ -174,7 +177,7 @@ Polymer({
      * Overrides the origin the Maps API is loaded from. Defaults to `https://maps.googleapis.com`.
      */
     mapsUrl: {
-      type: String
+      type: String,
       // Initial value set in google-maps-api.
     },
 
@@ -191,7 +194,7 @@ Polymer({
       type: Number,
       value: 37.77493,
       notify: true,
-      reflectToAttribute: true
+      reflectToAttribute: true,
     },
 
     /**
@@ -200,7 +203,7 @@ Polymer({
     map: {
       type: Object,
       notify: true,
-      value: null
+      value: null,
     },
 
     /**
@@ -210,7 +213,7 @@ Polymer({
       type: Number,
       value: -122.41942,
       notify: true,
-      reflectToAttribute: true
+      reflectToAttribute: true,
     },
 
     /**
@@ -219,7 +222,7 @@ Polymer({
     kml: {
       type: String,
       value: null,
-      observer: '_loadKml'
+      observer: '_loadKml',
     },
 
     /**
@@ -229,7 +232,7 @@ Polymer({
       type: Number,
       value: 10,
       observer: '_zoomChanged',
-      notify: true
+      notify: true,
     },
 
     /**
@@ -237,7 +240,7 @@ Polymer({
      */
     noAutoTilt: {
       type: Boolean,
-      value: false
+      value: false,
     },
 
     /**
@@ -247,7 +250,7 @@ Polymer({
       type: String,
       value: 'roadmap', // roadmap, satellite, hybrid, terrain,
       observer: '_mapTypeChanged',
-      notify: true
+      notify: true,
     },
 
     /**
@@ -255,7 +258,7 @@ Polymer({
      */
     version: {
       type: String,
-      value: '3.exp'
+      value: '3.exp',
     },
 
     /**
@@ -264,7 +267,7 @@ Polymer({
     disableDefaultUi: {
       type: Boolean,
       value: false,
-      observer: '_disableDefaultUiChanged'
+      observer: '_disableDefaultUiChanged',
     },
 
     /**
@@ -273,7 +276,7 @@ Polymer({
     disableMapTypeControl: {
       type: Boolean,
       value: false,
-      observer: '_disableMapTypeControlChanged'
+      observer: '_disableMapTypeControlChanged',
     },
 
     /**
@@ -282,7 +285,7 @@ Polymer({
     disableStreetViewControl: {
       type: Boolean,
       value: false,
-      observer: '_disableStreetViewControlChanged'
+      observer: '_disableStreetViewControlChanged',
     },
 
     /**
@@ -291,7 +294,7 @@ Polymer({
     fitToMarkers: {
       type: Boolean,
       value: false,
-      observer: '_fitToMarkersChanged'
+      observer: '_fitToMarkersChanged',
     },
 
     /**
@@ -300,7 +303,7 @@ Polymer({
     disableZoom: {
       type: Boolean,
       value: false,
-      observer: '_disableZoomChanged'
+      observer: '_disableZoomChanged',
     },
 
     /**
@@ -309,7 +312,7 @@ Polymer({
      */
     styles: {
       type: Object,
-      value: function() { return {}; }
+      value() { return {}; },
     },
 
     /**
@@ -317,7 +320,7 @@ Polymer({
      */
     maxZoom: {
       type: Number,
-      observer: '_maxZoomChanged'
+      observer: '_maxZoomChanged',
     },
 
     /**
@@ -325,7 +328,7 @@ Polymer({
      */
     minZoom: {
       type: Number,
-      observer: '_minZoomChanged'
+      observer: '_minZoomChanged',
     },
 
     /**
@@ -334,7 +337,7 @@ Polymer({
      */
     signedIn: {
       type: Boolean,
-      value: false
+      value: false,
     },
 
     /**
@@ -345,7 +348,7 @@ Polymer({
      * Use this parameter to override that behavior.
      */
     language: {
-      type: String
+      type: String,
     },
 
     /**
@@ -354,7 +357,7 @@ Polymer({
     clickEvents: {
       type: Boolean,
       value: false,
-      observer: '_clickEventsChanged'
+      observer: '_clickEventsChanged',
     },
 
     /**
@@ -363,7 +366,7 @@ Polymer({
     dragEvents: {
       type: Boolean,
       value: false,
-      observer: '_dragEventsChanged'
+      observer: '_dragEventsChanged',
     },
 
     /**
@@ -372,7 +375,7 @@ Polymer({
     mouseEvents: {
       type: Boolean,
       value: false,
-      observer: '_mouseEventsChanged'
+      observer: '_mouseEventsChanged',
     },
 
     /**
@@ -388,7 +391,7 @@ Polymer({
      */
     additionalMapOptions: {
       type: Object,
-      value: function() { return {}; }
+      value() { return {}; },
     },
 
     /**
@@ -396,8 +399,8 @@ Polymer({
      */
     markers: {
       type: Array,
-      value: function() { return []; },
-      readOnly: true
+      value() { return []; },
+      readOnly: true,
     },
 
     /**
@@ -405,8 +408,8 @@ Polymer({
      */
     objects: {
       type: Array,
-      value: function() { return []; },
-      readOnly: true
+      value() { return []; },
+      readOnly: true,
     },
 
     /**
@@ -414,27 +417,23 @@ Polymer({
      */
     singleInfoWindow: {
       type: Boolean,
-      value: false
-    }
+      value: false,
+    },
   },
 
-  behaviors: [
-    Polymer.IronResizableBehavior
-  ],
-
   listeners: {
-    'iron-resize': 'resize'
+    'iron-resize': 'resize',
   },
 
   observers: [
-    '_debounceUpdateCenter(latitude, longitude)'
+    '_debounceUpdateCenter(latitude, longitude)',
   ],
 
-  attached: function() {
+  attached() {
     this._initGMap();
   },
 
-  detached: function() {
+  detached() {
     if (this._markersChildrenListener) {
       this.unlisten(this.$.selector, 'items-changed', '_updateMarkers');
       this._markersChildrenListener = null;
@@ -445,7 +444,11 @@ Polymer({
     }
   },
 
-  _initGMap: function() {
+  behaviors: [
+    Polymer.IronResizableBehavior,
+  ],
+
+  _initGMap() {
     if (this.map) {
       return; // already initialized
     }
@@ -466,12 +469,12 @@ Polymer({
     this.fire('google-map-ready');
   },
 
-  _mapApiLoaded: function() {
+  _mapApiLoaded() {
     this._initGMap();
   },
 
-  _getMapOptions: function() {
-    var mapOptions = {
+  _getMapOptions() {
+    const mapOptions = {
       zoom: this.zoom,
       tilt: this.noAutoTilt ? 0 : 45,
       mapTypeId: this.mapType,
@@ -482,21 +485,20 @@ Polymer({
       scrollwheel: !this.disableZoom,
       styles: this.styles,
       maxZoom: Number(this.maxZoom),
-      minZoom: Number(this.minZoom)
+      minZoom: Number(this.minZoom),
     };
 
     // Only override the default if set.
     // We use getAttribute here because the default value of this.draggable = false even when not set.
     if (this.getAttribute('draggable') != null) {
-      mapOptions.draggable = this.draggable
+      mapOptions.draggable = this.draggable;
     }
-    for (var p in this.additionalMapOptions)
-      mapOptions[p] = this.additionalMapOptions[p];
+    for (const p in this.additionalMapOptions) { mapOptions[p] = this.additionalMapOptions[p]; }
 
     return mapOptions;
   },
 
-  _attachChildrenToMap: function(children) {
+  _attachChildrenToMap(children) {
     if (this.map) {
       for (var i = 0, child; child = children[i]; ++i) {
         child.map = this.map;
@@ -505,7 +507,7 @@ Polymer({
   },
 
   // watch for future updates to marker objects
-  _observeMarkers: function() {
+  _observeMarkers() {
     // Watch for future updates.
     if (this._markersChildrenListener) {
       return;
@@ -513,15 +515,12 @@ Polymer({
     this._markersChildrenListener = this.listen(this.$.selector, 'items-changed', '_updateMarkers');
   },
 
-  _updateMarkers: function() {
-    var newMarkers = Array.prototype.slice.call(
-        Polymer.dom(this.$.markers).getDistributedNodes());
+  _updateMarkers() {
+    const newMarkers = Array.prototype.slice.call(this.$.markers.assignedNodes({ flatten: true }));
 
     // do not recompute if markers have not been added or removed
     if (newMarkers.length === this.markers.length) {
-      var added = newMarkers.filter(function(m) {
-        return this.markers && this.markers.indexOf(m) === -1;
-      }.bind(this));
+      const added = newMarkers.filter(m => this.markers && this.markers.indexOf(m) === -1);
       if (added.length === 0) {
         // set up observer first time around
         if (!this._markersChildrenListener) {
@@ -543,25 +542,22 @@ Polymer({
   },
 
   // watch for future updates to non-marker objects
-  _observeObjects: function() {
+  _observeObjects() {
     if (this._objectsMutationObserver) {
       return;
     }
     this._objectsMutationObserver = new MutationObserver(this._updateObjects.bind(this));
     this._objectsMutationObserver.observe(this, {
-      childList: true
+      childList: true,
     });
   },
 
-  _updateObjects: function() {
-    var newObjects = Array.prototype.slice.call(
-        Polymer.dom(this.$.objects).getDistributedNodes());
+  _updateObjects() {
+    const newObjects = Array.prototype.slice.call(this.$.objects.assignedNodes({ flatten: true }));
 
     // Do not recompute if objects have not been added or removed.
     if (newObjects.length === this.objects.length) {
-      var added = newObjects.filter(function(o) {
-        return this.objects.indexOf(o) === -1;
-      }.bind(this));
+      const added = newObjects.filter(o => this.objects.indexOf(o) === -1);
       if (added.length === 0) {
         // Set up observer first time around.
         this._observeObjects();
@@ -579,7 +575,7 @@ Polymer({
    *
    * @method clear
    */
-  clear: function() {
+  clear() {
     for (var i = 0, m; m = this.markers[i]; ++i) {
       m.marker.setMap(null);
     }
@@ -591,14 +587,13 @@ Polymer({
    *
    * @method resize
    */
-  resize: function() {
+  resize() {
     if (this.map) {
-
       // saves and restores latitude/longitude because resize can move the center
-      var oldLatitude = this.latitude;
-      var oldLongitude = this.longitude;
+      const oldLatitude = this.latitude;
+      const oldLongitude = this.longitude;
       google.maps.event.trigger(this.map, 'resize');
-      this.latitude = oldLatitude;  // restore because resize can move our center
+      this.latitude = oldLatitude; // restore because resize can move our center
       this.longitude = oldLongitude;
 
       if (this.fitToMarkers) { // we might not have a center if we are doing fit-to-markers
@@ -607,35 +602,35 @@ Polymer({
     }
   },
 
-  _loadKml: function() {
+  _loadKml() {
     if (this.map && this.kml) {
-      var kmlfile = new google.maps.KmlLayer({
+      const kmlfile = new google.maps.KmlLayer({
         url: this.kml,
-        map: this.map
+        map: this.map,
       });
     }
   },
 
-  _debounceUpdateCenter: function() {
+  _debounceUpdateCenter() {
     this.debounce('updateCenter', this._updateCenter);
   },
 
-  _updateCenter: function() {
+  _updateCenter() {
     this.cancelDebouncer('updateCenter');
 
     if (this.map && this.latitude !== undefined && this.longitude !== undefined) {
       // allow for latitude and longitude to be String-typed, but still Number valued
-      var lati = Number(this.latitude);
+      const lati = Number(this.latitude);
       if (isNaN(lati)) {
         throw new TypeError('latitude must be a number');
       }
-      var longi = Number(this.longitude);
+      const longi = Number(this.longitude);
       if (isNaN(longi)) {
         throw new TypeError('longitude must be a number');
       }
 
-      var newCenter = new google.maps.LatLng(lati, longi);
-      var oldCenter = this.map.getCenter();
+      const newCenter = new google.maps.LatLng(lati, longi);
+      let oldCenter = this.map.getCenter();
 
       if (!oldCenter) {
         // If the map does not have a center, set it right away.
@@ -652,13 +647,13 @@ Polymer({
     }
   },
 
-  _zoomChanged: function() {
+  _zoomChanged() {
     if (this.map) {
       this.map.setZoom(Number(this.zoom));
     }
   },
 
-  _idleEvent: function() {
+  _idleEvent() {
     if (this.map) {
       this._forwardEvent('idle');
     } else {
@@ -666,7 +661,7 @@ Polymer({
     }
   },
 
-  _clickEventsChanged: function() {
+  _clickEventsChanged() {
     if (this.map) {
       if (this.clickEvents) {
         this._forwardEvent('click');
@@ -680,7 +675,7 @@ Polymer({
     }
   },
 
-  _dragEventsChanged: function() {
+  _dragEventsChanged() {
     if (this.map) {
       if (this.dragEvents) {
         this._forwardEvent('drag');
@@ -694,7 +689,7 @@ Polymer({
     }
   },
 
-  _mouseEventsChanged: function() {
+  _mouseEventsChanged() {
     if (this.map) {
       if (this.mouseEvents) {
         this._forwardEvent('mousemove');
@@ -708,75 +703,74 @@ Polymer({
     }
   },
 
-  _maxZoomChanged: function() {
+  _maxZoomChanged() {
     if (this.map) {
-      this.map.setOptions({maxZoom: Number(this.maxZoom)});
+      this.map.setOptions({ maxZoom: Number(this.maxZoom) });
     }
   },
 
-  _minZoomChanged: function() {
+  _minZoomChanged() {
     if (this.map) {
-      this.map.setOptions({minZoom: Number(this.minZoom)});
+      this.map.setOptions({ minZoom: Number(this.minZoom) });
     }
   },
 
-  _mapTypeChanged: function() {
+  _mapTypeChanged() {
     if (this.map) {
       this.map.setMapTypeId(this.mapType);
     }
   },
 
-  _disableDefaultUiChanged: function() {
+  _disableDefaultUiChanged() {
     if (!this.map) {
       return;
     }
-    this.map.setOptions({disableDefaultUI: this.disableDefaultUi});
+    this.map.setOptions({ disableDefaultUI: this.disableDefaultUi });
   },
 
-  _disableMapTypeControlChanged: function() {
+  _disableMapTypeControlChanged() {
     if (!this.map) {
       return;
     }
-    this.map.setOptions({mapTypeControl: !this.disableMapTypeControl});
+    this.map.setOptions({ mapTypeControl: !this.disableMapTypeControl });
   },
 
-  _disableStreetViewControlChanged: function() {
+  _disableStreetViewControlChanged() {
     if (!this.map) {
       return;
     }
-    this.map.setOptions({streetViewControl: !this.disableStreetViewControl});
+    this.map.setOptions({ streetViewControl: !this.disableStreetViewControl });
   },
 
-  _disableZoomChanged: function() {
+  _disableZoomChanged() {
     if (!this.map) {
       return;
     }
     this.map.setOptions({
       disableDoubleClickZoom: this.disableZoom,
-      scrollwheel: !this.disableZoom
+      scrollwheel: !this.disableZoom,
     });
   },
 
-  attributeChanged: function(attrName) {
+  attributeChanged(attrName) {
     if (!this.map) {
       return;
     }
     // Cannot use *Changed watchers for native properties.
     switch (attrName) {
       case 'draggable':
-        this.map.setOptions({draggable: this.draggable});
+        this.map.setOptions({ draggable: this.draggable });
         break;
     }
   },
 
-  _fitToMarkersChanged: function() {
+  _fitToMarkersChanged() {
     // TODO(ericbidelman): respect user's zoom level.
 
     if (this.map && this.fitToMarkers && this.markers.length > 0) {
-      var latLngBounds = new google.maps.LatLngBounds();
+      const latLngBounds = new google.maps.LatLngBounds();
       for (var i = 0, m; m = this.markers[i]; ++i) {
-        latLngBounds.extend(
-            new google.maps.LatLng(m.latitude, m.longitude));
+        latLngBounds.extend(new google.maps.LatLng(m.latitude, m.longitude));
       }
 
       // For one marker, don't alter zoom, just center it.
@@ -788,20 +782,20 @@ Polymer({
     }
   },
 
-  _addMapListeners: function() {
-    google.maps.event.addListener(this.map, 'center_changed', function() {
-      var center = this.map.getCenter();
+  _addMapListeners() {
+    google.maps.event.addListener(this.map, 'center_changed', () => {
+      const center = this.map.getCenter();
       this.latitude = center.lat();
       this.longitude = center.lng();
-    }.bind(this));
+    });
 
-    google.maps.event.addListener(this.map, 'zoom_changed', function() {
+    google.maps.event.addListener(this.map, 'zoom_changed', () => {
       this.zoom = this.map.getZoom();
-    }.bind(this));
+    });
 
-    google.maps.event.addListener(this.map, 'maptypeid_changed', function() {
+    google.maps.event.addListener(this.map, 'maptypeid_changed', () => {
       this.mapType = this.map.getMapTypeId();
-    }.bind(this));
+    });
 
     this._clickEventsChanged();
     this._dragEventsChanged();
@@ -809,28 +803,28 @@ Polymer({
     this._idleEvent();
   },
 
-  _clearListener: function(name) {
+  _clearListener(name) {
     if (this._listeners[name]) {
       google.maps.event.removeListener(this._listeners[name]);
       this._listeners[name] = null;
     }
   },
 
-  _forwardEvent: function(name) {
-    this._listeners[name] = google.maps.event.addListener(this.map, name, function(event) {
-      this.fire('google-map-' + name, event);
-    }.bind(this));
+  _forwardEvent(name) {
+    this._listeners[name] = google.maps.event.addListener(this.map, name, (event) => {
+      this.fire(`google-map-${name}`, event);
+    });
   },
 
-  _deselectMarker: function(e, detail) {
+  _deselectMarker(e, detail) {
     // If singleInfoWindow is set, update iron-selector's selected attribute to be null.
     // Else remove the marker from iron-selector's selected array.
-    var markerIndex = this.$.selector.indexOf(e.target);
+    const markerIndex = this.$.selector.indexOf(e.target);
 
     if (this.singleInfoWindow) {
       this.$.selector.selected = null;
     } else if (this.$.selector.selectedValues) {
-      this.$.selector.selectedValues = this.$.selector.selectedValues.filter(function(i) {return i !== markerIndex});
+      this.$.selector.selectedValues = this.$.selector.selectedValues.filter(i => i !== markerIndex);
     }
-  }
+  },
 });
