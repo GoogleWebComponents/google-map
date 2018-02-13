@@ -1,7 +1,7 @@
 {
   "name": "@polymer/google-map",
   "flat": true,
-  "version": "3.0.0-pre.1",
+  "version": "3.0.0-pre.2",
   "description": "Google Maps web components",
   "contributors": [
     "Frankie Fu <ffu@google.com>",
