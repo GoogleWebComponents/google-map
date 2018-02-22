@@ -45,6 +45,11 @@ child of `google-map`.
   <script>
     (function() {
 
+
+      /**
+       * @this {GoogleMapMarkerElement} This function is called  with .bind(this) in the map
+       * marker element below.
+       */
       function setupDragHandler_() {
         if (this.draggable) {
           this.dragHandler_ = google.maps.event.addListener(
@@ -55,6 +60,10 @@ child of `google-map`.
         }
       }
 
+      /**
+       * @this {GoogleMapMarkerElement} This function is called with .bind(this) in setupDragHandler
+       *_above.
+       */
       function onDragEnd_(e, details, sender) {
         this.latitude = e.latLng.lat();
         this.longitude = e.latLng.lng();

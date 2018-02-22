@@ -19,36 +19,40 @@ google-map-* elements.
 -->
 
 <script>
-  Polymer({
-    is: 'google-map-point',
+  (function() {
+    'use strict';
 
-    hostAttributes: {hidden: true},
+    Polymer({
+      is: 'google-map-point',
 
-    properties: {
-      /**
-       * The point's longitude coordinate.
-       */
-      longitude: {
-        type: Number,
-        value: null
+      hostAttributes: {hidden: true},
+
+      properties: {
+        /**
+         * The point's longitude coordinate.
+         */
+        longitude: {
+          type: Number,
+          value: null
+        },
+
+        /**
+         * The point's latitude coordinate.
+         */
+        latitude: {
+          type: Number,
+          value: null
+        }
       },
 
       /**
-       * The point's latitude coordinate.
+       * Returns the point as a Google Maps LatLng object.
+       *
+       * @return {google.maps.LatLng} The LatLng object.
        */
-      latitude: {
-        type: Number,
-        value: null
+      getPosition: function() {
+        return new google.maps.LatLng(this.latitude, this.longitude);
       }
-    },
-
-    /**
-     * Returns the point as a Google Maps LatLng object.
-     *
-     * @return {google.maps.LatLng} The LatLng object.
-     */
-    getPosition: function() {
-      return new google.maps.LatLng(this.latitude, this.longitude);
-    }
-  });
+    });
+  })();
 </script>
