@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-poly.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
+  <script type="module" src="../google-map-poly.js"></script>
 </head>
 <body>
 
@@ -20,7 +20,10 @@
     </google-map-poly>
   </google-map>
 
-<script>
+<script type="module">
+import '../google-map.js';
+import '../google-map-poly.js';
+import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 suite('poly-basic', function(done) {
   var map = document.querySelector('#map');
   var poly = document.querySelector('#poly');
@@ -146,7 +149,7 @@ suite('poly-basic', function(done) {
   test('when points are mutated', function(done) {
     point1.latitude = point3.latitude;
     point1.longitude = point3.longitude;
-    Polymer.dom(poly).removeChild(point3);
+    dom(poly).removeChild(point3);
 
     var listener;
     poly.addEventListener('google-map-poly-path-built', listener = function(e) {
@@ -165,7 +168,6 @@ suite('poly-basic', function(done) {
     });
   });
 });
-
 </script>
 </body>
 </html>
