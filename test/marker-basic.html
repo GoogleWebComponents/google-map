@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
 
@@ -16,7 +16,9 @@
     <google-map-marker slot="markers" id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
 
-<script>
+<script type="module">
+import '../google-map.js';
+import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 var map = document.querySelector('#map1');
 
 suite('markers', function() {
@@ -41,7 +43,7 @@ suite('markers', function() {
   test.skip('dragdrop marker');
 
   test('defaults', function() {
-    var markerEl = Polymer.dom(map).querySelector('google-map-marker');
+    var markerEl = dom(map).querySelector('google-map-marker');
     assert.isUndefined(markerEl.marker);
     assert.isUndefined(markerEl.map);
     assert.isNull(markerEl.icon);
@@ -56,7 +58,7 @@ suite('markers', function() {
 
   test('update properties', function(done) {
     map.addEventListener('google-map-ready', function(e) {
-      var markerEl = Polymer.dom(map).querySelector('google-map-marker');
+      var markerEl = dom(map).querySelector('google-map-marker');
       markerEl.latitude = 37.77493;
       markerEl.longitude = -122.41942;
       markerEl.zIndex = 1;
@@ -82,7 +84,7 @@ suite('markers', function() {
 
   test('dragEvents', function() {
 
-    var markerEl = Polymer.dom(map).querySelector('#marker2');
+    var markerEl = dom(map).querySelector('#marker2');
 
     assert.equal(markerEl.dragEvents, true);
 
@@ -96,7 +98,6 @@ suite('markers', function() {
   });
 
 });
-
 </script>
 </body>
 </html>
