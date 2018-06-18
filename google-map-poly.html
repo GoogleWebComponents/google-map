@@ -507,7 +507,10 @@ child of `google-map` and will contain at least two `google-map-point` child ele
           }
           this._pointsObserver = new MutationObserver(this._buildPathFromPoints.bind(this));
           this._pointsObserver.observe(this, {
-            childList: true
+            attributes: true,
+            attributeFilter: ['latitude', 'longitude'],
+            childList: true,
+            subtree: true
           });
         },
 
