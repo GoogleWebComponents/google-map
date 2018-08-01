@@ -43,7 +43,7 @@ child of `google-map`.
     <slot></slot>
   </template>
   <script>
-    (function() {
+    (function () {
 
 
       /**
@@ -53,7 +53,7 @@ child of `google-map`.
       function setupDragHandler_() {
         if (this.draggable) {
           this.dragHandler_ = google.maps.event.addListener(
-              this.marker, 'dragend', onDragEnd_.bind(this));
+            this.marker, 'dragend', onDragEnd_.bind(this));
         } else {
           google.maps.event.removeListener(this.dragHandler_);
           this.dragHandler_ = null;
@@ -162,6 +162,16 @@ child of `google-map`.
          */
 
         properties: {
+          /**
+           Solved the failure in polymer 2 with the hidden attribute. 
+           When you use the Google Maps component in Polymer 2 the hidden attribute is not working as in Polymer 1, 
+           it only works the first time. Adding a new attribute called 'show' you can control the visibility of the marker
+           -- NEW FEATURE --           
+          */
+          show: {
+            type: Boolean,
+            value: null
+          },
           /**
            * A Google Maps marker object.
            *
@@ -290,7 +300,7 @@ child of `google-map`.
           '_updatePosition(latitude, longitude)'
         ],
 
-        detached: function() {
+        detached: function () {
           if (this.marker) {
             google.maps.event.clearInstanceListeners(this.marker);
             this._listeners = {};
@@ -300,21 +310,26 @@ child of `google-map`.
             this._contentObserver.disconnect();
         },
 
-        attached: function() {
+        attached: function () {
           // If element is added back to DOM, put it back on the map.
           if (this.marker) {
             this.marker.setMap(this.map);
           }
         },
-
-        _updatePosition: function() {
+        /**
+        -- NEW FEATURE --
+        */
+        _changeShow() {
+          return JSON.parse(JSON.parse(this.getAttribute('show')));
+        },
+        _updatePosition: function () {
           if (this.marker && this.latitude != null && this.longitude != null) {
             this.marker.setPosition(new google.maps.LatLng(
               parseFloat(this.latitude), parseFloat(this.longitude)));
           }
         },
 
-        _clickEventsChanged: function() {
+        _clickEventsChanged: function () {
           if (this.map) {
             if (this.clickEvents) {
               this._forwardEvent('click');
@@ -328,7 +343,7 @@ child of `google-map`.
           }
         },
 
-        _dragEventsChanged: function() {
+        _dragEventsChanged: function () {
           if (this.map) {
             if (this.dragEvents) {
               this._forwardEvent('drag');
@@ -342,7 +357,7 @@ child of `google-map`.
           }
         },
 
-        _mouseEventsChanged: function() {
+        _mouseEventsChanged: function () {
           if (this.map) {
             if (this.mouseEvents) {
               this._forwardEvent('mousedown');
@@ -360,31 +375,31 @@ child of `google-map`.
           }
         },
 
-        _animationChanged: function() {
+        _animationChanged: function () {
           if (this.marker) {
             this.marker.setAnimation(google.maps.Animation[this.animation]);
           }
         },
 
-        _labelChanged: function() {
+        _labelChanged: function () {
           if (this.marker) {
             this.marker.setLabel(this.label);
           }
         },
 
-        _iconChanged: function() {
+        _iconChanged: function () {
           if (this.marker) {
             this.marker.setIcon(this.icon);
           }
         },
 
-        _zIndexChanged: function() {
+        _zIndexChanged: function () {
           if (this.marker) {
             this.marker.setZIndex(this.zIndex);
           }
         },
 
-        _mapChanged: function() {
+        _mapChanged: function () {
           // Marker will be rebuilt, so disconnect existing one from old map and listeners.
           if (this.marker) {
             this.marker.setMap(null);
@@ -396,12 +411,12 @@ child of `google-map`.
           }
         },
 
-        _contentChanged: function() {
+        _contentChanged: function () {
           if (this._contentObserver)
             this._contentObserver.disconnect();
           // Watch for future updates.
-          this._contentObserver = new MutationObserver( this._contentChanged.bind(this));
-          this._contentObserver.observe( this, {
+          this._contentObserver = new MutationObserver(this._contentChanged.bind(this));
+          this._contentObserver.observe(this, {
             childList: true,
             subtree: true
           });
@@ -411,11 +426,11 @@ child of `google-map`.
             if (!this.info) {
               // Create a new infowindow
               this.info = new google.maps.InfoWindow();
-              this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function() {
+              this.openInfoHandler_ = google.maps.event.addListener(this.marker, 'click', function () {
                 this.open = true;
               }.bind(this));
 
-              this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function() {
+              this.closeInfoHandler_ = google.maps.event.addListener(this.info, 'closeclick', function () {
                 this.open = false;
               }.bind(this));
             }
@@ -430,7 +445,7 @@ child of `google-map`.
           }
         },
 
-        _openChanged: function() {
+        _openChanged: function () {
           if (this.info) {
             if (this.open) {
               this.info.open(this.map, this.marker);
@@ -442,7 +457,7 @@ child of `google-map`.
           }
         },
 
-        _mapReady: function() {
+        _mapReady: function () {
           this._listeners = {};
           this.marker = new google.maps.Marker({
             map: this.map,
@@ -458,6 +473,8 @@ child of `google-map`.
             label: this.label,
             zIndex: this.zIndex
           });
+          /* -- NEW FEATURE -- */
+          this.show = this._changeShow();
           this._contentChanged();
           this._clickEventsChanged();
           this._dragEventsChanged();
@@ -466,20 +483,20 @@ child of `google-map`.
           setupDragHandler_.bind(this)();
         },
 
-        _clearListener: function(name) {
+        _clearListener: function (name) {
           if (this._listeners[name]) {
             google.maps.event.removeListener(this._listeners[name]);
             this._listeners[name] = null;
           }
         },
 
-        _forwardEvent: function(name) {
-          this._listeners[name] = google.maps.event.addListener(this.marker, name, function(event) {
+        _forwardEvent: function (name) {
+          this._listeners[name] = google.maps.event.addListener(this.marker, name, function (event) {
             this.fire('google-map-marker-' + name, event);
           }.bind(this));
         },
 
-        attributeChanged: function(attrName) {
+        attributeChanged: function (attrName) {
           if (!this.marker) {
             return;
           }
@@ -488,6 +505,11 @@ child of `google-map`.
           switch (attrName) {
             case 'hidden':
               this.marker.setVisible(!this.hidden);
+              break;
+            /* -- NEW FEATURE -- */
+            case 'show':
+              this.show = this._changeShow();
+              this.marker.setVisible(this.show);
               break;
             case 'draggable':
               this.marker.setDraggable(this.draggable);
