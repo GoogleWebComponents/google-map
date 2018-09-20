@@ -257,6 +257,14 @@ If you're seeing the message "You have included the Google Maps API multiple tim
           },
 
           /**
+           * Specifies the color to display behind the map tiles.
+           * The color can be any valid W3C standard color value.
+           */
+          backgroundColor: {
+            type: String,
+          },
+
+          /**
            * When set, prevents the map from tilting (when the zoom level and viewport supports it).
            */
           noAutoTilt: {
@@ -496,6 +504,7 @@ If you're seeing the message "You have included the Google Maps API multiple tim
 
         _getMapOptions: function() {
           var mapOptions = {
+            backgroundColor: this.backgroundColor,
             zoom: this.zoom,
             tilt: this.noAutoTilt ? 0 : 45,
             mapTypeId: this.mapType,
