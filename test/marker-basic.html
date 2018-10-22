@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
 
@@ -16,7 +16,8 @@
     <google-map-marker slot="markers" id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
 
-<script>
+<script type="module">
+import '../google-map.js';
 var map = document.querySelector('#map1');
 
 suite('markers', function() {
@@ -96,7 +97,6 @@ suite('markers', function() {
   });
 
 });
-
 </script>
 </body>
 </html>
