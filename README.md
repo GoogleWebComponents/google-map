@@ -15,7 +15,7 @@ If you are seeking a smaller, simplified version of `google-map`, we recommend u
     <link rel="import" href="google-map.html">
     <style>
       google-map {
-        height: 300px;
+        height: 400px;
       }
     </style>
     <next-code-block></next-code-block>
