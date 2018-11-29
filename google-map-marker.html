@@ -222,6 +222,16 @@ child of `google-map`.
           },
 
           /**
+           * URL for the marker.
+           *
+           * @type {?String}
+           */
+          url: {
+            type: String,
+            value: ''
+          },
+
+          /**
            * When true, marker mouse* events are automatically registered.
            */
           mouseEvents: {
@@ -450,6 +460,7 @@ child of `google-map`.
               lat: parseFloat(this.latitude),
               lng: parseFloat(this.longitude)
             },
+            url: this.url,
             title: this.title,
             animation: google.maps.Animation[this.animation],
             draggable: this.draggable,
@@ -467,7 +478,7 @@ child of `google-map`.
         },
 
         _clearListener: function(name) {
-          if (this._listeners[name]) {
+          if (this._listeners && this._listeners[name]) {
             google.maps.event.removeListener(this._listeners[name]);
             this._listeners[name] = null;
           }
