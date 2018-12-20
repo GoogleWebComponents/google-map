@@ -14,11 +14,19 @@
 
 <script>
 var map = document.querySelector('#map');
+var whenReady = function(cb) {
+  if (map.map) {
+    cb();
+  } else {
+    map.addEventListener('google-map-ready', cb);
+  }
+};
+
 
 suite('markers', function() {
 
   test('update lat/lng', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
+    whenReady(function(e) {
       assert.equal(map.latitude, 37.555);
       assert.equal(map.longitude, -122.555);
 

@@ -18,32 +18,42 @@
 <script>
 var map = document.querySelector('#map1');
 
-suite(`markers${Polymer.Settings.useShadow ? ' (shadow dom)' : ' (shady dom)'}`, function() {
+var whenReady = function(cb) {
+  if (map.map) {
+    cb();
+  } else {
+    map.addEventListener('google-map-ready', cb);
+  }
+};
 
-  test('markers are defined, added, removed', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
+addEventListener('WebComponentsReady', function() {
+  suite(`markers${Polymer.Settings.useShadow ? ' (shadow dom)' : ' (shady dom)'}`, function() {
 
-      // Check if marker children were setup and can be added/removed.
-      assert.equal(map.markers.length, 2);
+    test('markers are defined, added, removed', function(done) {
+      whenReady(function(e) {
 
-      var marker = map.markers[0];
-      Polymer.dom((Polymer.dom(marker).parentNode)).removeChild(marker);
-      Polymer.dom.flush();
-      async.nextTick(function() { // needed because map.updateMarkers has mutationObserver
-        assert.equal(map.markers.length, 1);
-        assert.isNull(
-            marker.marker.map, 'removed marker is still visible on map');
-        Polymer.dom(map).appendChild(marker);
+        // Check if marker children were setup and can be added/removed.
+        assert.equal(map.markers.length, 2);
+
+        var marker = map.markers[0];
+        Polymer.dom((Polymer.dom(marker).parentNode)).removeChild(marker);
         Polymer.dom.flush();
-        async.nextTick(function() {
-          assert.isNotNull(
-              marker.marker.map, 're-added marker is not visible.');
-          done();
+        async.nextTick(function() { // needed because map.updateMarkers has mutationObserver
+          assert.equal(map.markers.length, 1);
+          assert.isNull(
+              marker.marker.map, 'removed marker is still visible on map');
+          Polymer.dom(map).appendChild(marker);
+          Polymer.dom.flush();
+          async.nextTick(function() {
+            assert.isNotNull(
+                marker.marker.map, 're-added marker is not visible.');
+            done();
+          });
         });
       });
     });
-  });
 
+  });
 });
 
 </script>

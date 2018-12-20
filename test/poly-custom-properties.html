@@ -25,9 +25,16 @@ suite('poly-basic', function(done) {
   var map = document.querySelector('#map');
   var poly = document.querySelector('#poly');
 
+  var whenReady = function(cb) {
+    if (map.map) {
+      cb();
+    } else {
+      map.addEventListener('google-map-ready', cb);
+    }
+  };
 
   test('after poly is initialized', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
+    whenReady(function(e) {
       assert.isNotNull(poly.map);
       //done();
     });
