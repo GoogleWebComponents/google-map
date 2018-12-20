@@ -272,6 +272,13 @@ child of `google-map` and will contain at least two `google-map-point` child ele
           },
 
           /**
+           * When true, the poly is not visible.
+           */
+          hidden: {
+            type: Boolean
+          },
+
+          /**
            * If the path is not closed, the icons to be rendered along the polyline.
            */
           icons: {
@@ -351,7 +358,11 @@ child of `google-map` and will contain at least two `google-map-point` child ele
 
         attached: function() {
           // If element is added back to DOM, put it back on the map.
-          this.poly && this.poly.setMap(this.map);
+          if (this.poly) {
+            this.poly.setMap(this.map);
+            this.poly.setVisible(!this.hidden);
+            this.poly.setDraggable(this.draggable);
+          }
         },
 
         // Attribute/property change watchers.

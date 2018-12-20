@@ -21,6 +21,14 @@ var map = document.querySelector('#map1');
 var map2 = document.querySelector('#map2');
 var map3 = document.querySelector('#map3');
 
+var whenReady = function(m, cb) {
+  if (m.map) {
+    cb();
+  } else {
+    m.addEventListener('google-map-ready', cb);
+  }
+};
+
 suite('google-map', function() {
 
   // TODO: test setting an invalid latitude/longitude value. See if throws.
@@ -29,11 +37,11 @@ suite('google-map', function() {
   test.skip('invalid lat/lng');
 
   test('noAutoTilt', function() {
-    map.addEventListener('google-map-ready', function(e) {
+    whenReady(map, function(e) {
       // When noAutoTilt is set, tilt is left at default (45).
       assert.equal(map.map.getTilt(), 45);
     });
-    map3.addEventListener('google-map-ready', function(e) {
+    whenReady(map3, function(e) {
       // When noAutoTilt is set, tilt is set to 0.
       assert.equal(map3.map.getTilt(), 0);
     });
@@ -72,7 +80,7 @@ suite('google-map', function() {
   });
 
   test('change properties', function(done) {
-    map3.addEventListener('google-map-ready', function(e) {
+    whenReady(map3, function(e) {
       assert.isTrue(map3.fitToMarkers);
       assert.equal(map3.markers.length, 0);
       assert.equal(map3.zoom, map3.map.getZoom());

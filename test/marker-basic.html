@@ -19,6 +19,14 @@
 <script>
 var map = document.querySelector('#map1');
 
+var whenReady = function(cb) {
+  if (map.map) {
+    cb();
+  } else {
+    map.addEventListener('google-map-ready', cb);
+  }
+};
+
 suite('markers', function() {
   test('labeled marker should have a label', function() {
     var markerEl = document.querySelector('#labeled-marker');
@@ -42,8 +50,6 @@ suite('markers', function() {
 
   test('defaults', function() {
     var markerEl = Polymer.dom(map).querySelector('google-map-marker');
-    assert.isUndefined(markerEl.marker);
-    assert.isUndefined(markerEl.map);
     assert.isNull(markerEl.icon);
     assert.isNull(markerEl.info);
     assert.equal(markerEl.zIndex, 0);
@@ -55,7 +61,7 @@ suite('markers', function() {
   });
 
   test('update properties', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
+    whenReady(function(e) {
       var markerEl = Polymer.dom(map).querySelector('google-map-marker');
       markerEl.latitude = 37.77493;
       markerEl.longitude = -122.41942;
