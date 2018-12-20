@@ -71,9 +71,7 @@ suite('poly-basic', function(done) {
         assert.equal(poly.poly.get('strokeOpacity'), 1);
         assert.equal(poly.poly.get('strokePosition'), 0); // Value for 'center'.
         assert.equal(poly.poly.get('strokeWeight'), 3);
-        // TODO: This doesn't work in FireFox and Polymer 1.x.
-        // The hope is that upgrading to Polymer 2.x will resolve this...
-        // assert.isTrue(poly.poly.getVisible());
+        assert.isTrue(poly.poly.getVisible());
         assert.equal(poly.poly.get('zIndex'), 0);
 
         done();
