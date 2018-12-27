@@ -1,0 +1,29 @@
+{
+  "name": "google-map",
+  "version": "1.0.0",
+  "description": "google-map ==========",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoogleWebComponents/google-map.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GoogleWebComponents/google-map/issues"
+  },
+  "homepage": "https://github.com/GoogleWebComponents/google-map#readme",
+  "dependencies": {
+    "@polymer/lit-element": "^0.6.5",
+    "@types/googlemaps": "^3.30.16"
+  },
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.2.1"
+  }
+}
