@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,10 +21,10 @@
   },
   "homepage": "https://github.com/GoogleWebComponents/google-map#readme",
   "dependencies": {
-    "@polymer/lit-element": "^0.6.5",
-    "@types/googlemaps": "^3.30.16"
+    "@types/googlemaps": "^3.30.16",
+    "lit-element": "^2.0.1"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.2.1"
+    "@webcomponents/webcomponentsjs": "^2.2.7"
   }
 }

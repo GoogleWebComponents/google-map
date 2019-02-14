@@ -1,35 +1,33 @@
 <!doctype html>
 <!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>Google Map Poly demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-poly.html">
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-    }
-    #toggleEdit {
-      position: absolute;
-      top: 10px;
-      left: 120px;
-    }
-  </style>
-</head>
-<body class="fullbleed">
-
-<template is="dom-bind">
-  <google-map latitude="41.876" longitude="-87.624" zoom="11" kml="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml" api-key="[[apiKey]]"></google-map>
-</template>
-
-<script>
-if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') {
-  var t = document.querySelector('template');
-  t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
-}
-</script>
-</body>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Google Maps KML demo</title>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script type="module" src="../google-map.js"></script>
+    <script type="module" src="../google-map-kml-layer.js"></script>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+      }
+      #toggleEdit {
+        position: absolute;
+        top: 10px;
+        left: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <google-map
+        latitude="41.876"
+        longitude="-87.624"
+        zoom="11"
+        api-key="AIzaSyBSwhN8h_lqJB2s4Fs4YMh16QD1nb_NYKs">
+      <google-map-kml-layer
+          url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml">
+      </google-map-kml-layer> 
+    </google-map>
+  </body>
 </html>

@@ -1,8 +1,6 @@
 // <!-- Copyright (c) 2015 Google Inc. All rights reserved. -->
 
-import {LitElement, html} from '@polymer/lit-element';
-import {customElement, property, query} from '@polymer/lit-element/lib/decorators.js';
-import {loadGoogleMapsAPI} from './maps-api.js';
+import { GoogleMapChildElement, html, customElement, property } from './lib/google-map-child-element.js';
 
 const markerEvents = [
   'animation_changed',
@@ -57,7 +55,7 @@ const markerEvents = [
  * 
  */
 @customElement('google-map-marker')
-export class GoogleMapMarker extends LitElement {
+export class GoogleMapMarker extends GoogleMapChildElement {
 
   /**
    * Fired when the marker icon was clicked. Requires the clickEvents attribute to be true.
@@ -156,14 +154,6 @@ export class GoogleMapMarker extends LitElement {
   marker?: google.maps.Marker;
 
   /**
-   * The Google map object.
-   *
-   * @type google.maps.Map
-   */
-  @property()
-  map?: google.maps.Map;
-
-  /**
    * A Google Map Infowindow object.
    *
    * @type {?Object}
@@ -248,17 +238,6 @@ export class GoogleMapMarker extends LitElement {
     console.log('google-map-marker');
   }
 
-  render() {
-    return html`
-      <style>
-        :host {
-          display: none;
-        }
-      </style>
-      <slot></slot>
-    `;
-  }
-
   update(changedProperties: Map<PropertyKey, any>) {
     if (changedProperties.has('map')) {
       this._mapChanged();
@@ -327,7 +306,7 @@ export class GoogleMapMarker extends LitElement {
       google.maps.event.clearInstanceListeners(this.marker);
     }
 
-    if (this.map && this.map instanceof google.maps.Map) {
+    if (this.map instanceof google.maps.Map) {
       this._mapReady();
     }
   }
@@ -342,6 +321,7 @@ export class GoogleMapMarker extends LitElement {
     //   subtree: true
     // });
 
+    // TODO(justinfagnani): no, no, no... Use Nodes, not innerHTML.
     const content = this.innerHTML.trim();
     console.log('_contentChanged', content, this.infoWindow);
     if (content) {
@@ -379,6 +359,7 @@ export class GoogleMapMarker extends LitElement {
     }
   }
 
+  // TODO(justinfagnani): call from GoogleMapChildElement
   private _mapReady() {
     console.log('_mapReady');
     this._listeners = {};
@@ -402,6 +383,7 @@ export class GoogleMapMarker extends LitElement {
     this._setupDragHandler();
   }
 
+  // TODO(justinfagnani): move to utils / base class
   private _forwardEvent(name: string) {
     this._listeners[name] = google.maps.event.addListener(this.marker!, name, (event: Event) => {
       this.dispatchEvent(new CustomEvent(`google-map-marker-${name}`, {

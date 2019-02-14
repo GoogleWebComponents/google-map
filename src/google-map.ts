@@ -1,12 +1,22 @@
-import {LitElement, html, PropertyValues} from '@polymer/lit-element';
-import {customElement, property, query} from '@polymer/lit-element/lib/decorators.js';
+/**
+ * @license
+ * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+import {LitElement, html, PropertyValues, css} from 'lit-element';
+import {customElement, property, query} from 'lit-element/lib/decorators.js';
 import {loadGoogleMapsAPI} from './maps-api.js';
 import { GoogleMapMarker } from './google-map-marker.js';
-
-// <link rel="import" href="../google-apis/google-maps-api.html">
-// <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-// <link rel="import" href="../iron-selector/iron-selector.html">
-// <link rel="import" href="google-map-marker.html">
+import { Deferred } from './lib/deferred.js';
 
 const mapEvents = [
   'bounds_changed',
@@ -215,15 +225,6 @@ export class GoogleMap extends LitElement {
    */
   map?: google.maps.Map;
 
-  /**
-   * A kml file to load.
-   */
-  // kml: {
-  //   type: String,
-  //   value: null,
-  //   observer: '_loadKml'
-  // },
-
   @property({type: Number})
   tilt?: number;
 
@@ -333,22 +334,25 @@ export class GoogleMap extends LitElement {
 
   private _markersChildrenListener?: EventListener;
 
+  private _mapReadyDeferred = new Deferred<google.maps.Map>();
+
+  static styles = css`
+    :host {
+      position: relative;
+      display: block;
+      height: 100%;
+    }
+    #map {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  `;
+
   render() {
     return html`
-      <style>
-        :host {
-          position: relative;
-          display: block;
-          height: 100%;
-        }
-        #map {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-        }
-      </style>
       <div id="map"></div>
       <slot @google-map-marker-open=${this._onMarkerOpen}></slot>
   `;
@@ -366,18 +370,32 @@ export class GoogleMap extends LitElement {
     super.update(changedProperties);
   }
 
+  constructor() {
+    super();
+    // Respond to child elements requesting a Map instance
+    this.addEventListener('google-map-get-map-instance', (e: Event) => {
+      console.log('google-map google-map-get-map-instance');
+      const detail = (e as CustomEvent).detail;
+      detail.mapReady = this._mapReadyDeferred.promise;
+    });
+    // TODO(justinfagnani): Now that children register thmselves, figure out
+    // when to call this._fitToMarkersChanged(), or remove the feature
+  }
+
   private async _initGMap() {
-    if (this.map) {
+    if (this.map !== undefined) {
       return;
     }
+    // TODO(justinfagnani): support a global API as well - a singleton API
+    // instance shared for the whole window, where each element doesn't need
+    // its own API key.
     await loadGoogleMapsAPI(this.apiKey);
 
     this.map = new google.maps.Map(this._mapDiv, this._getMapOptions());
     this._updateCenter();
-    // this._loadKml();
-    this._updateMarkers();
     mapEvents.forEach((event) => this._forwardEvent(event));
     this.dispatchEvent(new CustomEvent('google-map-ready'));
+    this._mapReadyDeferred.resolve(this.map);
   }
 
   private _getMapOptions(): google.maps.MapOptions {
@@ -398,56 +416,6 @@ export class GoogleMap extends LitElement {
     };
   }
 
-  private _attachChildrenToMap(children: HTMLElement[]) {
-    if (this.map) {
-      console.log('_attachChildrenToMap');
-      for (const child of children) {
-        (child as any).map = this.map;
-      }
-    }
-  }
-
-  /**
-   * Watch for future updates to marker objects
-   */
-  private _observeMarkers() {
-    // Watch for future updates.
-    if (this._markersChildrenListener) {
-      return;
-    }
-    this._markersChildrenListener = () => this._updateMarkers;
-    this._slot.addEventListener('slotchange', this._markersChildrenListener);
-  }
-
-  private _updateMarkers() {
-    const newMarkers = this._slot.assignedNodes()
-        .filter((n) => n instanceof GoogleMapMarker) as GoogleMapMarker[];
-    
-    console.log('_updateMarkers', newMarkers);
-
-    // do not recompute if markers have not been added or removed
-    if (newMarkers.length === this.markers.length) {
-      const added = newMarkers.filter((m) => this.markers && this.markers.indexOf(m) === -1);
-      if (added.length === 0) {
-        // set up observer first time around
-        if (!this._markersChildrenListener) {
-          this._observeMarkers();
-        }
-        return;
-      }
-    }
-
-    this._observeMarkers();
-
-    this.markers = newMarkers;
-
-    // Set the map on each marker and zoom viewport to ensure they're in view.
-    this._attachChildrenToMap(this.markers);
-    if (this.fitToMarkers) {
-      this._fitToMarkersChanged();
-    }
-  }
-
   private _onMarkerOpen(e: Event) {
     console.log('_onMarkerOpen', e);
   }
@@ -459,7 +427,7 @@ export class GoogleMap extends LitElement {
    * @method resize
    */
   resize() {
-    if (this.map) {
+    if (this.map !== undefined) {
       // saves and restores latitude/longitude because resize can move the center
       const oldLatitude = this.latitude;
       const oldLongitude = this.longitude;
@@ -472,15 +440,6 @@ export class GoogleMap extends LitElement {
       }
     }
   }
-
-  // private _loadKml() {
-  //   if (this.map && this.kml) {
-  //     var kmlfile = new google.maps.KmlLayer({
-  //       url: this.kml,
-  //       map: this.map
-  //     });
-  //   }
-  // }
 
   private _updateCenter() {
     console.log('_updateCenter');
@@ -522,6 +481,9 @@ export class GoogleMap extends LitElement {
     }
   }
 
+  /**
+   * Forwards Maps API events as DOM CustomEvents
+   */
   private _forwardEvent(name: string) {
     google.maps.event.addListener(this.map!, name, (event: Event) => {
       this.dispatchEvent(new CustomEvent(`google-map-${name}`, {

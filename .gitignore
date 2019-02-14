@@ -1,7 +1,11 @@
-/bower_components
 /node_modules
 
-/google-map.*
-/google-map-marker.*
-/maps-api.*
-.idea
+/google-map*.d.ts
+/google-map*.d.ts.map
+/google-map*.js
+/google-map*.js.map
+/maps-api.d.ts
+/maps-api.d.ts.map
+/maps-api.js
+/maps-api.js.map
+/lib
