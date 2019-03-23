@@ -1,0 +1,7 @@
+{
+  "description": "Google Maps web components",
+  "name": "@google-web-components/google-map",
+  "version": "3.0.0",
+  "license": "Apache-2.0",
+  "repository": "GoogleWebComponents/google-map"
+}
