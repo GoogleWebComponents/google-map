@@ -4,11 +4,11 @@
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Google Map demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-marker.html">
-  <link rel="import" href="../google-map-poly.html">
-  <link rel="import" href="../google-map-directions.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../google-map.js"></script>
+  <script type="module" src="../google-map-marker.js"></script>
+  <script type="module" src="../google-map-poly.js"></script>
+  <script type="module" src="../google-map-directions.js"></script>
   <style>
     body {
       margin: 0;
@@ -45,37 +45,39 @@
 
 <button id="controlsToggle" onclick="toggleControls()">Toggle controls</button>
 
-<script>
-var t = document.querySelector('template');
-if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') {
-  t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
-}
+<script type="module">
+  import '../google-map.js';
+  import '../google-map-marker.js';
+  import '../google-map-poly.js';
+  import '../google-map-directions.js';
+  var t = document.querySelector('template');
+  if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') {
+    t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
+  }
 
-function toggleControls() {
-  var gmap = document.querySelector('google-map');
-  gmap.disableDefaultUi = !gmap.disableDefaultUi;
-}
+  function toggleControls() {
+    var gmap = document.querySelector('google-map');
+    gmap.disableDefaultUi = !gmap.disableDefaultUi;
+  }
 
-document.addEventListener('dom-change', function(e) {
-  var gmap = document.querySelector('google-map');
-  var directions = document.querySelector('google-map-directions');
+  document.addEventListener('dom-change', function(e) {
+    var gmap = document.querySelector('google-map');
+    var directions = document.querySelector('google-map-directions');
 
-  gmap.addEventListener('api-load', function(e) {
-    document.querySelector('google-map-directions').map = this.map;
+    gmap.addEventListener('api-load', function(e) {
+      document.querySelector('google-map-directions').map = this.map;
+    });
+
+    var marker = document.querySelector('google-map-marker');
+    var poly = document.querySelector('google-map-poly');
+    var point = document.querySelector('google-map-point');
+
+    marker.addEventListener('google-map-marker-dragend', function(e) {
+      var latLng = e.detail.latLng;
+      console.log('pin dropped', latLng.lat(), latLng.lng());
+      point.latitude = latLng.lat();
+      point.longitude = latLng.lng();
+      poly._buildPathFromPoints();
+    });
   });
-
-  var marker = document.querySelector('google-map-marker');
-  var poly = document.querySelector('google-map-poly');
-  var point = document.querySelector('google-map-point');
-
-  marker.addEventListener('google-map-marker-dragend', function(e) {
-    var latLng = e.detail.latLng;
-    console.log('pin dropped', latLng.lat(), latLng.lng());
-    point.latitude = latLng.lat();
-    point.longitude = latLng.lng();
-    poly._buildPathFromPoints();
-  });
-});
 </script>
-</body>
-</html>
