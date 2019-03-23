@@ -20,7 +20,7 @@ google-map-* elements.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'google-apis/google-maps-api.js';
+import '@google-web-components/google-apis/google-maps-api.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 
 Polymer({

@@ -30,7 +30,7 @@ child of `google-map` and will contain at least two `google-map-point` child ele
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'google-apis/google-maps-api.js';
+import '@google-web-components/google-apis/google-maps-api.js';
 import './google-map-point.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';

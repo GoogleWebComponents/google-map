@@ -59,7 +59,7 @@ If you're seeing the message "You have included the Google Maps API multiple tim
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import 'google-apis/google-maps-api.js';
+import '@google-web-components/google-apis/google-maps-api.js';
 import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
 import '@polymer/iron-selector/iron-selector.js';
 import './google-map-marker.js';
