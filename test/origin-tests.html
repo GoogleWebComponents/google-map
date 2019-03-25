@@ -4,13 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
   <google-map id="map" maps-url="http://maps.google.cn/maps/api/js?callback=%%callback%%"></google-map>
-<script>
+<script type="module">
+import '../google-map.js';
 suite('google-map origins', function() {
 
   test('loads from another origin', function(done) {
@@ -26,7 +27,4 @@ suite('google-map origins', function() {
     });
   });
 });
-
 </script>
-</body>
-</html>

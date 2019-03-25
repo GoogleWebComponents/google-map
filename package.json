@@ -1,0 +1,38 @@
+{
+  "description": "Google Maps web components",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "google",
+    "apis",
+    "maps"
+  ],
+  "repository": "GoogleWebComponents/google-map",
+  "homepage": "https://elements.polymer-project.org/elements/google-map",
+  "name": "@google-web-components/google-map",
+  "version": "3.0.0",
+  "license": "Apache-2.0",
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0"
+  },
+  "main": "google-map-elements.js",
+  "contributors": [
+    "Frankie Fu <ffu@google.com>",
+    "Scott Miles <sjmiles@google.com>",
+    "Eric Bidelman <ebidel@gmail.com>"
+  ],
+  "dependencies": {
+    "@google-web-components/google-apis": "^3.0.1",
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/iron-resizable-behavior": "^3.0.0",
+    "@polymer/iron-selector": "^3.0.0"
+  },
+  "devDependencies": {
+    "wct-browser-legacy": "^1.0.1",
+    "@polymer/iron-component-page": "^4.0.0"
+  }
+}

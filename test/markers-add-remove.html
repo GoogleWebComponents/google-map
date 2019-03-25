@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
 
@@ -15,37 +15,39 @@
     <google-map-marker slot="markers" latitude="37.777" longitude="-122.38911"></google-map-marker>
   </google-map>
 
-<script>
-var map = document.querySelector('#map1');
+  <script type="module">
+    import '../google-map.js';
+    import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+    import { dom, flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+    var map = document.querySelector('#map1');
 
-suite(`markers${Polymer.Settings.useShadow ? ' (shadow dom)' : ' (shady dom)'}`, function() {
+    suite(`markers${useShadow ? ' (shadow dom)' : ' (shady dom)'}`, function() {
 
-  test('markers are defined, added, removed', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
+      test('markers are defined, added, removed', function(done) {
+        map.addEventListener('google-map-ready', function(e) {
 
-      // Check if marker children were setup and can be added/removed.
-      assert.equal(map.markers.length, 2);
+          // Check if marker children were setup and can be added/removed.
+          assert.equal(map.markers.length, 2);
 
-      var marker = map.markers[0];
-      Polymer.dom((Polymer.dom(marker).parentNode)).removeChild(marker);
-      Polymer.dom.flush();
-      async.nextTick(function() { // needed because map.updateMarkers has mutationObserver
-        assert.equal(map.markers.length, 1);
-        assert.isNull(
-            marker.marker.map, 'removed marker is still visible on map');
-        Polymer.dom(map).appendChild(marker);
-        Polymer.dom.flush();
-        async.nextTick(function() {
-          assert.isNotNull(
-              marker.marker.map, 're-added marker is not visible.');
-          done();
+          var marker = map.markers[0];
+          dom((dom(marker).parentNode)).removeChild(marker);
+          flush();
+          async.nextTick(function() { // needed because map.updateMarkers has mutationObserver
+            assert.equal(map.markers.length, 1);
+            assert.isNull(
+                marker.marker.map, 'removed marker is still visible on map');
+            dom(map).appendChild(marker);
+            flush();
+            async.nextTick(function() {
+              assert.isNotNull(
+                  marker.marker.map, 're-added marker is not visible.');
+              done();
+            });
+          });
         });
       });
+
     });
-  });
-
-});
-
-</script>
+  </script>
 </body>
 </html>

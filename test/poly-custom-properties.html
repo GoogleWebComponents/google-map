@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-poly.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
+  <script type="module" src="../google-map-poly.js"></script>
 </head>
 <body>
 
@@ -20,62 +20,63 @@
     </google-map-poly>
   </google-map>
 
-<script>
-suite('poly-basic', function(done) {
-  var map = document.querySelector('#map');
-  var poly = document.querySelector('#poly');
+  <script type="module">
+    import '../google-map.js';
+    import '../google-map-poly.js';
+    suite('poly-basic', function(done) {
+      var map = document.querySelector('#map');
+      var poly = document.querySelector('#poly');
 
 
-  test('after poly is initialized', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
-      assert.isNotNull(poly.map);
-      //done();
-    });
+      test('after poly is initialized', function(done) {
+        map.addEventListener('google-map-ready', function(e) {
+          assert.isNotNull(poly.map);
+          //done();
+        });
 
-    var listener;
-    poly.addEventListener('google-map-poly-path-built', listener = function(e) {
-      poly.removeEventListener('google-map-poly-path-built', listener);
+        var listener;
+        poly.addEventListener('google-map-poly-path-built', listener = function(e) {
+          poly.removeEventListener('google-map-poly-path-built', listener);
 
-      assert.isNotNull(poly.path);
-      assert.isNotNull(poly.poly);
-      flush(function() {
-
-
-        assert.isTrue(poly.poly.get('clickable'));
-        assert.isTrue(poly.poly.getDraggable());
-        assert.isTrue(poly.poly.getEditable());
-        assert.equal(poly.poly.get('fillColor'), 'red');
-        assert.equal(poly.poly.get('fillOpacity'), 0.5);
-        assert.isTrue(poly.poly.get('geodesic'));
-        assert.isUndefined(poly.poly.get('icons'));
-        assert.equal(poly.poly.get('strokeColor'), 'blue');
-        assert.equal(poly.poly.get('strokeOpacity'), 1);
-        assert.equal(poly.poly.get('strokePosition'), 0); // Value for 'center'.
-        assert.equal(poly.poly.get('strokeWeight'), 5);
-        assert.isTrue(poly.poly.getVisible());
-        assert.equal(poly.poly.get('zIndex'), 5);
-
-        assert.ok(poly._listeners['mousedown']);
-        assert.ok(poly._listeners['mousemove']);
-        assert.ok(poly._listeners['mouseout']);
-        assert.ok(poly._listeners['mouseover']);
-        assert.ok(poly._listeners['mouseup']);
-
-        assert.ok(poly._listeners['drag']);
-        assert.ok(poly._listeners['dragend']);
-        assert.ok(poly._listeners['dragstart']);
-
-        assert.ok(poly._listeners['click']);
-        assert.ok(poly._listeners['dblclick']);
-        assert.ok(poly._listeners['rightclick']); 
+          assert.isNotNull(poly.path);
+          assert.isNotNull(poly.poly);
+          flush(function() {
 
 
-        done();
+            assert.isTrue(poly.poly.get('clickable'));
+            assert.isTrue(poly.poly.getDraggable());
+            assert.isTrue(poly.poly.getEditable());
+            assert.equal(poly.poly.get('fillColor'), 'red');
+            assert.equal(poly.poly.get('fillOpacity'), 0.5);
+            assert.isTrue(poly.poly.get('geodesic'));
+            assert.isUndefined(poly.poly.get('icons'));
+            assert.equal(poly.poly.get('strokeColor'), 'blue');
+            assert.equal(poly.poly.get('strokeOpacity'), 1);
+            assert.equal(poly.poly.get('strokePosition'), 0); // Value for 'center'.
+            assert.equal(poly.poly.get('strokeWeight'), 5);
+            assert.isTrue(poly.poly.getVisible());
+            assert.equal(poly.poly.get('zIndex'), 5);
+
+            assert.ok(poly._listeners['mousedown']);
+            assert.ok(poly._listeners['mousemove']);
+            assert.ok(poly._listeners['mouseout']);
+            assert.ok(poly._listeners['mouseover']);
+            assert.ok(poly._listeners['mouseup']);
+
+            assert.ok(poly._listeners['drag']);
+            assert.ok(poly._listeners['dragend']);
+            assert.ok(poly._listeners['dragstart']);
+
+            assert.ok(poly._listeners['click']);
+            assert.ok(poly._listeners['dblclick']);
+            assert.ok(poly._listeners['rightclick']); 
+
+
+            done();
+          });
+        });
       });
     });
-  });
-});
-
-</script>
+  </script>
 </body>
 </html>

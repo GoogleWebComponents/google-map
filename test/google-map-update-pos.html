@@ -4,38 +4,38 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
 
   <google-map id="map" latitude="37.555" longitude="-122.555"></google-map>
 
-<script>
-var map = document.querySelector('#map');
+  <script type="module">
+    import '../google-map.js';
+    var map = document.querySelector('#map');
 
-suite('markers', function() {
+    suite('markers', function() {
 
-  test('update lat/lng', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
-      assert.equal(map.latitude, 37.555);
-      assert.equal(map.longitude, -122.555);
+      test('update lat/lng', function(done) {
+        map.addEventListener('google-map-ready', function(e) {
+          assert.equal(map.latitude, 37.555);
+          assert.equal(map.longitude, -122.555);
 
-      flush(function() {
-        assert.equal(map.latitude, map.map.getCenter().lat(),
-                     'map lat was not updated');
-        assert.equal(map.longitude, map.map.getCenter().lng(),
-                     'map lng was not updated');
+          flush(function() {
+            assert.equal(map.latitude, map.map.getCenter().lat(),
+                        'map lat was not updated');
+            assert.equal(map.longitude, map.map.getCenter().lng(),
+                        'map lng was not updated');
 
-        done();
+            done();
+          });
+
+        });
       });
 
     });
-  });
-
-});
-
-</script>
+  </script>
 </body>
 </html>

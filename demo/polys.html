@@ -4,9 +4,9 @@
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Google Map Poly demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-poly.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../google-map.js"></script>
+  <script type="module" src="../google-map-poly.js"></script>
   <style>
     body {
       margin: 0;
@@ -34,7 +34,9 @@
 
 <button id="toggleEdit" onclick="toggleEdit()">Enable editing</button>
 
-<script>
+<script type="module">
+  import '../google-map.js';
+  import '../google-map-poly.js';
   var poly = document.querySelector('google-map-poly');
   var button = document.querySelector('#toggleEdit');
 
@@ -48,5 +50,3 @@
     t.apiKey = 'AIzaSyD3E1D9b-Z7ekrT3tbhl_dy8DCXuIuDDRc'; // TODO: update to your own API Key!
   }
 </script>
-</body>
-</html>

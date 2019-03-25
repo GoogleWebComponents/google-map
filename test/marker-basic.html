@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../google-map.html">
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../node_modules/wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../google-map.js"></script>
 </head>
 <body>
 
@@ -16,87 +16,88 @@
     <google-map-marker slot="markers" id="labeled-marker" label="GG" latitude="37.777" longitude="-122.38911" drag-events></google-map-marker>
   </google-map>
 
-<script>
-var map = document.querySelector('#map1');
+  <script type="module">
+    import '../google-map.js';
+    import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+    var map = document.querySelector('#map1');
 
-suite('markers', function() {
-  test('labeled marker should have a label', function() {
-    var markerEl = document.querySelector('#labeled-marker');
+    suite('markers', function() {
+      test('labeled marker should have a label', function() {
+        var markerEl = document.querySelector('#labeled-marker');
 
-    assert.equal(markerEl.label, "GG");
-  });
-  // TODO: add test for info window content, including empty & whitespace-only.
-  test('infowindow', function() {
-  });
-  test.skip('infowindow');
+        assert.equal(markerEl.label, "GG");
+      });
+      // TODO: add test for info window content, including empty & whitespace-only.
+      test('infowindow', function() {
+      });
+      test.skip('infowindow');
 
-  // TODO: test draggable, hidden, title properties.
-  test('properties', function() {
-  });
-  test.skip('properties');
+      // TODO: test draggable, hidden, title properties.
+      test('properties', function() {
+      });
+      test.skip('properties');
 
-  // TODO: add test for drag and drop marker.
-  test('dragdrop marker', function() {
-  });
-  test.skip('dragdrop marker');
+      // TODO: add test for drag and drop marker.
+      test('dragdrop marker', function() {
+      });
+      test.skip('dragdrop marker');
 
-  test('defaults', function() {
-    var markerEl = Polymer.dom(map).querySelector('google-map-marker');
-    assert.isUndefined(markerEl.marker);
-    assert.isUndefined(markerEl.map);
-    assert.isNull(markerEl.icon);
-    assert.isNull(markerEl.info);
-    assert.equal(markerEl.zIndex, 0);
-    assert.equal(markerEl.latitude, 37.779);
-    assert.equal(markerEl.longitude, -122.3892);
-    assert.isFalse(markerEl.open);
-    assert.isNull(markerEl.offsetParent,
-                  'google-map-marker should be display: none');
-  });
+      test('defaults', function() {
+        var markerEl = dom(map).querySelector('google-map-marker');
+        assert.isUndefined(markerEl.marker);
+        assert.isUndefined(markerEl.map);
+        assert.isNull(markerEl.icon);
+        assert.isNull(markerEl.info);
+        assert.equal(markerEl.zIndex, 0);
+        assert.equal(markerEl.latitude, 37.779);
+        assert.equal(markerEl.longitude, -122.3892);
+        assert.isFalse(markerEl.open);
+        assert.isNull(markerEl.offsetParent,
+                      'google-map-marker should be display: none');
+      });
 
-  test('update properties', function(done) {
-    map.addEventListener('google-map-ready', function(e) {
-      var markerEl = Polymer.dom(map).querySelector('google-map-marker');
-      markerEl.latitude = 37.77493;
-      markerEl.longitude = -122.41942;
-      markerEl.zIndex = 1;
-      assert.equal(
-          markerEl.map, map.map, "marker's map is not the google-map's");
+      test('update properties', function(done) {
+        map.addEventListener('google-map-ready', function(e) {
+          var markerEl = dom(map).querySelector('google-map-marker');
+          markerEl.latitude = 37.77493;
+          markerEl.longitude = -122.41942;
+          markerEl.zIndex = 1;
+          assert.equal(
+              markerEl.map, map.map, "marker's map is not the google-map's");
 
-      flush(function() {
-        assert.equal(markerEl.marker.getPosition().lat(), markerEl.latitude);
-        assert.equal(markerEl.marker.getPosition().lng(), markerEl.longitude);
-        assert.equal(markerEl.marker.getZIndex(), markerEl.zIndex);
+          flush(function() {
+            assert.equal(markerEl.marker.getPosition().lat(), markerEl.latitude);
+            assert.equal(markerEl.marker.getPosition().lng(), markerEl.longitude);
+            assert.equal(markerEl.marker.getZIndex(), markerEl.zIndex);
 
-        markerEl.icon = 'https://www.google.com/images/srpr/logo11w.png';
+            markerEl.icon = 'https://www.google.com/images/srpr/logo11w.png';
+            flush(function() {
+              assert.equal(markerEl.marker.getIcon(), markerEl.icon);
+
+              done();
+            });
+
+          });
+
+        });
+      });
+
+      test('dragEvents', function() {
+
+        var markerEl = dom(map).querySelector('#marker2');
+
+        assert.equal(markerEl.dragEvents, true);
+
         flush(function() {
-          assert.equal(markerEl.marker.getIcon(), markerEl.icon);
-
+          assert.instanceOf(markerEl._listeners.drag, google.maps.MapsEventListener);
+          assert.instanceOf(markerEl._listeners.dragstart, google.maps.MapsEventListener);
+          assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener);
           done();
         });
 
       });
 
     });
-  });
-
-  test('dragEvents', function() {
-
-    var markerEl = Polymer.dom(map).querySelector('#marker2');
-
-    assert.equal(markerEl.dragEvents, true);
-
-    flush(function() {
-      assert.instanceOf(markerEl._listeners.drag, google.maps.MapsEventListener);
-      assert.instanceOf(markerEl._listeners.dragstart, google.maps.MapsEventListener);
-      assert.instanceOf(markerEl._listeners.dragend, google.maps.MapsEventListener);
-      done();
-    });
-
-  });
-
-});
-
-</script>
-</body>
-</html>
+  </script>
+  </body>
+  </html>
