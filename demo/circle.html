@@ -3,10 +3,10 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>Google Map Poly demo</title>
+  <title>Google Map Circle demo</title>
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../google-map.html">
-  <link rel="import" href="../google-map-poly.html">
+  <link rel="import" href="../google-map-circle.html">
   <style>
     body {
       margin: 0;
@@ -25,11 +25,7 @@
   <template is="dom-bind">
     <google-map latitude="37.779" longitude="-122.3892" min-zoom="9"
                 max-zoom="11" language="en" api-key="[[apiKey]]">
-      <google-map-poly closed fill-color="red" fill-opacity=".25" stroke-weight="1">
-        <google-map-point latitude="37.779" longitude="-122.3892"></google-map-point>
-        <google-map-point latitude="37.804" longitude="-122.2711"></google-map-point>
-        <google-map-point latitude="37.386" longitude="-122.0837"></google-map-point>
-      </google-map-poly>
+      <google-map-circle closed fill-color="red" fill-opacity=".25" stroke-weight="1" latitude="37.77493" longitude="-122.41942" radius="20000"></google-map-circle>
     </google-map>
   </template>
 </dom-bind>
@@ -37,12 +33,12 @@
 <button id="toggleEdit" onclick="toggleEdit()">Enable editing</button>
 
 <script>
-  var poly = document.querySelector('google-map-poly');
+  var circle = document.querySelector('google-map-circle');
   var button = document.querySelector('#toggleEdit');
 
   function toggleEdit() {
-    poly.editable = !poly.editable;
-    button.innerText = poly.editable ? 'Disable editing' : 'Enable editing';
+    circle.editable = !circle.editable;
+    button.innerText = circle.editable ? 'Disable editing' : 'Enable editing';
   }
 
   if (location.origin === 'https://user-content-dot-custom-elements.appspot.com') {
