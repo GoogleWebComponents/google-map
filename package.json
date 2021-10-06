@@ -10,7 +10,7 @@
   ],
   "homepage": "https://elements.polymer-project.org/elements/google-map",
   "name": "@polymer/google-map",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
