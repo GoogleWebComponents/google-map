@@ -21,7 +21,7 @@ information on the API.
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import '@polymer/google-apis/google-maps-api.js';
+import '@cbar/google-apis/google-maps-api.js';
 import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 
